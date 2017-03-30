@@ -8,8 +8,9 @@ This is a Docker image for Ubuntu with X11 and VNC. It is similar to
  - Supports dynamic resizing of the desktop and 24-bit true color
  - Supports both Ubuntu 16.04 and 14.04, with very fast launching
  - Auto-starts in full-size resolution and auto-launches web-browser
+ - Automatically shares the current work directory from host to Docker image
 
-[![Build Status](https://travis-ci.org/x11vnc/docker-ubuntu-x11vnc.svg?branch=master)](https://travis-ci.org/x11vnc/docker-ubuntu-x11vnc)
+[![Build Status](https://travis-ci.org/x11vnc/docker-ubuntu-x11vnc.svg?branch=16.04)](https://travis-ci.org/x11vnc/docker-ubuntu-x11vnc)
 
 <img src="https://raw.github.com/x11vnc/docker-ubuntu-x11vnc/master/screenshots/screenshot.png" width=400/>
 

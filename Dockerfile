@@ -7,7 +7,7 @@
 # Authors:
 # Xiangmin Jiao <xmjiao@gmail.com>
 
-FROM phusion/baseimage:0.9.18
+FROM phusion/baseimage:0.9.20
 LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
 WORKDIR /tmp
@@ -17,6 +17,9 @@ WORKDIR /tmp
 RUN apt-get update && \
     apt-get upgrade -y -o Dpkg::Options::="--force-confold" && \
     apt-get install -y --no-install-recommends \
+        sudo \
+        net-tools \
+        \
         openssh-server \
         python-pip \
         python-dev \
@@ -41,7 +44,8 @@ RUN apt-get update && \
     
 # Install websokify and noVNC
 RUN pip install -U \
-        pip && \
+        pip \
+        setuptools && \
     pip install -U https://github.com/novnc/websockify/archive/master.tar.gz && \
     mkdir /usr/local/noVNC && \
     curl -s -L https://github.com/novnc/noVNC/archive/stable/v0.6.tar.gz | \

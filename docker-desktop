@@ -17,7 +17,7 @@ parser = argparse.ArgumentParser(description=__doc__)
 
 parser.add_argument('-u', "--user", nargs='?', help='''username used by the image. The default is x11vnc.''', default="x11vnc")
 
-parser.add_argument('-i', '--image', nargs='?', help='''The Docker image to use The default is ubuntu.''', default="ubuntu")
+parser.add_argument('-i', '--image', nargs='?', help='''The Docker image to use. The default is ubuntu:16.04.''', default="ubuntu:16.04")
 
 parser.add_argument('-p', '--pull', help='''Pull the latest Docker image from the server. The default is not to pull.''', dest='pull', action='store_true')
 
