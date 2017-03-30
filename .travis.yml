@@ -1,0 +1,7 @@
+services:
+  - docker
+
+script:
+  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_USERPASS"
+  - docker build --tag x11vnc/ubuntu:14.04 . && docker push x11vnc/ubuntu:14.04
+  - docker images

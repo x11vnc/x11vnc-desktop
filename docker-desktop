@@ -1,0 +1,148 @@
+#!/usr/bin/env python
+
+"""
+Launch a Docker image with and Ubuntu and LXDE window manager, and
+automatically open up the URL in the default web browser.
+"""
+
+# Author: Xiangmin Jiao <xiangmin.jiao@stonybrook.edu>
+
+from __future__ import print_function # Only Python 2.x
+
+import argparse
+import sys
+
+# Process command-line arguments
+parser = argparse.ArgumentParser(description=__doc__)
+
+parser.add_argument('-u', "--user", nargs='?', help='''username used by the image. The default is x11vnc.''', default="x11vnc")
+
+parser.add_argument('-i', '--image', nargs='?', help='''The Docker image to use The default is ubuntu.''', default="ubuntu")
+
+parser.add_argument('-p', '--pull', help='''Pull the latest Docker image from the server. The default is not to pull.''', dest='pull', action='store_true')
+
+parser.set_defaults(pull=False)
+
+parser.add_argument('notebook', nargs='?', help='''The notebook to open.''', default="")
+
+args = parser.parse_args()
+image = args.image
+user = args.user
+notebook = args.notebook
+pull = args.pull
+
+def random_ports(port, n):
+    """Generate a list of n random ports near the given port.
+
+    The first 5 ports will be sequential, and the remaining n-5 will be
+    randomly selected in the range [port-2*n, port+2*n].
+    """
+    import random
+
+    for i in range(min(5, n)):
+        yield port + i
+    for i in range(n-5):
+        yield max(1, port + random.randint(-2*n, 2*n))
+
+def id_generator(size=6):
+   """Generate a container ID"""
+   import random
+   import string
+
+   chars=string.ascii_uppercase + string.digits
+   return "desktop_" + (''.join(random.choice(chars) for _ in range(size)))
+
+def find_free_port(port, retries):
+   "Find a free port"
+   import socket
+
+   sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+   for port in random_ports(port, retries+1):
+       try:
+           sock.bind(("127.0.0.1", port))
+           sock.close()
+           return port
+       except socket.error as e:
+           continue
+
+   print("Error: Could not find a free port.")
+   sys.exit(-1)
+
+def wait_net_service(port, timeout=30):
+    """ Wait for network service to appear.
+    """
+    import socket
+    import time
+
+    for i in range(timeout):
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.connect(("127.0.0.1", port))
+        except socket.error as err:
+            sock.close()
+            time.sleep(1)
+            continue
+        else:
+            sock.close()
+            time.sleep(3)
+            return True
+
+def get_screen_resolution():
+    """Obtain the local screen resolution."""
+
+    if sys.version_info.major > 2:
+        import tkinter as tk
+    else:
+        import Tkinter as tk
+
+    root = tk.Tk()
+    root.withdraw()
+    width, height = root.winfo_screenwidth(), root.winfo_screenheight()
+
+    return str(width) + 'x' + str(height)
+
+if __name__ == "__main__":
+   import os
+   import subprocess
+   import webbrowser
+
+   pwd = os.getcwd()
+
+   if pull:
+       subprocess.call(["docker", "pull", user +"/" + image])
+       print('Updated Docker image. Run "docker system prune" to delete all unused old containers and images.')
+
+   # Generate a container ID and find an unused port
+   container = id_generator()
+   port = str(find_free_port(6080, 50))
+
+   print("Starting up docker image...")
+   # Start the docker image and pipe the stderr
+   p = subprocess.Popen(["docker", "run", "--rm", "--name", container,
+                         "-w", "/home/" + user + "/shared", 
+                         "-v", pwd + ":/home/" + user + "/shared", 
+                         "-p", "127.0.0.1:" + port + ":6080",
+                         user + "/" + image,
+                         "startvnc.sh", get_screen_resolution()], 
+                         stdout=subprocess.PIPE, universal_newlines=True)
+   
+   # Wait for user to press Ctrl-C
+   try:
+      # Monitor the stdout to extract the URL
+      for stdout_line in iter(p.stdout.readline, ""):
+         ind = stdout_line.find("http://localhost:")
+         if ind >= 0:
+            # Open browser if found URL
+            url = stdout_line.replace(":6080", ':' + port)
+            sys.stdout.write(url)
+            webbrowser.open(url[ind:-1])
+         else:
+            sys.stdout.write(stdout_line)
+
+      p.stdout.close()
+      p.wait()
+   except KeyboardInterrupt:
+       print('*** Stopping the server.')
+   except OSError:
+       pass
