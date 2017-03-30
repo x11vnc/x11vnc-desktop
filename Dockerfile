@@ -83,8 +83,6 @@ RUN sed -i "s/x11vnc/$DOCKER_USER/" $DOCKER_HOME/.config/pcmanfm/LXDE/desktop-it
     mkdir $DOCKER_HOME/.log && \
     chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME
 
-VOLUME $DOCKER_HOME/shared
-
 WORKDIR $DOCKER_HOME
 
 USER root
