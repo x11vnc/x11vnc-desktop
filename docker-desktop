@@ -69,6 +69,24 @@ def find_free_port(port, retries):
    print("Error: Could not find a free port.")
    sys.exit(-1)
 
+def wait_net_service(port, timeout=30):
+    """ Wait for network service to appear.
+    """
+    import socket
+    import time
+
+    for i in range(timeout*10):
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.connect(("127.0.0.1", port))
+        except socket.error as err:
+            sock.close()
+            time.sleep(0.1)
+            continue
+        else:
+            sock.close()
+            return True
+
 def get_screen_resolution():
     """Obtain the local screen resolution."""
 
@@ -117,6 +135,8 @@ if __name__ == "__main__":
             # Open browser if found URL
             url = stdout_line.replace(":6080", ':' + port)
             sys.stdout.write(url)
+
+            wait_net_service(int(port))
             webbrowser.open(url[ind:-1])
          else:
             sys.stdout.write(stdout_line)
