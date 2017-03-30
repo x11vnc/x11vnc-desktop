@@ -53,8 +53,6 @@ and then use the `docker-desktop` command.
 ## Known Issues
 These is no known issues with the master branch with Ubuntu 14.04.
 
-For the branch 16.04 with Ubuntu 16.04, you will get a pop-up window showing "No session for pid xxxxx" when `lxsession` starts. This is widely reported issue of LXDE in Ubuntu 16.04. You can just click "OK" to dismiss the message and the system would run without any further issue.
-
 ## License
 
 See the LICENSE file for details.
