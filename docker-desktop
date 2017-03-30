@@ -5,7 +5,7 @@ Launch a Docker image with Ubuntu and LXDE window manager, and
 automatically open up the URL in the default web browser.
 """
 
-# Author: Xiangmin Jiao <xiangmin.jiao@stonybrook.edu>
+# Author: Xiangmin Jiao <xmjiao@gmail.com>
 
 from __future__ import print_function # Only Python 2.x
 
