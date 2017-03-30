@@ -50,6 +50,10 @@ docker build --rm -t x11vnc/ubuntu docker-ubuntu-x11vnc
 ```
 and then use the `docker-desktop` command.
 
+## Known Issues
+
+For Ubuntu 16.04, you will get a pop-up window showing "No session for pid xxxxx" when `lxsession` starts. This is a widely reported issue of LXDE in Ubuntu 16.04. You can just click "OK" to dismiss the message and the system would run without any further issue.
+
 ## License
 
 See the LICENSE file for details.
