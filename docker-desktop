@@ -17,7 +17,7 @@ parser = argparse.ArgumentParser(description=__doc__)
 
 parser.add_argument('-u', "--user", nargs='?', help='''username used by the image. The default is x11vnc.''', default="x11vnc")
 
-parser.add_argument('-i', '--image', nargs='?', help='''The Docker image to use The default is ubuntu.''', default="ubuntu")
+parser.add_argument('-i', '--image', nargs='?', help='''The Docker image to use. The default is ubuntu.''', default="ubuntu")
 
 parser.add_argument('-p', '--pull', help='''Pull the latest Docker image from the server. The default is not to pull.''', dest='pull', action='store_true')
 
@@ -85,6 +85,7 @@ def wait_net_service(port, timeout=30):
             continue
         else:
             sock.close()
+            time.sleep(1)
             return True
 
 def get_screen_resolution():
@@ -108,20 +109,19 @@ if __name__ == "__main__":
 
    pwd = os.getcwd()
 
-   if pull:
+   if pull or not subprocess.check_output(['docker', 'images', '-q', user +"/" + image]):
        subprocess.call(["docker", "pull", user +"/" + image])
-       print('Updated Docker image. Run "docker system prune" to delete all unused old containers and images.')
 
    # Generate a container ID and find an unused port
    container = id_generator()
-   port = str(find_free_port(6080, 50))
+   port_vnc = str(find_free_port(6080, 50))
 
    print("Starting up docker image...")
    # Start the docker image and pipe the stderr
    p = subprocess.Popen(["docker", "run", "--rm", "--name", container,
                          "-w", "/home/" + user + "/shared", 
                          "-v", pwd + ":/home/" + user + "/shared", 
-                         "-p", "127.0.0.1:" + port + ":6080",
+                         "-p", "127.0.0.1:" + port_vnc + ":6080",
                          user + "/" + image,
                          "startvnc.sh", get_screen_resolution()], 
                          stdout=subprocess.PIPE, universal_newlines=True)
@@ -131,12 +131,13 @@ if __name__ == "__main__":
       # Monitor the stdout to extract the URL
       for stdout_line in iter(p.stdout.readline, ""):
          ind = stdout_line.find("http://localhost:")
+
          if ind >= 0:
             # Open browser if found URL
-            url = stdout_line.replace(":6080", ':' + port)
+            url = stdout_line.replace(":6080/", ':' + port_vnc + "/")
             sys.stdout.write(url)
 
-            wait_net_service(int(port))
+            wait_net_service(int(port_vnc))
             webbrowser.open(url[ind:-1])
          else:
             sys.stdout.write(stdout_line)
