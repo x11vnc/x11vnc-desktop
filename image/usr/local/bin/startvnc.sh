@@ -6,13 +6,10 @@
 
 # Copyright Xiangmin Jiao 2017. All rights reserved.
 
-# Set resolution based on input argument. Use 1440x900 default
-SIZE="${1:-1440x900}"
-
 # Start up xdummy with the given size
-SIZE1=`echo $SIZE | sed "s/x/ /"`
-grep -s -q $SIZE .config/xorg.conf && \
-sed -i "s/Virtual 1440 900/Virtual $SIZE1/" $DOCKER_HOME/.config/xorg.conf
+SIZE=`echo $RESOLUT | sed -e "s/x/ /"`
+grep -s -q $RESOLUT $DOCKER_HOME/.config/xorg.conf && \
+sed -i -e "s/Virtual 1440 900/Virtual $SIZE/" $DOCKER_HOME/.config/xorg.conf
 
 Xorg -noreset -logfile $DOCKER_HOME/.log/Xorg.log -config $DOCKER_HOME/.config/xorg.conf :0 2> $DOCKER_HOME/.log/Xorg_err.log &
 sleep 0.1

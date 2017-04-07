@@ -122,8 +122,8 @@ if __name__ == "__main__":
                          "-w", "/home/" + user + "/shared", 
                          "-v", pwd + ":/home/" + user + "/shared", 
                          "-p", "127.0.0.1:" + port_vnc + ":6080",
-                         user + "/" + image,
-                         "startvnc.sh", get_screen_resolution()], 
+                         "--env", "RESOLUT=" + get_screen_resolution(),
+                         user + "/" + image, "startvnc.sh"], 
                          stdout=subprocess.PIPE, universal_newlines=True)
    
    # Wait for user to press Ctrl-C
