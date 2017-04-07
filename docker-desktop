@@ -139,6 +139,7 @@ if __name__ == "__main__":
 
             wait_net_service(int(port_vnc))
             webbrowser.open(url[ind:-1])
+            print("*** Press Ctrl-C to stop the server.")
          else:
             sys.stdout.write(stdout_line)
 
