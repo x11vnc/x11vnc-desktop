@@ -15,15 +15,22 @@ import sys
 # Process command-line arguments
 parser = argparse.ArgumentParser(description=__doc__)
 
-parser.add_argument('-u', "--user", nargs='?', help='''username used by the image. The default is x11vnc.''', default="x11vnc")
+parser.add_argument('-u', "--user", nargs='?',
+                    help='username used by the image. The default is x11vnc.',
+                    default="x11vnc")
 
-parser.add_argument('-i', '--image', nargs='?', help='''The Docker image to use. The default is ubuntu.''', default="ubuntu")
+parser.add_argument('-i', '--image', nargs='?',
+                    help='The Docker image to use. The default is x11vnc/ubuntu:latest.',
+                    default="x11vnc/ubuntu:latest")
 
-parser.add_argument('-p', '--pull', help='''Pull the latest Docker image from the server. The default is not to pull.''', dest='pull', action='store_true')
+parser.add_argument('-p', '--pull', 
+                    help='Pull the latest Docker image. The default is not to pull.',
+                    dest='pull', action='store_true')
 
 parser.set_defaults(pull=False)
 
-parser.add_argument('notebook', nargs='?', help='''The notebook to open.''', default="")
+parser.add_argument('notebook', nargs='?',
+                    help='''The notebook to open.''', default="")
 
 args = parser.parse_args()
 image = args.image
@@ -106,24 +113,41 @@ if __name__ == "__main__":
    import os
    import subprocess
    import webbrowser
+   import time
+   import platform
 
    pwd = os.getcwd()
 
-   if pull or not subprocess.check_output(['docker', 'images', '-q', user +"/" + image]):
-       subprocess.call(["docker", "pull", user +"/" + image])
+   if pull or not subprocess.check_output(['docker', 'images', '-q', image]):
+       try:
+           start = time.time()
+           err = subprocess.call(["docker", "pull", image])
+           end = time.time()
+           print("Pulled the image in ", '{:.2f}'.format(end - start), " seconds.")
+       except:
+           err = -1
+
+       if err:
+           sys.exit(err)
 
    # Generate a container ID and find an unused port
    container = id_generator()
    port_vnc = str(find_free_port(6080, 50))
 
+   if platform.system() == "Linux":
+       uid = str(os.getuid())
+   else:
+       uid = ""
+
    print("Starting up docker image...")
    # Start the docker image and pipe the stderr
    p = subprocess.Popen(["docker", "run", "--rm", "--name", container,
                          "-w", "/home/" + user + "/shared", 
-                         "-v", pwd + ":/home/" + user + "/shared", 
+                         "-v", pwd + ":/home/" + user + "/shared",
                          "-p", "127.0.0.1:" + port_vnc + ":6080",
                          "--env", "RESOLUT=" + get_screen_resolution(),
-                         user + "/" + image, "startvnc.sh"], 
+                         "--env", "HOST_UID=" + uid,
+                         image, "startvnc.sh"],
                          stdout=subprocess.PIPE, universal_newlines=True)
    
    # Wait for user to press Ctrl-C
