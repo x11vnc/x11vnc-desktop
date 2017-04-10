@@ -37,6 +37,7 @@ RUN apt-get update && \
         libgl1-mesa-dri \
         x11vnc \
         \
+        meld \
         firefox \
 	xpdf && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
