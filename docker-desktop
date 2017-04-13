@@ -144,15 +144,13 @@ if __name__ == "__main__":
                      "-p", "127.0.0.1:" + port_vnc + ":6080",
                      "--env", "RESOLUT=" + get_screen_resolution(),
                      "--env", "HOST_UID=" + uid,
-                     image, "startvnc.sh > /home/" + user + "/.log/vnc.log"])
+                     image, "startvnc.sh >> /home/" + user + "/.log/vnc.log"])
 
     wait_for_url = True
 
     # Wait for user to press Ctrl-C
     while True:
         try:
-            print("Press Ctrl-C to stop the server.")       
-
             if wait_for_url:
                 # Sleep for one second to avoid race conditon
                 time.sleep(1)
@@ -178,6 +176,8 @@ if __name__ == "__main__":
                         break
                     else:
                         sys.stdout.write(stdout_line)
+
+            print("Press Ctrl-C to stop the server.")
             while True:
                 time.sleep(3600)
         except KeyboardInterrupt:
