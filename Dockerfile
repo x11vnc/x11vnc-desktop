@@ -56,8 +56,13 @@ RUN pip install -U \
 ADD image /
 
 # Change the default timezone to America/New_York
+# Disable forward logging (https://github.com/phusion/baseimage-docker/issues/186)
+# Run ldconfig so that /usr/local/lib etc. are in the default 
+# search path for dynamic linker
 RUN echo "America/New_York" > /etc/timezone && \
-    ln -s -f /usr/share/zoneinfo/America/New_York /etc/localtime
+    ln -s -f /usr/share/zoneinfo/America/New_York /etc/localtime && \
+    touch /etc/service/syslog-forwarder/down && \
+    ldconfig
     
 # Set up user so that we do not run as root
 ENV DOCKER_USER=x11vnc
@@ -65,20 +70,15 @@ ENV DOCKER_GROUP=$DOCKER_USER \
     DOCKER_HOME=/home/$DOCKER_USER \
     HOME=/home/$DOCKER_USER
 
-# Disable forward logging (https://github.com/phusion/baseimage-docker/issues/186)
-# Add script to set up permissions of home directory on myinit
-# Run ldconfig so that /usr/local/lib etc. are in the default 
-# search path for the dynamic linker.
 RUN useradd -m -s /bin/bash -G sudo,docker_env $DOCKER_USER && \
     echo "$DOCKER_USER:docker" | chpasswd && \
-    echo "$DOCKER_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
-    touch /etc/service/syslog-forwarder/down && \
-    ldconfig
+    echo "$DOCKER_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 ADD conf/ $DOCKER_HOME/.config
 
 RUN sed -i "s/x11vnc/$DOCKER_USER/" $DOCKER_HOME/.config/pcmanfm/LXDE/desktop-items-0.conf && \
     touch $DOCKER_HOME/.sudo_as_admin_successful && \
+    echo "export NO_AT_BRIDGE=1" >> /home/$DOCKER_USER/.bashrc && \
     mkdir $DOCKER_HOME/shared && \
     mkdir $DOCKER_HOME/.vnc && \
     mkdir $DOCKER_HOME/.log && touch $DOCKER_HOME/.log/vnc.log && \
