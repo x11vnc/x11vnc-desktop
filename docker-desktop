@@ -11,17 +11,18 @@ from __future__ import print_function # Only Python 2.x
 
 import argparse
 import sys
+import time
 
 # Process command-line arguments
 parser = argparse.ArgumentParser(description=__doc__)
 
-parser.add_argument('-u', "--user", nargs='?',
+parser.add_argument('-u', "--user",
                     help='username used by the image. The default is x11vnc.',
                     default="x11vnc")
 
-parser.add_argument('-i', '--image', nargs='?',
-                    help='The Docker image to use. The default is x11vnc/ubuntu:latest.',
-                    default="x11vnc/ubuntu:latest")
+parser.add_argument('-i', '--image',
+                    help='The Docker image to use. The default is x11vnc/ubuntu.',
+                    default="x11vnc/ubuntu")
 
 parser.add_argument('-p', '--pull', 
                     help='Pull the latest Docker image. The default is not to pull.',
@@ -29,13 +30,9 @@ parser.add_argument('-p', '--pull',
 
 parser.set_defaults(pull=False)
 
-parser.add_argument('notebook', nargs='?',
-                    help='''The notebook to open.''', default="")
-
 args = parser.parse_args()
 image = args.image
 user = args.user
-notebook = args.notebook
 pull = args.pull
 
 def random_ports(port, n):
@@ -48,41 +45,41 @@ def random_ports(port, n):
 
     for i in range(min(5, n)):
         yield port + i
-    for i in range(n-5):
-        yield max(1, port + random.randint(-2*n, 2*n))
+    for i in range(n - 5):
+        yield max(1, port + random.randint(-2 * n, 2 * n))
 
 def id_generator(size=6):
-   """Generate a container ID"""
-   import random
-   import string
+    """Generate a container ID"""
+    import random
+    import string
 
-   chars=string.ascii_uppercase + string.digits
-   return "desktop_" + (''.join(random.choice(chars) for _ in range(size)))
+    chars = string.ascii_uppercase + string.digits
+    return "desktop_" + (''.join(random.choice(chars) for _ in range(size)))
+
 
 def find_free_port(port, retries):
-   "Find a free port"
-   import socket
+    "Find a free port"
+    import socket
 
-   sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-   for port in random_ports(port, retries+1):
-       try:
-           sock.bind(("127.0.0.1", port))
-           sock.close()
-           return port
-       except socket.error as e:
-           continue
+    for port in random_ports(port, retries + 1):
+        try:
+            sock.bind(("127.0.0.1", port))
+            sock.close()
+            return port
+        except socket.error as e:
+            continue
 
-   print("Error: Could not find a free port.")
-   sys.exit(-1)
+    print("Error: Could not find a free port.")
+    sys.exit(-1)
 
 def wait_net_service(port, timeout=30):
     """ Wait for network service to appear.
     """
     import socket
-    import time
 
-    for i in range(timeout*10):
+    for i in range(timeout * 10):
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect(("127.0.0.1", port))
@@ -94,6 +91,7 @@ def wait_net_service(port, timeout=30):
             sock.close()
             time.sleep(1)
             return True
+
 
 def get_screen_resolution():
     """Obtain the local screen resolution."""
@@ -110,66 +108,92 @@ def get_screen_resolution():
     return str(width) + 'x' + str(height)
 
 if __name__ == "__main__":
-   import os
-   import subprocess
-   import webbrowser
-   import time
-   import platform
+    import os
+    import subprocess
+    import webbrowser
+    import platform
 
-   pwd = os.getcwd()
+    pwd = os.getcwd()
 
-   if pull or not subprocess.check_output(['docker', 'images', '-q', image]):
-       try:
-           start = time.time()
-           err = subprocess.call(["docker", "pull", image])
-           end = time.time()
-           print("Pulled the image in ", '{:.2f}'.format(end - start), " seconds.")
-       except:
-           err = -1
+    version = image[image.find(":") + 1:]
+    if pull or not subprocess.check_output(['docker', 'images', '-q', image]):
+        try:
+            err = subprocess.call(["docker", "pull", image])
+        except BaseException:
+            err = -1
 
-       if err:
-           sys.exit(err)
+        if err:
+            sys.exit(err)
 
-   # Generate a container ID and find an unused port
-   container = id_generator()
-   port_vnc = str(find_free_port(6080, 50))
+    # Generate a container ID and find an unused port
+    container = id_generator()
+    port_vnc = str(find_free_port(6080, 50))
 
-   if platform.system() == "Linux":
-       uid = str(os.getuid())
-   else:
-       uid = ""
+    homedir = os.path.expanduser('~')
+    if platform.system() == "Linux":
+        uid = str(os.getuid())
+    else:
+        uid = ""
 
-   print("Starting up docker image...")
-   # Start the docker image and pipe the stderr
-   p = subprocess.Popen(["docker", "run", "--rm", "--name", container,
-                         "-w", "/home/" + user + "/shared", 
-                         "-v", pwd + ":/home/" + user + "/shared",
-                         "-p", "127.0.0.1:" + port_vnc + ":6080",
-                         "--env", "RESOLUT=" + get_screen_resolution(),
-                         "--env", "HOST_UID=" + uid,
-                         image, "startvnc.sh"],
-                         stdout=subprocess.PIPE, universal_newlines=True)
-   
-   # Wait for user to press Ctrl-C
-   try:
-      # Monitor the stdout to extract the URL
-      for stdout_line in iter(p.stdout.readline, ""):
-         ind = stdout_line.find("http://localhost:")
+    print("Starting up docker image...")
 
-         if ind >= 0:
-            # Open browser if found URL
-            url = stdout_line.replace(":6080/", ':' + port_vnc + "/")
-            sys.stdout.write(url)
+    # Start the docker image in the background and pipe the stderr
+    subprocess.call(["docker", "run", "-d", "--rm", "--name", container,
+                     "-w", "/home/" + user + "/shared",
+                     "-v", pwd + ":/home/" + user + "/shared",
+                     "-p", "127.0.0.1:" + port_vnc + ":6080",
+                     "--env", "RESOLUT=" + get_screen_resolution(),
+                     "--env", "HOST_UID=" + uid,
+                     image, "startvnc.sh > /home/" + user + "/.log/vnc.log"])
 
-            wait_net_service(int(port_vnc))
-            webbrowser.open(url[ind:-1])
-            print("*** Press Ctrl-C to stop the server.")
-         else:
-            sys.stdout.write(stdout_line)
+    wait_for_url = True
 
-      p.stdout.close()
-      p.wait()
-   except KeyboardInterrupt:
-       print('*** Stopping the server.')
-   except OSError:
-       pass
+    # Wait for user to press Ctrl-C
+    while True:
+        try:
+            print("Press Ctrl-C to stop the server.")       
+
+            if wait_for_url:
+                # Sleep for one second to avoid race conditon
+                time.sleep(1)
+                p = subprocess.Popen(["docker", "exec", container,
+                                      "tail", "-F", "/home/" + user + "/.log/vnc.log"],
+                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                     universal_newlines=True)
+
+                # Monitor the stdout to extract the URL
+                for stdout_line in iter(p.stdout.readline, ""):
+                    ind = stdout_line.find("http://localhost:")
+
+                    if ind >= 0:
+                        # Open browser if found URL
+                        url = stdout_line.replace(":6080/", ':' + port_vnc + "/")
+                        sys.stdout.write(url)
+
+                        wait_net_service(int(port_vnc))
+                        webbrowser.open(url[ind:-1])
+                        p.stdout.close()
+                        p.terminate()
+                        wait_for_url = False
+                        break
+                    else:
+                        sys.stdout.write(stdout_line)
+            while True:
+                time.sleep(3600)
+        except KeyboardInterrupt:
+            try:
+                print("Type Y or Ctrl-C again to stop the server: ")
+                yes = sys.stdin.read(1)
+            except KeyboardInterrupt:
+                yes = "Y"
+            finally:
+                if yes == "Y" or yes == "y":
+                    print('*** Stopping the server.')
+                    p = subprocess.Popen(["docker", "stop", container],
+                                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    out, err = p.communicate()
+                    sys.exit(0)
+                else:
+                    print('Invalid response. Resuming...')
+        except OSError:
+            system.exit(-1)

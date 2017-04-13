@@ -81,7 +81,7 @@ RUN sed -i "s/x11vnc/$DOCKER_USER/" $DOCKER_HOME/.config/pcmanfm/LXDE/desktop-it
     touch $DOCKER_HOME/.sudo_as_admin_successful && \
     mkdir $DOCKER_HOME/shared && \
     mkdir $DOCKER_HOME/.vnc && \
-    mkdir $DOCKER_HOME/.log && \
+    mkdir $DOCKER_HOME/.log touch $DOCKER_HOME/.log/vnc.log && \
     chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME
 
 WORKDIR $DOCKER_HOME
