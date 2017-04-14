@@ -152,8 +152,11 @@ if __name__ == "__main__":
     while True:
         try:
             if wait_for_url:
-                # Sleep for one second to avoid race conditon
-                time.sleep(1)
+                # Wait until the file is not empty
+                while not subprocess.check_output(["docker", "exec", container,
+                                                   "cat", "/home/" + user + "/.log/vnc.log"]):
+                    time.sleep(1)
+
                 p = subprocess.Popen(["docker", "exec", container,
                                       "tail", "-F", "/home/" + user + "/.log/vnc.log"],
                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE,

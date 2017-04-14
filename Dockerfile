@@ -17,6 +17,9 @@ WORKDIR /tmp
 RUN apt-get update && \
     apt-get upgrade -y -o Dpkg::Options::="--force-confold" && \
     apt-get install -y --no-install-recommends \
+        sudo \
+        net-tools \
+        \
         openssh-server \
         python-pip \
         python-dev \
@@ -33,6 +36,7 @@ RUN apt-get update && \
         mesa-utils \
         libgl1-mesa-dri \
         x11vnc \
+        dbus-x11 \
         \
         meld \
         firefox \
@@ -42,7 +46,8 @@ RUN apt-get update && \
     
 # Install websokify and noVNC
 RUN pip install -U \
-        pip && \
+        pip \
+        setuptools && \
     pip install -U https://github.com/novnc/websockify/archive/master.tar.gz && \
     mkdir /usr/local/noVNC && \
     curl -s -L https://github.com/novnc/noVNC/archive/stable/v0.6.tar.gz | \
@@ -78,10 +83,10 @@ ADD conf/ $DOCKER_HOME/.config
 
 RUN sed -i "s/x11vnc/$DOCKER_USER/" $DOCKER_HOME/.config/pcmanfm/LXDE/desktop-items-0.conf && \
     touch $DOCKER_HOME/.sudo_as_admin_successful && \
-    echo "export NO_AT_BRIDGE=1" >> /home/$DOCKER_USER/.bashrc && \
     mkdir $DOCKER_HOME/shared && \
-    mkdir $DOCKER_HOME/.vnc && \
-    mkdir $DOCKER_HOME/.log && touch $DOCKER_HOME/.log/vnc.log && \
+    mkdir -p $DOCKER_HOME/.vnc && \
+    mkdir -p $DOCKER_HOME/.log && \
+    echo "export NO_AT_BRIDGE=1" >> /home/$DOCKER_USER/.bashrc && \
     chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME
 
 WORKDIR $DOCKER_HOME

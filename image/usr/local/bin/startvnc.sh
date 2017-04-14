@@ -21,6 +21,8 @@ export SHELL=/bin/bash
 export USER=$DOCKER_USER
 export LOGFILE=$DOCKER_USER
 
+eval `ssh-agent`
+
 /usr/bin/lxsession -s LXDE -e LXDE > $DOCKER_HOME/.log/lxsession.log 2>&1 &
 
 # startup x11vnc with a new password
