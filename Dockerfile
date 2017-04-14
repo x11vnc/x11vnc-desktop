@@ -60,6 +60,10 @@ RUN pip install -U \
 
 ADD image /
 
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
 # Change the default timezone to America/New_York
 # Disable forward logging (https://github.com/phusion/baseimage-docker/issues/186)
 # Run ldconfig so that /usr/local/lib etc. are in the default 
