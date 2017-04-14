@@ -7,7 +7,7 @@
 # Authors:
 # Xiangmin Jiao <xmjiao@gmail.com>
 
-FROM phusion/baseimage:0.9.20
+FROM phusion/baseimage:0.9.21
 LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
 WORKDIR /tmp
@@ -36,6 +36,7 @@ RUN apt-get update && \
         mesa-utils \
         libgl1-mesa-dri \
         x11vnc \
+        dbus-x11 \
         \
         meld \
         firefox \
@@ -84,8 +85,8 @@ ADD conf/ $DOCKER_HOME/.config
 RUN sed -i "s/x11vnc/$DOCKER_USER/" $DOCKER_HOME/.config/pcmanfm/LXDE/desktop-items-0.conf && \
     touch $DOCKER_HOME/.sudo_as_admin_successful && \
     mkdir $DOCKER_HOME/shared && \
-    mkdir $DOCKER_HOME/.vnc && \
-    mkdir $DOCKER_HOME/.log && touch $DOCKER_HOME/.log/vnc.log && \
+    mkdir -p $DOCKER_HOME/.vnc && \
+    mkdir -p $DOCKER_HOME/.log && \
     echo "export NO_AT_BRIDGE=1" >> /home/$DOCKER_USER/.bashrc && \
     chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME
 
