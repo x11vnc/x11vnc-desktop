@@ -21,7 +21,7 @@ export SHELL=/bin/bash
 export USER=$DOCKER_USER
 export LOGFILE=$DOCKER_USER
 
-eval `ssh-agent`
+eval `ssh-agent` > /dev/null
 
 /usr/bin/lxsession -s LXDE -e LXDE > $DOCKER_HOME/.log/lxsession.log 2>&1 &
 
