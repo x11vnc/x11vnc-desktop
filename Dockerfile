@@ -17,6 +17,7 @@ WORKDIR /tmp
 RUN apt-get update && \
     apt-get upgrade -y -o Dpkg::Options::="--force-confold" && \
     apt-get install -y --no-install-recommends \
+        man \
         sudo \
         net-tools \
         \
@@ -38,11 +39,9 @@ RUN apt-get update && \
         x11vnc \
         dbus-x11 \
         \
-        meld \
         firefox \
 	xpdf && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    sed -i 's/MOZ_APP_NAME "\$@"/MOZ_APP_NAME --no-remote "\$@"/' /usr/bin/firefox
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
     
 # Install websokify and noVNC
 RUN pip install -U \
