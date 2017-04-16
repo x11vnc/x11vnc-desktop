@@ -88,7 +88,7 @@ RUN sed -i "s/x11vnc/$DOCKER_USER/" $DOCKER_HOME/.config/pcmanfm/LXDE/desktop-it
     touch $DOCKER_HOME/.sudo_as_admin_successful && \
     mkdir $DOCKER_HOME/shared && \
     mkdir -p $DOCKER_HOME/.vnc && \
-    mkdir -p $DOCKER_HOME/.log && \
+    mkdir -p $DOCKER_HOME/.log && touch $DOCKER_HOME/.log/vnc.log && \
     echo "export NO_AT_BRIDGE=1" >> /home/$DOCKER_USER/.bashrc && \
     chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME
 
