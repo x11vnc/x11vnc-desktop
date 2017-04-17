@@ -10,7 +10,7 @@ This is a Docker image for Ubuntu with X11 and VNC. It is similar to
  - Auto-starts in full-size resolution and auto-launches web-browser
  - Automatically shares the current work directory from host to Docker image
 
-[![Build Status](https://travis-ci.org/x11vnc/docker-ubuntu-x11vnc.svg?branch=master)](https://travis-ci.org/x11vnc/docker-ubuntu-x11vnc)    [![Docker Image](https://images.microbadger.com/badges/image/x11vnc/ubuntu.svg)](https://microbadger.com/images/x11vnc/ubuntu)
+[![Build Status](https://travis-ci.org/x11vnc/docker-ubuntu-x11vnc.svg?branch=16.04)](https://travis-ci.org/x11vnc/docker-ubuntu-x11vnc)    [![Docker Image](https://images.microbadger.com/badges/image/x11vnc/ubuntu:16.04.svg)](https://microbadger.com/images/x11vnc/ubuntu:16.04)
 
 <img src="https://raw.github.com/x11vnc/docker-ubuntu-x11vnc/master/screenshots/screenshot.png" width=400/>
 
@@ -51,7 +51,8 @@ docker build --rm -t x11vnc/ubuntu docker-ubuntu-x11vnc
 and then use the `docker-desktop` command.
 
 ## Known Issues
-These is no known issues with the master branch with Ubuntu 14.04.
+
+For Ubuntu 16.04, you will get a pop-up window showing "No session for pid xxxxx" when `lxsession` starts. This is a widely reported issue of LXDE in Ubuntu 16.04. You can just click "OK" to dismiss the message and the system would run without any further issue.
 
 ## License
 
