@@ -20,6 +20,7 @@ RUN apt-get update && \
         man \
         sudo \
         net-tools \
+        xdotool \
         \
         openssh-server \
         python-pip \
