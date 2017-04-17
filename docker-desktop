@@ -183,7 +183,7 @@ if __name__ == "__main__":
             print("Press Ctrl-C to stop the server.")
             while True:
                 time.sleep(3600)
-        except CalledProcessError:
+        except subprocess.CalledProcessError:
             time.sleep(1)
             continue
         except KeyboardInterrupt:
