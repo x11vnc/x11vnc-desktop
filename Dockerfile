@@ -24,6 +24,7 @@ RUN apt-get update && \
         \
         openssh-server \
         g++ \
+        python \
         \
         xserver-xorg-video-dummy \
         lxde \
@@ -44,7 +45,7 @@ RUN apt-get update && \
     
 # Install websokify and noVNC
 RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
-    python get-pip.py && \
+    python2 get-pip.py && \
     pip2 install --no-cache-dir setuptools && \
     pip2 install -U https://github.com/novnc/websockify/archive/master.tar.gz && \
     mkdir /usr/local/noVNC && \
