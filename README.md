@@ -10,7 +10,7 @@ This is a Docker image for Ubuntu with X11 and VNC. It is similar to
  - Auto-starts in full-size resolution and auto-launches web-browser
  - Automatically shares the current work directory from host to Docker image
 
-[![Build Status](https://travis-ci.org/x11vnc/docker-ubuntu-x11vnc.svg?branch=16.04)](https://travis-ci.org/x11vnc/docker-ubuntu-x11vnc)    [![Docker Image](https://images.microbadger.com/badges/image/x11vnc/ubuntu:16.04.svg)](https://microbadger.com/images/x11vnc/ubuntu:16.04)
+[![Build Status](https://travis-ci.org/x11vnc/docker-ubuntu-x11vnc.svg)](https://travis-ci.org/x11vnc/docker-ubuntu-x11vnc)    [![Docker Image](https://images.microbadger.com/badges/image/x11vnc/ubuntu.svg)](https://microbadger.com/images/x11vnc/ubuntu)
 
 <img src="https://raw.github.com/x11vnc/docker-ubuntu-x11vnc/master/screenshots/screenshot.png" width=400/>
 
@@ -29,10 +29,10 @@ python -c docker-desktop
 in a terminal on your local computer. It will download the latest
 Docker image, start X11 with the native screen resolution of your
 local computer, and then automatically open the X11 desktop in your
-default web browser. By default, the script launches Ubuntu 14.04. You
-can also choose to launch Ubuntu 16.04 using the command
+default web browser. By default, the script launches Ubuntu 16.04. You
+can also choose to launch Ubuntu 14.04 using the command
 ```
-python -c docker-desktop -i ubuntu:16.04
+python -c docker-desktop -i ubuntu:14.04
 ```
 
 To resize the desktop, start `lxterminal` within the desktop and run the `xrandr` command with the `-s <width>x<height>` option. For example, use the command
@@ -49,10 +49,6 @@ git clone https://github.com/x11vnc/docker-ubuntu-x11vnc.git
 docker build --rm -t x11vnc/ubuntu docker-ubuntu-x11vnc
 ```
 and then use the `docker-desktop` command.
-
-## Known Issues
-
-For Ubuntu 16.04, you will get a pop-up window showing "No session for pid xxxxx" when `lxsession` starts. This is a widely reported issue of LXDE in Ubuntu 16.04. You can just click "OK" to dismiss the message and the system would run without any further issue.
 
 ## License
 
