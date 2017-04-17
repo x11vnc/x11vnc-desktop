@@ -25,6 +25,8 @@ eval `ssh-agent` > /dev/null
 
 /usr/bin/lxsession -s LXDE -e LXDE > $DOCKER_HOME/.log/lxsession.log 2>&1 &
 
+(COUNTER=0; while [ -z "$(xdotool search --name Error)" -a $COUNTER -lt 100 ]; do sleep 0.1; let COUNTER=COUNTER+1; done && xdotool key space) &
+
 # startup x11vnc with a new password
 export VNCPASS=`openssl rand -base64 6 | sed 's/\//-/'`
 

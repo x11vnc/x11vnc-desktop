@@ -7,7 +7,7 @@
 # Authors:
 # Xiangmin Jiao <xmjiao@gmail.com>
 
-FROM phusion/baseimage:0.9.18
+FROM phusion/baseimage:0.9.21
 LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
 WORKDIR /tmp
@@ -20,6 +20,7 @@ RUN apt-get update && \
         man \
         sudo \
         net-tools \
+        xdotool \
         \
         openssh-server \
         python-pip \

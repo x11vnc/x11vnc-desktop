@@ -21,8 +21,8 @@ parser.add_argument('-u', "--user",
                     default="x11vnc")
 
 parser.add_argument('-i', '--image',
-                    help='The Docker image to use. The default is x11vnc/ubuntu.',
-                    default="x11vnc/ubuntu")
+                    help='The Docker image to use. The default is x11vnc/ubuntu:16.04.',
+                    default="x11vnc/ubuntu:16.04")
 
 parser.add_argument('-p', '--pull', 
                     help='Pull the latest Docker image. The default is not to pull.',
