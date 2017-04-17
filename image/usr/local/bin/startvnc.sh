@@ -25,6 +25,8 @@ eval `ssh-agent` > /dev/null
 
 /usr/bin/lxsession -s LXDE -e LXDE > $DOCKER_HOME/.log/lxsession.log 2>&1 &
 
+(COUNTER=0; while [ -z "$(xdotool search --name Error)" -a $COUNTER -lt 100 ]; do sleep 0.1; let COUNTER=COUNTER+1; done && xdotool key space) &
+
 # startup x11vnc with a new password
 export VNCPASS=`openssl rand -base64 6 | sed 's/\//-/'`
 
@@ -33,8 +35,6 @@ x11vnc -display :0 -xkb -forever -shared  -usepw >> $DOCKER_HOME/.log/x11vnc.log
 
 echo "Open your web browser with URL:"
 echo "    http://localhost:6080/vnc.html?autoconnect=1&autoscale=0&password=$VNCPASS"
-
-xdotool key space
 
 # startup novnc
 /usr/local/noVNC/utils/launch.sh --listen 6080 > $DOCKER_HOME/.log/novnc.log 2>&1
