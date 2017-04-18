@@ -11,4 +11,8 @@ fi
 
 # This makes sure that all directories in HOME are accessible by the user.
 # This helps avoiding issues wiht mounted volumes.
-find $HOME -maxdepth 1 -type d | sed "1d" | xargs chown $DOCKER_USER:$DOCKER_GROUP 2> /dev/null || true
+source /etc/container_environment.sh
+find $DOCKER_HOME -type d -maxdepth 1 | sed "1d" | xargs chown $DOCKER_USER:$DOCKER_GROUP 2> /dev/null || true
+
+# It is important for $HOME/.ssh to have correct ownership
+chown -R $DOCKER_USER $DOCKER_HOME/.ssh
