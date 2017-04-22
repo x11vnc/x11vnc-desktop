@@ -7,7 +7,7 @@
 # Authors:
 # Xiangmin Jiao <xmjiao@gmail.com>
 
-FROM phusion/baseimage:0.9.21
+FROM phusion/baseimage:0.9.20
 LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
 WORKDIR /tmp
@@ -42,7 +42,7 @@ RUN apt-get update && \
         firefox \
 	xpdf && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-    
+
 # Install websokify and noVNC
 RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
     python2 get-pip.py && \
@@ -65,13 +65,13 @@ ENV LC_ALL en_US.UTF-8
 
 # Change the default timezone to America/New_York
 # Disable forward logging (https://github.com/phusion/baseimage-docker/issues/186)
-# Run ldconfig so that /usr/local/lib etc. are in the default 
+# Run ldconfig so that /usr/local/lib etc. are in the default
 # search path for dynamic linker
 RUN echo "America/New_York" > /etc/timezone && \
     ln -s -f /usr/share/zoneinfo/America/New_York /etc/localtime && \
     touch /etc/service/syslog-forwarder/down && \
     ldconfig
-    
+
 # Set up user so that we do not run as root
 ENV DOCKER_USER=x11vnc
 ENV DOCKER_GROUP=$DOCKER_USER \
