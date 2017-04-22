@@ -7,7 +7,7 @@
 # Authors:
 # Xiangmin Jiao <xmjiao@gmail.com>
 
-FROM phusion/baseimage:0.9.20
+FROM x11vnc/baseimage:0.9.22
 LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
 WORKDIR /tmp
