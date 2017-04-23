@@ -325,6 +325,18 @@
     <script src="core/util.js"></script>
     <script src="app/webutil.js"></script>
     <script src="app/ui.js"></script>
+    <script>window.onbeforeunload = function (e) {
+            e = e || window.event;
+
+            // For IE and Firefox prior to version 4
+            if (e) {
+                e.returnValue = 'Sure?';
+            }
+
+            // For Safari
+            return 'Sure?';
+        };
+    </script>
     <!-- end scripts -->
 
  </body>
