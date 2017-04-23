@@ -7,6 +7,7 @@
 # Copyright Xiangmin Jiao 2017. All rights reserved.
 
 # Start up xdummy with the given size
+RESOLUT="${RESOLUT:-1440x900}"
 SIZE=`echo $RESOLUT | sed -e "s/x/ /"`
 grep -s -q $RESOLUT $DOCKER_HOME/.config/xorg.conf && \
 sed -i -e "s/Virtual 1440 900/Virtual $SIZE/" $DOCKER_HOME/.config/xorg.conf
