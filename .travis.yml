@@ -3,5 +3,5 @@ services:
 
 script:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_USERPASS"
-  - docker build --tag x11vnc/ubuntu . && docker push x11vnc/ubuntu
+  - docker build --tag x11vnc/ubuntu:novnc_latest . && docker push x11vnc/ubuntu:novnc_latest
   - docker images
