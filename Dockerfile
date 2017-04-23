@@ -19,6 +19,7 @@ RUN apt-get update && \
         sudo \
         net-tools \
         xdotool \
+        bsdtar \
         \
         openssh-server \
         g++ \
