@@ -19,7 +19,6 @@ RUN apt-get update && \
         sudo \
         net-tools \
         xdotool \
-        bsdtar \
         \
         openssh-server \
         g++ \
@@ -51,8 +50,8 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
         PyDrive && \
     pip2 install -U https://github.com/novnc/websockify/archive/master.tar.gz && \
     mkdir /usr/local/noVNC && \
-    curl -s -L https://github.com/x11vnc/noVNC/archive/master.zip | \
-         bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \
+    curl -s -L https://github.com/novnc/noVNC/archive/stable/v0.6.tar.gz | \
+         tar zx -C /usr/local/noVNC --strip-components 1 && \
     rm -rf /tmp/* /var/tmp/*
 
 ########################################################
