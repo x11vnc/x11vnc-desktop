@@ -52,7 +52,7 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
     pip2 install -U https://github.com/novnc/websockify/archive/master.tar.gz && \
     mkdir /usr/local/noVNC && \
     curl -s -L https://github.com/x11vnc/noVNC/archive/master.zip | \
-         bsdtar zx -C /usr/local/noVNC --strip-components 1 && \
+         bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \
     rm -rf /tmp/* /var/tmp/*
 
 ########################################################
