@@ -147,6 +147,7 @@ if __name__ == "__main__":
         os.mkdir(homedir + "/.ssh")
 
     volumes = ["-v", pwd + ":/home/" + user + "/shared",
+               "-v", "x11vnc_config:/home/" + user + "/.config",
                "-v", homedir + "/.ssh" + ":/home/" + user + "/.ssh"]
 
     print("Starting up docker image...")
