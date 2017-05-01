@@ -51,9 +51,8 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
         PyDrive && \
     pip2 install -U https://github.com/novnc/websockify/archive/master.tar.gz && \
     mkdir /usr/local/noVNC && \
-    curl -s -L https://github.com/x11vnc/noVNC/archive/master.zip | \
+    curl -s -L https://github.com/x11vnc/noVNC/archive/master.tar.gz | \
          bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \
-    chmod a+x /usr/local/noVNC/utils/launch.sh && \
     rm -rf /tmp/* /var/tmp/*
 
 ########################################################
