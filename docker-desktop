@@ -157,9 +157,9 @@ if __name__ == "__main__":
 
     if user:
         docker_home = "/home/" + user
-    else
-        docker_home = subprocess.check_output(["docker", "run", "--rm", image, 
-                                               "echo $DOCKER_HOME"])
+    else:
+        docker_home = subprocess.check_output(["docker", "run", "--rm", image,
+                                               "echo $DOCKER_HOME"]).decode('utf-8')[:-1]
 
     volumes = ["-v", pwd + ":" + docker_home + "/shared",
                "-v", "x11vnc_config:" + docker_home + "/.config",
