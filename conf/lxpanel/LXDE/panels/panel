@@ -50,6 +50,9 @@ Plugin {
             id=pcmanfm.desktop
         }
         Button {
+            id=lxde-x-terminal-emulator.desktop
+        }
+        Button {
             id=lxde-x-www-browser.desktop
         }
     }
