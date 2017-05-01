@@ -24,6 +24,12 @@ parser.add_argument('-i', '--image',
                     help='The Docker image to use. The default is x11vnc/ubuntu.',
                     default="x11vnc/ubuntu")
 
+parser.add_argument('-t', '--tag',
+                    help='Tag of the image. The default is latest. If the image already has a tag, its tag prevails.',
+                    default="latest")
+
+
+
 parser.add_argument('-p', '--pull',
                     help='Pull the latest Docker image. The default is not to pull.',
                     dest='pull', action='store_true')
@@ -34,6 +40,10 @@ args = parser.parse_args()
 image = args.image
 user = args.user
 pull = args.pull
+
+# Append tag to image if the image has no tag
+if image.find(':') < 0:
+    image += ':' + args.tag
 
 
 def random_ports(port, n):
