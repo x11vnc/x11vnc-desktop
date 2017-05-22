@@ -17,7 +17,7 @@ Global {
     fontcolor=#ffffff
     background=1
     backgroundfile=/usr/share/lxpanel/images/background.png
-    autohide=1
+    autohide=0
 }
 
 Plugin {
