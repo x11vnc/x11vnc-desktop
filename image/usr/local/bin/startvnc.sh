@@ -18,7 +18,7 @@ sleep 0.1
 # startup lxsession with proper environment variables
 export DISPLAY=:0.0
 export HOME=$DOCKER_HOME
-export SHELL=/bin/bash
+export SHELL=/usr/bin/zsh
 export USER=$DOCKER_USER
 export LOGFILE=$DOCKER_USER
 
