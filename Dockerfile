@@ -87,8 +87,7 @@ RUN useradd -m -s $DOCKER_SHELL -G sudo,docker_env $DOCKER_USER && \
 ADD image /
 ADD conf/ $DOCKER_HOME/.config
 
-RUN sed -i "s/x11vnc/$DOCKER_USER/" $DOCKER_HOME/.config/pcmanfm/LXDE/desktop-items-0.conf && \
-    touch $DOCKER_HOME/.sudo_as_admin_successful && \
+RUN touch $DOCKER_HOME/.sudo_as_admin_successful && \
     mkdir -p $DOCKER_HOME/shared && \
     mkdir -p $DOCKER_HOME/.vnc && \
     mkdir -p $DOCKER_HOME/.ssh && \
