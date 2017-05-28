@@ -3,5 +3,8 @@ services:
 
 script:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_USERPASS"
-  - docker build --tag x11vnc/ubuntu:16.04 --tag x11vnc/ubuntu:latest . && docker push x11vnc/ubuntu
+  - '[[ "$TRAVIS_EVENT_TYPE" != "cron" &&
+        -z "$(git diff --name-only HEAD~ | grep -e Dockerfile -e .travis.yml -e image -e conf)" ]] ||
+     (docker build --tag x11vnc/ubuntu:16.04 --tag x11vnc/ubuntu:latest . &&
+      docker push x11vnc/ubuntu)'
   - docker images
