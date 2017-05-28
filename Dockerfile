@@ -81,7 +81,7 @@ ENV DOCKER_GROUP=$DOCKER_USER \
     DOCKER_HOME=/home/$DOCKER_USER \
     HOME=/home/$DOCKER_USER
 
-RUN useradd -m -s /bin/zsh -G sudo,docker_env $DOCKER_USER && \
+RUN useradd -m -s /usr/bin/zsh -G sudo,docker_env $DOCKER_USER && \
     echo "$DOCKER_USER:docker" | chpasswd && \
     echo "$DOCKER_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
