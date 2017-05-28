@@ -60,32 +60,31 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
 # Customization for user and location
 ########################################################
 
-ADD image /
+# Set up user so that we do not run as root
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
 
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
+ENV DOCKER_USER=x11vnc \
+    DOCKER_SHELL=/usr/bin/zsh
+
+ENV DOCKER_GROUP=$DOCKER_USER \
+    DOCKER_HOME=/home/$DOCKER_USER \
+    HOME=/home/$DOCKER_USER
 
 # Change the default timezone to America/New_York
 # Disable forward logging (https://github.com/phusion/baseimage-docker/issues/186)
 # Run ldconfig so that /usr/local/lib etc. are in the default
 # search path for dynamic linker
-RUN echo "America/New_York" > /etc/timezone && \
+RUN useradd -m -s $DOCKER_SHELL -G sudo,docker_env $DOCKER_USER && \
+    echo "$DOCKER_USER:docker" | chpasswd && \
+    echo "$DOCKER_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
+    echo "America/New_York" > /etc/timezone && \
     ln -s -f /usr/share/zoneinfo/America/New_York /etc/localtime && \
     touch /etc/service/syslog-forwarder/down && \
     ldconfig
 
-# Set up user so that we do not run as root
-ENV DOCKER_USER=x11vnc
-ENV DOCKER_SHELL=/usr/bin/zsh
-ENV DOCKER_GROUP=$DOCKER_USER \
-    DOCKER_HOME=/home/$DOCKER_USER \
-    HOME=/home/$DOCKER_USER
-
-RUN useradd -m -s $DOCKER_SHELL -G sudo,docker_env $DOCKER_USER && \
-    echo "$DOCKER_USER:docker" | chpasswd && \
-    echo "$DOCKER_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-
+ADD image /
 ADD conf/ $DOCKER_HOME/.config
 
 RUN sed -i "s/x11vnc/$DOCKER_USER/" $DOCKER_HOME/.config/pcmanfm/LXDE/desktop-items-0.conf && \
