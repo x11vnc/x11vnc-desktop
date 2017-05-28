@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-#pylint: disable=invalid-name
 
 """
 Launch a Docker image with Ubuntu and LXDE window manager, and
@@ -19,11 +18,13 @@ import time
 parser = argparse.ArgumentParser(description=__doc__)
 
 parser.add_argument('-u', "--user",
-                    help='username used by the image. The default is to retrieve from image.',
+                    help='username used by the image. ' +
+                    ' The default is to retrieve from image.',
                     default="")
 
 parser.add_argument('-i', '--image',
-                    help='The Docker image to use. The default is x11vnc/ubuntu.',
+                    help='The Docker image to use. ' +
+                    'The default is x11vnc/ubuntu.',
                     default="x11vnc/ubuntu")
 
 parser.add_argument('-t', '--tag',
@@ -33,7 +34,8 @@ parser.add_argument('-t', '--tag',
 
 
 parser.add_argument('-p', '--pull',
-                    help='Pull the latest Docker image. The default is not to pull.',
+                    help='Pull the latest Docker image. ' +
+                    ' The default is not to pull.',
                     dest='pull', action='store_true')
 
 parser.set_defaults(pull=False)
@@ -161,7 +163,8 @@ if __name__ == "__main__":
 
         # Delete dangling image
         if img and subprocess.check_output(['docker', 'images', '-f',
-                                            'dangling=true', '-q']).find(img) >= 0:
+                                            'dangling=true',
+                                            '-q']).find(img) >= 0:
             subprocess.Popen(["docker", "rmi", "-f", img.decode('utf-8')[:-1]])
 
     # Generate a container ID and find an unused port
@@ -176,7 +179,8 @@ if __name__ == "__main__":
         docker_home = "/home/" + user
     else:
         docker_home = subprocess.check_output(["docker", "run", "--rm", image,
-                                               "echo $DOCKER_HOME"]).decode('utf-8')[:-1]
+                                               "echo $DOCKER_HOME"]). \
+            decode('utf-8')[:-1]
 
     volumes = ["-v", pwd + ":" + docker_home + "/shared",
                "-v", "x11vnc_config:" + docker_home + "/.config",
@@ -200,12 +204,15 @@ if __name__ == "__main__":
             if wait_for_url:
                 # Wait until the file is not empty
                 while not subprocess.check_output(["docker", "exec", container,
-                                                   "cat", docker_home + "/.log/vnc.log"]):
+                                                   "cat", docker_home +
+                                                   "/.log/vnc.log"]):
                     time.sleep(1)
 
                 p = subprocess.Popen(["docker", "exec", container,
-                                      "tail", "-F", docker_home + "/.log/vnc.log"],
-                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                      "tail", "-F",
+                                      docker_home + "/.log/vnc.log"],
+                                     stdout=subprocess.PIPE,
+                                     stderr=subprocess.PIPE,
                                      universal_newlines=True)
 
                 # Monitor the stdout to extract the URL
@@ -214,7 +221,8 @@ if __name__ == "__main__":
 
                     if ind >= 0:
                         # Open browser if found URL
-                        url = stdout_line.replace(":6080/", ':' + port_vnc + "/")
+                        url = stdout_line.replace(":6080/",
+                                                  ':' + port_vnc + "/")
                         sys.stdout.write(url)
 
                         wait_net_service(int(port_vnc))
@@ -234,7 +242,9 @@ if __name__ == "__main__":
         except subprocess.CalledProcessError:
             try:
                 # If Docker process no long exists, exit
-                if not subprocess.check_output(['docker', 'ps', '-q', '-f' 'name=' + container]):
+                if not subprocess.check_output(['docker', 'ps',
+                                                '-q', '-f',
+                                                'name=' + container]):
                     print('Docker container is no longer running')
                     sys.exit(-1)
                 time.sleep(1)

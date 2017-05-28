@@ -77,11 +77,12 @@ RUN echo "America/New_York" > /etc/timezone && \
 
 # Set up user so that we do not run as root
 ENV DOCKER_USER=x11vnc
+ENV DOCKER_SHELL=/usr/bin/zsh
 ENV DOCKER_GROUP=$DOCKER_USER \
     DOCKER_HOME=/home/$DOCKER_USER \
     HOME=/home/$DOCKER_USER
 
-RUN useradd -m -s /usr/bin/zsh -G sudo,docker_env $DOCKER_USER && \
+RUN useradd -m -s $DOCKER_SHELL -G sudo,docker_env $DOCKER_USER && \
     echo "$DOCKER_USER:docker" | chpasswd && \
     echo "$DOCKER_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
@@ -101,4 +102,4 @@ WORKDIR $DOCKER_HOME
 
 USER root
 ENTRYPOINT ["/sbin/my_init","--quiet","--","/sbin/setuser","x11vnc","/bin/bash","-l","-c"]
-CMD ["/bin/zsh","-i"]
+CMD ["$DOCKER_SHELL","-l","-i"]
