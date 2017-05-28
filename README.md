@@ -10,7 +10,8 @@ This is a Docker image for Ubuntu with X11 and VNC. It is similar to
  - Auto-starts in full-size resolution and auto-launches web-browser
  - Automatically shares the current work directory from host to Docker image
 
-[![Build Status](https://travis-ci.org/x11vnc/docker-ubuntu-x11vnc.svg)](https://travis-ci.org/x11vnc/docker-ubuntu-x11vnc)    [![Docker Image](https://images.microbadger.com/badges/image/x11vnc/ubuntu.svg)](https://microbadger.com/images/x11vnc/ubuntu)
+[![Build Status](https://travis-ci.org/x11vnc/ubuntu-docker.svg?branch=master)](https://travis-ci.org/x11vnc/ubuntu-docker)
+[![Docker Image](https://images.microbadger.com/badges/image/x11vnc/ubuntu.svg)](https://microbadger.com/images/x11vnc/ubuntu)
 
 <img src="https://raw.github.com/x11vnc/docker-ubuntu-x11vnc/master/screenshots/screenshot.png" width=400/>
 
