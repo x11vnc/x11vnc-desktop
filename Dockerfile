@@ -20,6 +20,7 @@ RUN apt-get update && \
         bsdtar \
         net-tools \
         xdotool \
+        zsh \
         \
         openssh-server \
         g++ \
@@ -80,7 +81,7 @@ ENV DOCKER_GROUP=$DOCKER_USER \
     DOCKER_HOME=/home/$DOCKER_USER \
     HOME=/home/$DOCKER_USER
 
-RUN useradd -m -s /bin/bash -G sudo,docker_env $DOCKER_USER && \
+RUN useradd -m -s /bin/zsh -G sudo,docker_env $DOCKER_USER && \
     echo "$DOCKER_USER:docker" | chpasswd && \
     echo "$DOCKER_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
@@ -92,11 +93,12 @@ RUN sed -i "s/x11vnc/$DOCKER_USER/" $DOCKER_HOME/.config/pcmanfm/LXDE/desktop-it
     mkdir -p $DOCKER_HOME/.vnc && \
     mkdir -p $DOCKER_HOME/.ssh && \
     mkdir -p $DOCKER_HOME/.log && touch $DOCKER_HOME/.log/vnc.log && \
-    echo "export NO_AT_BRIDGE=1" >> /home/$DOCKER_USER/.bashrc && \
+    ln -s -f .config/zsh/zshrc /home/$DOCKER_USER/.zshrc && \
+    ln -s -f .config/zsh/zprofile /home/$DOCKER_USER/.zprofile && \
     chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME
 
 WORKDIR $DOCKER_HOME
 
 USER root
 ENTRYPOINT ["/sbin/my_init","--quiet","--","/sbin/setuser","x11vnc","/bin/bash","-l","-c"]
-CMD ["/bin/bash","-i"]
+CMD ["/bin/zsh","-i"]
