@@ -20,9 +20,8 @@ This is a Docker image for Ubuntu with X11 and VNC. It is similar to
 ### Using Prebuilt Images
 
 To use the images, make sure you have Docker and Python (either 2 or
-3) installed.  Download the Python script `docker_desktop.py` in this
-repository and then run the script as
-
+3) installed.  Download the Python script [`docker_desktop.py`](https://raw.githubusercontent.com/x11vnc/ubuntu-docker/master/docker_desktop.py) and
+save it into a working directory and then run the command
 ```
 python docker_desktop.py -p
 ```
