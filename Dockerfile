@@ -47,9 +47,7 @@ RUN apt-get update && \
 RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
     python2 get-pip.py && \
     pip2 install --no-cache-dir \
-        setuptools \
-        requests \
-        PyDrive && \
+        setuptools && \
     pip2 install -U https://github.com/novnc/websockify/archive/master.tar.gz && \
     mkdir /usr/local/noVNC && \
     curl -s -L https://github.com/x11vnc/noVNC/archive/master.tar.gz | \
