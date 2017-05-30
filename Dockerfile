@@ -39,7 +39,7 @@ RUN apt-get update && \
         x11vnc \
         dbus-x11 \
         \
-        midori \
+        firefox \
         xpdf && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
