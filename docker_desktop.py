@@ -29,8 +29,8 @@ def parse_args(description):
 
     parser.add_argument('-i', '--image',
                         help='The Docker image to use. ' +
-                        'The default is x11vnc/desktop.',
-                        default="x11vnc/desktop")
+                        'The default is x11vnc/ubuntu.',
+                        default="x11vnc/ubuntu")
 
     parser.add_argument('-t', '--tag',
                         help='Tag of the image. The default is latest. ' +
