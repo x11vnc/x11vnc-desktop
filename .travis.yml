@@ -27,5 +27,5 @@ script:
       docker push x11vnc/ubuntu &&
       touch success)'
   # Test scripts
-  - ./docker_desktop.py -d -n -t latest && docker stop $(docker ps -q)
+  - ./ubuntu_desktop.py -d -n -t latest && docker stop $(docker ps -q)
   - docker images

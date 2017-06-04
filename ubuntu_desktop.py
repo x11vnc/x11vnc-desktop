@@ -13,6 +13,8 @@ import sys
 import subprocess
 import time
 
+GROUP = "x11vnc"
+
 
 def parse_args(description):
     "Parse command-line arguments"
@@ -29,8 +31,8 @@ def parse_args(description):
 
     parser.add_argument('-i', '--image',
                         help='The Docker image to use. ' +
-                        'The default is x11vnc/ubuntu.',
-                        default="x11vnc/ubuntu")
+                        'The default is ' + GROUP + '/ubuntu.',
+                        default=GROUP+"/ubuntu")
 
     parser.add_argument('-t', '--tag',
                         help='Tag of the image. The default is latest. ' +
@@ -229,10 +231,10 @@ if __name__ == "__main__":
 
     if args.reset:
         subprocess.check_output(["docker", "volume", "rm", "-f",
-                                 "x11vnc_config"])
+                                 GROUP+"_config"])
 
     volumes = ["-v", pwd + ":" + docker_home + "/shared",
-               "-v", "x11vnc_config:" + docker_home + "/.config",
+               "-v", GROUP+"_config:" + docker_home + "/.config",
                "-v", homedir + "/.ssh" + ":" + docker_home + "/.ssh",
                "-v", homedir + "/.gitconfig" +
                ":" + docker_home + "/.gitconfig"]
@@ -254,7 +256,7 @@ if __name__ == "__main__":
     else:
         size = args.size
 
-    envs = ["--hostname", "x11vnc-desktop",
+    envs = ["--hostname", GROUP+"-desktop",
             "--env", "RESOLUT=" + size,
             "--env", "HOST_UID=" + uid]
 
