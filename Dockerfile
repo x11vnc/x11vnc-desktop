@@ -63,7 +63,7 @@ ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8
 
-ENV DOCKER_USER=x11vnc \
+ENV DOCKER_USER=ubuntu \
     DOCKER_SHELL=/usr/bin/zsh
 
 ENV DOCKER_GROUP=$DOCKER_USER \
@@ -97,5 +97,5 @@ RUN touch $DOCKER_HOME/.sudo_as_admin_successful && \
 WORKDIR $DOCKER_HOME
 
 USER root
-ENTRYPOINT ["/sbin/my_init","--quiet","--","/sbin/setuser","x11vnc","/bin/bash","-l","-c"]
+ENTRYPOINT ["/sbin/my_init","--quiet","--","/sbin/setuser","ubuntu","/bin/bash","-l","-c"]
 CMD ["$DOCKER_SHELL","-l","-i"]
