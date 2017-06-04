@@ -32,7 +32,7 @@ local computer, and then automatically open the X11 desktop in your
 default web browser. By default, the script launches Ubuntu 16.04. You
 can also choose to launch Ubuntu 14.04 using the command
 ```
-python docker_desktop.py -i ubuntu:14.04
+python docker_desktop.py -t 14.04
 ```
 
 To resize the desktop, start `lxterminal` within the desktop and run the `xrandr` command with the `-s <width>x<height>` option. For example, use the command
