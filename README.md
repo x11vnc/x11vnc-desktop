@@ -10,17 +10,17 @@ This is a Docker image for Ubuntu with X11 and VNC. It is similar to
  - Auto-starts in full-size resolution and auto-launches web-browser
  - Automatically shares the current work directory from host to Docker image
 
-[![Build Status](https://travis-ci.org/x11vnc/ubuntu-docker.svg?branch=master)](https://travis-ci.org/x11vnc/ubuntu-docker)
-[![Docker Image](https://images.microbadger.com/badges/image/x11vnc/ubuntu.svg)](https://microbadger.com/images/x11vnc/ubuntu)
+[![Build Status](https://travis-ci.org/x11vnc/docker-desktop.svg?branch=master)](https://travis-ci.org/x11vnc/docker-desktop)
+[![Docker Image](https://images.microbadger.com/badges/image/x11vnc/desktop.svg)](https://microbadger.com/images/x11vnc/desktop)
 
-![screenshot](https://raw.github.com/x11vnc/docker-ubuntu-x11vnc/master/screenshots/screenshot.png)
+![screenshot](https://raw.github.com/x11vnc/docker-desktop/master/screenshots/screenshot.png)
 
 ## Usage
 
 ### Using Prebuilt Images
 
 To use the images, make sure you have Docker and Python (either 2 or
-3) installed.  Download the Python script [`ubuntu_desktop.py`](https://raw.githubusercontent.com/x11vnc/ubuntu-docker/master/ubuntu_desktop.py) and
+3) installed.  Download the Python script [`ubuntu_desktop.py`](https://raw.githubusercontent.com/x11vnc/docker-desktop/master/ubuntu_desktop.py) and
 save it into a working directory and then run the command
 ```
 python ubuntu_desktop.py -p
@@ -45,8 +45,8 @@ to change the desktop size to 1920x1080.
 
 To build your own image, run the following commands:
 ```
-git clone https://github.com/x11vnc/ubuntu-docker.git
-docker build --rm -t x11vnc/ubuntu ubuntu-docker
+git clone https://github.com/x11vnc/docker-desktop.git
+docker build --rm -t x11vnc/desktop docker-desktop
 ```
 and then use the `ubuntu_desktop.py` command.
 
