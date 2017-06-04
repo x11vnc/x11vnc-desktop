@@ -31,8 +31,8 @@ def parse_args(description):
 
     parser.add_argument('-i', '--image',
                         help='The Docker image to use. ' +
-                        'The default is ' + GROUP + '/ubuntu.',
-                        default=GROUP+"/ubuntu")
+                        'The default is ' + GROUP + '/desktop.',
+                        default=GROUP+"/desktop")
 
     parser.add_argument('-t', '--tag',
                         help='Tag of the image. The default is latest. ' +
