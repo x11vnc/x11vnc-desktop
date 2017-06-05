@@ -92,7 +92,7 @@ def id_generator(size=6):
     import random
     import string
 
-    chars = string.ascii_uppercase + string.digits
+    chars = string.ascii_lowercase
     return APP + "-" + (''.join(random.choice(chars) for _ in range(size)))
 
 
