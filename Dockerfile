@@ -41,6 +41,7 @@ RUN apt-get update && \
         \
         firefox \
         xpdf && \
+    ln -s -f /usr/bin/lxterminal /usr/bin/xterm && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install websokify and noVNC
