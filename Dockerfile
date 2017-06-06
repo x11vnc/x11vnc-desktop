@@ -21,6 +21,7 @@ RUN apt-get update && \
         net-tools \
         xdotool \
         zsh \
+        git \
         \
         openssh-server \
         g++ \
