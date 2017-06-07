@@ -12,10 +12,7 @@ LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
 WORKDIR /tmp
 
-# Set up user so that we do not run as root
-ENV LANG=en_US.UTF-8 \
-    LANGUAGE=en_US:en \
-    LC_ALL=en_US.UTF-8
+ARG DEBIAN_FRONTEND=noninteractive
 
 # Install some required system tools and packages for X Windows
 RUN apt-get update && \
@@ -64,6 +61,11 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
 ########################################################
 # Customization for user and location
 ########################################################
+# Set up user so that we do not run as root
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
+
 ENV DOCKER_USER=ubuntu \
     DOCKER_SHELL=/usr/bin/zsh
 
