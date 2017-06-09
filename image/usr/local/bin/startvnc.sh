@@ -35,7 +35,7 @@ x11vnc -storepasswd $VNCPASS ~/.vnc/passwd > $DOCKER_HOME/.log/x11vnc.log 2>&1
 x11vnc -display :0 -xkb -forever -shared  -usepw >> $DOCKER_HOME/.log/x11vnc.log 2>&1 &
 
 echo "Open your web browser with URL:"
-echo "    http://localhost:6080/vnc.html?autoconnect=1&autoscale=0&password=$VNCPASS"
+echo "    http://localhost:6080/vnc.html?autoconnect=1&password=$VNCPASS"
 
 # startup novnc
 /usr/local/noVNC/utils/launch.sh --listen 6080 > $DOCKER_HOME/.log/novnc.log 2>&1
