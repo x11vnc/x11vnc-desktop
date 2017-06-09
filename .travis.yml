@@ -22,7 +22,7 @@ script:
   # Build only if the commit range of a push contains Dockerfile or .travis.yml
   - '[[ "$TRAVIS_EVENT_TYPE" == "push" && -n "$TRAVIS_COMMIT_RANGE" &&
         -z "$(git diff --name-only $TRAVIS_COMMIT_RANGE |
-            grep -e Dockerfile -e .travis.yml)" ]] || [[ "$XVFB" != "1" ]] ||
+            grep -e Dockerfile -e .travis.yml -e image -e conf)" ]] || [[ "$XVFB" != "1" ]] ||
      (docker build --tag x11vnc/desktop:16.04 --tag x11vnc/desktop:latest . &&
       docker push x11vnc/desktop &&
       touch success)'
