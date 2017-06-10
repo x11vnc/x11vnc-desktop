@@ -42,7 +42,7 @@ RUN apt-get update && \
         x11vnc \
         dbus-x11 \
         \
-        firefox \
+        midori \
         xpdf && \
     ln -s -f /usr/bin/lxterminal /usr/bin/xterm && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
