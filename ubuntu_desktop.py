@@ -224,20 +224,23 @@ if __name__ == "__main__":
             decode('utf-8')[:-1]
         user = docker_home[6:]
 
-    # Create .gitconfig if not exist
-    if not os.path.isfile(homedir + "/.gitconfig"):
-        with open(homedir + "/.gitconfig") as f:
-            pass
-
     if args.reset:
         subprocess.check_output(["docker", "volume", "rm", "-f",
                                  APP+"_config"])
 
     volumes = ["-v", pwd + ":" + docker_home + "/shared",
                "-v", APP+"_config:" + docker_home + "/.config",
-               "-v", homedir + "/.ssh" + ":" + docker_home + "/.ssh",
-               "-v", homedir + "/.gitconfig" +
-               ":" + docker_home + "/.gitconfig"]
+               "-v", homedir + "/.ssh" + ":" + docker_home + "/.ssh"]
+
+    # Copy .gitconfig if exists on host but not in image
+    if os.path.isfile(homedir + "/.gitconfig"):
+        subprocess.check_output(["docker", "run", "--rm"] + volumes +
+                                ["-v", homedir + "/.gitconfig" +
+                                 ":" + docker_home + "/.gitconfig",
+                                 args.image,
+                                 "[[ -f $DOCKER_HOME/.config/git/config ]] || " +
+                                 "cp $DOCKER_HOME/.gitconfig " +
+                                 "$DOCKER_HOME/.config/git/config"])
 
     print("Starting up docker image...")
     if subprocess.check_output(["docker", "--version"]). \

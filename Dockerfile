@@ -95,6 +95,7 @@ RUN touch $DOCKER_HOME/.sudo_as_admin_successful && \
     mkdir -p $DOCKER_HOME/.log && touch $DOCKER_HOME/.log/vnc.log && \
     ln -s -f .config/zsh/zshrc /home/$DOCKER_USER/.zshrc && \
     ln -s -f .config/zsh/zprofile /home/$DOCKER_USER/.zprofile && \
+    ln -s -f .config/git/config /home/$DOCKER_USER/.gitconfig && \
     chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME
 
 WORKDIR $DOCKER_HOME
