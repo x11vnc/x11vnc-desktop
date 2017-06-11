@@ -226,20 +226,21 @@ if __name__ == "__main__":
 
     if args.reset:
         subprocess.check_output(["docker", "volume", "rm", "-f",
-                                 APP+"_config"])
+                                 APP + "_config"])
 
     volumes = ["-v", pwd + ":" + docker_home + "/shared",
-               "-v", APP+"_config:" + docker_home + "/.config",
+               "-v", APP + "_config:" + docker_home + "/.config",
                "-v", homedir + "/.ssh" + ":" + docker_home + "/.ssh"]
 
-    # Copy .gitconfig if exists on host but not in image
+    # Copy .gitconfig if exists on host and is newer than that in image
     if os.path.isfile(homedir + "/.gitconfig"):
-        subprocess.check_output(["docker", "run", "--rm"] + volumes +
+        subprocess.check_output(["docker", "run", "--rm", '-t'] + volumes +
                                 ["-v", homedir + "/.gitconfig" +
-                                 ":" + docker_home + "/.gitconfig",
+                                 ":" + docker_home + "/.gitconfig_host",
                                  args.image,
-                                 "[[ -f $DOCKER_HOME/.config/git/config ]] || " +
-                                 "cp $DOCKER_HOME/.gitconfig " +
+                                 "[[ $DOCKER_HOME/.config/git/config -nt " +
+                                 "$DOCKER_HOME/.gitconfig_host ]] || " +
+                                 "cp $DOCKER_HOME/.gitconfig_host " +
                                  "$DOCKER_HOME/.config/git/config"])
 
     print("Starting up docker image...")
