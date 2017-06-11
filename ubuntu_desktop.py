@@ -236,12 +236,12 @@ if __name__ == "__main__":
     if os.path.isfile(homedir + "/.gitconfig"):
         subprocess.check_output(["docker", "run", "--rm", '-t'] + volumes +
                                 ["-v", homedir + "/.gitconfig" +
-                                 ":" + docker_home + "/.gitconfig",
+                                 ":" + docker_home + "/.gitconfig_host",
                                  args.image,
-                                 "[[ " + docker_home + "/.config/git/config -nt " +
-                                 docker_home + "/.gitconfig ]] || " +
-                                 "cp " + docker_home + "/.gitconfig " +
-                                 docker_home + "/.config/git/config"])
+                                 "[[ $DOCKER_HOME/.config/git/config -nt " +
+                                 "$DOCKER_HOME/.gitconfig_host ]] || " +
+                                 "cp $DOCKER_HOME/.gitconfig_host " +
+                                 "$DOCKER_HOME/.config/git/config"])
 
     print("Starting up docker image...")
     if subprocess.check_output(["docker", "--version"]). \
