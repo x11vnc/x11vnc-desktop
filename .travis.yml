@@ -19,13 +19,10 @@ before_script:
 script:
   - docker --version
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_USERPASS"
-  # Build only if the commit range of a push contains Dockerfile or .travis.yml
-  - '[[ "$TRAVIS_EVENT_TYPE" == "push" && -n "$TRAVIS_COMMIT_RANGE" &&
-        -z "$(git diff --name-only $TRAVIS_COMMIT_RANGE |
-            grep -e Dockerfile -e .travis.yml -e conf -e image)" ]] || [[ "$XVFB" != "1" ]] ||
-     (docker build --tag x11vnc/desktop --tag x11vnc/desktop:next . &&
-      docker push x11vnc/desktop:next &&
-      touch success)'
+  # Always rebuild
+  - 'docker build --tag x11vnc/desktop --tag x11vnc/desktop:next . &&
+     docker push x11vnc/desktop:next &&
+     touch success'
   # Test scripts
   - ./ubuntu_desktop.py -d -n -t next && docker stop $(docker ps -q)
   - docker images
