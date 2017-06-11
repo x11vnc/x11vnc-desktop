@@ -234,14 +234,14 @@ if __name__ == "__main__":
 
     # Copy .gitconfig if exists on host and is newer than that in image
     if os.path.isfile(homedir + "/.gitconfig"):
-        subprocess.check_output(["docker", "run", "--rm"] + volumes +
+        subprocess.check_output(["docker", "run", "--rm", '-t'] + volumes +
                                 ["-v", homedir + "/.gitconfig" +
                                  ":" + docker_home + "/.gitconfig",
                                  args.image,
-                                 "[[ $DOCKER_HOME/.config/git/config -nt " +
-                                 "$DOCKER_HOME/.gitconfig ]] ||" +
-                                 "cp $DOCKER_HOME/.gitconfig " +
-                                 "$DOCKER_HOME/.config/git/config"])
+                                 "[[ " + docker_home + "/.config/git/config -nt " +
+                                 docker_home + "/.gitconfig ]] || " +
+                                 "cp " + docker_home + "/.gitconfig " +
+                                 docker_home + "/.config/git/config"])
 
     print("Starting up docker image...")
     if subprocess.check_output(["docker", "--version"]). \
