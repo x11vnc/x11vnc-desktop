@@ -27,6 +27,6 @@ script:
       docker push x11vnc/desktop &&
       touch success)'
   # Test scripts
-  - 'git clone --depth 1 git@github.com/x11vnc/docker-desktop master &&
+  - 'git clone --depth 1 git@github.com:x11vnc/docker-desktop master &&
      master/ubuntu_desktop.py -d -n -t zh_CN && docker stop $(docker ps -q)'
   - docker images
