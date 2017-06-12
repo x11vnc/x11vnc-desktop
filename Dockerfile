@@ -12,10 +12,10 @@ LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
 ARG DOCKER_LANG=zh_CN
 ARG DOCKER_TIMEZONE=Asia/Shanghai
-ARG DOCKER_OTHERPACKAGES="fcitx fcitx-config-gtk fcitx-frontend-all
-        fcitx-frontend-gtk3 fcitx-pinyin fcitx-google pinyin
-        fcitx-ui-classic im-config fcitx-module-dbus fcitx-module-kimpanel fcitx-module-lua
-        fcitx-module-x11 presage fonts-wqy-microhei
+ARG DOCKER_OTHERPACKAGES="fcitx fcitx-config-gtk fcitx-frontend-all \
+        fcitx-frontend-gtk3 fcitx-pinyin fcitx-google pinyin \
+        fcitx-ui-classic im-config fcitx-module-dbus fcitx-module-kimpanel \
+        fcitx-module-lua fcitx-module-x11 presage fonts-wqy-microhei \
         language-pack-zh-hans language-pack-gnome-zh-hans"
 
 ENV LANG=$DOCKER_LANG.UTF-8 \
