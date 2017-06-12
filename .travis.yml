@@ -23,13 +23,7 @@ script:
   - '[[ "$TRAVIS_EVENT_TYPE" == "push" && -n "$TRAVIS_COMMIT_RANGE" &&
         -z "$(git diff --name-only $TRAVIS_COMMIT_RANGE |
             grep -e Dockerfile -e .travis.yml -e image -e conf)" ]] || [[ "$XVFB" != "1" ]] ||
-     (docker build --tag x11vnc/desktop:zh_CN
-                   --build-arg DOCKER_LANG=zh_CN
-                   --build-arg DOCKER_TIMEZONE="Asia/Shanghai"
-                   --build-arg DOCKER_OTHERPACKAGES="fcitx fcitx-config-gtk fcitx-frontend-all
-                   fcitx-ui-classic im-config fcitx-module-dbus fcitx-module-kimpanel fcitx-module-lua
-                   fcitx-module-x11 presage fonts-wqy-microhei
-                   language-pack-zh-hans language-pack-gnome-zh-hans" . &&
+     (docker build --tag x11vnc/desktop:zh_CN . &&
       docker push x11vnc/desktop &&
       touch success)'
   # Test scripts

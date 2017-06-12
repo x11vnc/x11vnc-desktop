@@ -10,9 +10,13 @@
 FROM x11vnc/baseimage:0.9.22
 LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
-ARG DOCKER_LANG=en_US
-ARG DOCKER_TIMEZONE=America/New_York
-ARG DOCKER_OTHERPACKAGES=fcitx
+ARG DOCKER_LANG=zh_CN
+ARG DOCKER_TIMEZONE=Asia/Shanghai
+ARG DOCKER_OTHERPACKAGES="fcitx fcitx-config-gtk fcitx-frontend-all
+        fcitx-frontend-gtk3 fcitx-pinyin fcitx-google pinyin
+        fcitx-ui-classic im-config fcitx-module-dbus fcitx-module-kimpanel fcitx-module-lua
+        fcitx-module-x11 presage fonts-wqy-microhei
+        language-pack-zh-hans language-pack-gnome-zh-hans"
 
 ENV LANG=$DOCKER_LANG.UTF-8 \
     LANGUAGE=$DOCKER_LANG:UTF-8 \
@@ -57,6 +61,8 @@ RUN locale-gen $LANG && \
         $DOCKER_OTHERPACKAGES && \
     ln -s -f /usr/bin/lxterminal /usr/bin/xterm && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+ENV XMODIFIERS=@im=fcitx
 
 # Install websokify and noVNC
 RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
@@ -105,6 +111,8 @@ RUN touch $DOCKER_HOME/.sudo_as_admin_successful && \
     mkdir -p $DOCKER_HOME/.config/git && \
     touch -d '50 years ago' $DOCKER_HOME/.config/git/config && \
     ln -s -f .config/git/config /home/$DOCKER_USER/.gitconfig && \
+    im-config -n fcitx && \
+    echo '@fcitx-autostart' >> $DOCKER_HOME/.config/lxsession/LXDE/autostart && \
     chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME
 
 WORKDIR $DOCKER_HOME
