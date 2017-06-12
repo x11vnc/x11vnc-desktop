@@ -240,8 +240,9 @@ if __name__ == "__main__":
                                  args.image,
                                  "[[ $DOCKER_HOME/.config/git/config -nt " +
                                  "$DOCKER_HOME/.gitconfig_host ]] || " +
+                                 "(mkdir -p $DOCKER_HOME/.config/git && " +
                                  "cp $DOCKER_HOME/.gitconfig_host " +
-                                 "$DOCKER_HOME/.config/git/config"])
+                                 "$DOCKER_HOME/.config/git/config)"])
 
     print("Starting up docker image...")
     if subprocess.check_output(["docker", "--version"]). \
