@@ -10,16 +10,22 @@
 FROM x11vnc/baseimage:0.9.22
 LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
-ARG DOCKER_LANGBASE=en_US
+ARG DOCKER_LANG=en_US
 ARG DOCKER_TIMEZONE=America/New_York
 ARG DOCKER_OTHERPACKAGES=fcitx
+
+ENV LANG=$DOCKER_LANG.UTF-8 \
+    LANGUAGE=$DOCKER_LANG:UTF-8 \
+    LC_ALL=$DOCKER_LANG.UTF-8
 
 WORKDIR /tmp
 
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Install some required system tools and packages for X Windows
-RUN apt-get update && \
+RUN locale-gen $LANG && \
+    dpkg-reconfigure -f noninteractive locales && \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
         man \
         sudo \
@@ -47,7 +53,8 @@ RUN apt-get update && \
         dbus-x11 \
         \
         midori \
-        xpdf && \
+        xpdf \
+        $DOCKER_OTHERPACKAGES && \
     ln -s -f /usr/bin/lxterminal /usr/bin/xterm && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -65,10 +72,6 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
 ########################################################
 # Customization for user and location
 ########################################################
-ENV LANG=$DOCKER_LANGBASE.UTF-8 \
-    LANGUAGE=$DOCKER_LANGBASE:UTF-8 \
-    LC_ALL=$DOCKER_LANGBASE.UTF-8
-
 # Set up user so that we do not run as root
 ENV DOCKER_USER=ubuntu \
     DOCKER_SHELL=/usr/bin/zsh
