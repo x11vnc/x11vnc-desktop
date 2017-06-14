@@ -24,11 +24,6 @@ def parse_args(description):
     # Process command-line arguments
     parser = argparse.ArgumentParser(description=description)
 
-    parser.add_argument('-u', "--user",
-                        help='The username used by the image. ' +
-                        'The default is ubuntu.',
-                        default="")
-
     parser.add_argument('-i', '--image',
                         help='The Docker image to use. ' +
                         'The default is x11vnc/desktop.',
@@ -219,15 +214,11 @@ if __name__ == "__main__":
     if not os.path.exists(homedir + "/.ssh"):
         os.mkdir(homedir + "/.ssh")
 
-    if args.user:
-        user = args.user
-        docker_home = "/home/" + args.user
-    else:
-        docker_home = subprocess.check_output(["docker", "run", "--rm",
-                                               args.image,
-                                               "echo $DOCKER_HOME"]). \
-            decode('utf-8')[:-1]
-        user = docker_home[6:]
+    docker_home = subprocess.check_output(["docker", "run", "--rm",
+                                           args.image,
+                                           "echo $DOCKER_HOME"]). \
+        decode('utf-8')[:-1]
+    user = docker_home[6:]
 
     if args.reset:
         subprocess.check_output(["docker", "volume", "rm", "-f",
