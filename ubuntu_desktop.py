@@ -64,8 +64,8 @@ def parse_args(description):
                         '(Linux only, experimental, sudo required).',
                         default="")
 
-    parser.add_argument('-v', '--nvidia',
-                        help='Mount the Nvidia card for GPU computatio. ' +
+    parser.add_argument('-c', '--cuda',
+                        help='Mount Nvidia card for GPU computation using CUDA. ' +
                         '(Linux only, experimental, sudo required).',
                         default="")
 
@@ -284,7 +284,7 @@ if __name__ == "__main__":
     if args.audio and os.path.exists('/dev/snd'):
         devices += ["--device", "/dev/snd"]
 
-    if args.nvidia:
+    if args.cuda:
         for d in glob.glob('/dev/nvidia*'):
             devices += ['--device', d + ':' + d]
 

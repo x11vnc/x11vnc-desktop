@@ -20,7 +20,7 @@ script:
   - docker --version
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_USERPASS"
   # Always rebuild
-  - 'docker build --tag x11vnc/desktop --tag x11vnc/desktop:next . &&
+  - 'docker build --tag x11vnc/desktop:next . &&
      docker push x11vnc/desktop:next &&
      touch success'
   # Test scripts
