@@ -24,11 +24,6 @@ def parse_args(description):
     # Process command-line arguments
     parser = argparse.ArgumentParser(description=description)
 
-    parser.add_argument('-u', "--user",
-                        help='The username used by the image. ' +
-                        'The default is ubuntu.',
-                        default="")
-
     parser.add_argument('-i', '--image',
                         help='The Docker image to use. ' +
                         'The default is x11vnc/desktop.',
@@ -58,6 +53,10 @@ def parse_args(description):
     parser.add_argument('-s', '--size',
                         help='Size of the screen. The default is to obtaion ' +
                         'the size of the current screen.',
+                        default="")
+
+    parser.add_argument('-v', '--volume',
+                        help='A data volume to be mounted to ~/project.',
                         default="")
 
     parser.add_argument('-a', '--audio',
@@ -195,7 +194,7 @@ if __name__ == "__main__":
         uid = str(os.getuid())
         if uid == '0':
             print('You are running as root. This is not safe. ' +
-                  'Please run as a standard user.')
+                  'Please run as a regular user.')
             sys.exit(-1)
     else:
         uid = ""
@@ -222,18 +221,10 @@ if __name__ == "__main__":
                                             '-q']).find(img) >= 0:
             subprocess.Popen(["docker", "rmi", "-f", img.decode('utf-8')[:-1]])
 
-    # Generate a container ID and find an unused port
-    container = id_generator()
-    port_vnc = str(find_free_port(6080, 50))
-
     # Create directory .ssh if not exist
     if not os.path.exists(homedir + "/.ssh"):
         os.mkdir(homedir + "/.ssh")
 
-    if args.user:
-        user = args.user
-        docker_home = "/home/" + args.user
-    else:
         docker_home = subprocess.check_output(["docker", "run", "--rm",
                                                args.image,
                                                "echo $DOCKER_HOME"]). \
@@ -260,6 +251,11 @@ if __name__ == "__main__":
                                  "cp $DOCKER_HOME/.gitconfig_host " +
                                  "$DOCKER_HOME/.config/git/config)"])
 
+    if args.volume:
+        volumes += ["-v", args.volume + ":" + docker_home + "/project",
+                    "-w", docker_home + "/project"]
+    else:
+        volumes += ["-w", docker_home + "/shared"]
     print("Starting up docker image...")
     if subprocess.check_output(["docker", "--version"]). \
             find(b"Docker version 1.") >= 0:
@@ -277,6 +273,9 @@ if __name__ == "__main__":
     else:
         size = args.size
 
+    # Generate a container ID
+    container = id_generator()
+
     envs = ["--hostname", container,
             "--env", "RESOLUT=" + size,
             "--env", "HOST_UID=" + uid]
@@ -290,11 +289,11 @@ if __name__ == "__main__":
             devices += ['--device', d + ':' + d]
 
     # Start the docker image in the background and pipe the stderr
+    port_vnc = str(find_free_port(6080, 50))
     subprocess.call(["docker", "run", "-d", rmflag, "--name", container,
                      "-p", "127.0.0.1:" + port_vnc + ":6080"] +
                     envs + volumes + devices +
-                    ["-w", docker_home + "/shared",
-                     args.image, "startvnc.sh >> " +
+                    [args.image, "startvnc.sh >> " +
                      docker_home + "/.log/vnc.log"])
 
     wait_for_url = True

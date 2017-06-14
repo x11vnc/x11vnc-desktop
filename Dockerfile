@@ -10,12 +10,21 @@
 FROM x11vnc/baseimage:0.9.22
 LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
+ARG DOCKER_LANG=en_US
+ARG DOCKER_TIMEZONE=America/New_York
+
+ENV LANG=$DOCKER_LANG.UTF-8 \
+    LANGUAGE=$DOCKER_LANG:UTF-8 \
+    LC_ALL=$DOCKER_LANG.UTF-8
+
 WORKDIR /tmp
 
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Install some required system tools and packages for X Windows
-RUN apt-get update && \
+RUN locale-gen $LANG && \
+    dpkg-reconfigure -f noninteractive locales && \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
         man \
         sudo \
@@ -62,10 +71,6 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
 # Customization for user and location
 ########################################################
 # Set up user so that we do not run as root
-ENV LANG=en_US.UTF-8 \
-    LANGUAGE=en_US:en \
-    LC_ALL=en_US.UTF-8
-
 ENV DOCKER_USER=ubuntu \
     DOCKER_SHELL=/usr/bin/zsh
 
@@ -73,15 +78,15 @@ ENV DOCKER_GROUP=$DOCKER_USER \
     DOCKER_HOME=/home/$DOCKER_USER \
     HOME=/home/$DOCKER_USER
 
-# Change the default timezone to America/New_York
+# Change the default timezone to $DOCKER_TIMEZONE
 # Disable forward logging (https://github.com/phusion/baseimage-docker/issues/186)
 # Run ldconfig so that /usr/local/lib etc. are in the default
 # search path for dynamic linker
 RUN useradd -m -s $DOCKER_SHELL -G sudo,docker_env $DOCKER_USER && \
     echo "$DOCKER_USER:docker" | chpasswd && \
     echo "$DOCKER_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
-    echo "America/New_York" > /etc/timezone && \
-    ln -s -f /usr/share/zoneinfo/America/New_York /etc/localtime && \
+    echo "$DOCKER_TIMEZONE" > /etc/timezone && \
+    ln -s -f /usr/share/zoneinfo/$DOCKER_TIMEZONE /etc/localtime && \
     touch /etc/service/syslog-forwarder/down && \
     ldconfig
 
