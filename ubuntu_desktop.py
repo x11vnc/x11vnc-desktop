@@ -221,15 +221,15 @@ if __name__ == "__main__":
                                             '-q']).find(img) >= 0:
             subprocess.Popen(["docker", "rmi", "-f", img.decode('utf-8')[:-1]])
 
+    docker_home = subprocess.check_output(["docker", "run", "--rm",
+                                           args.image,
+                                           "echo $DOCKER_HOME"]). \
+        decode('utf-8')[:-1]
+    user = docker_home[6:]
+
     # Create directory .ssh if not exist
     if not os.path.exists(homedir + "/.ssh"):
         os.mkdir(homedir + "/.ssh")
-
-        docker_home = subprocess.check_output(["docker", "run", "--rm",
-                                               args.image,
-                                               "echo $DOCKER_HOME"]). \
-            decode('utf-8')[:-1]
-        user = docker_home[6:]
 
     if args.reset:
         subprocess.check_output(["docker", "volume", "rm", "-f",
