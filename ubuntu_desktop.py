@@ -32,7 +32,11 @@ def parse_args(description):
     parser.add_argument('-t', '--tag',
                         help='Tag of the image. The default is latest. ' +
                         'If the image already has a tag, its tag prevails.',
-                        default="latest")
+                        default="next")
+
+    parser.add_argument('-v', '--volume',
+                        help='A data volume to be mounted to ~/project.',
+                        default="")
 
     parser.add_argument('-p', '--pull',
                         help='Pull the latest Docker image. ' +
@@ -51,28 +55,21 @@ def parse_args(description):
                         default=False)
 
     parser.add_argument('-s', '--size',
-                        help='Size of the screen. The default is to obtaion ' +
-                        'the size of the current screen.',
-                        default="")
-
-    parser.add_argument('-v', '--volume',
-                        help='A data volume to be mounted to ~/project.',
-                        default="")
-
-    parser.add_argument('-a', '--audio',
-                        help='Mount the sound device ' +
-                        '(Linux only, experimental, sudo required).',
-                        default="")
-
-    parser.add_argument('-c', '--cuda',
-                        help='Mount Nvidia card for GPU computation using CUDA. ' +
-                        '(Linux only, experimental, sudo required).',
+                        help='Size of the screen. The default is to use ' +
+                        'the current screen size.',
                         default="")
 
     parser.add_argument('-n', '--no-browser',
                         help='Do not start web browser',
                         action='store_true',
                         default=False)
+
+    parser.add_argument('-a', '--args',
+                        help='All the arguments after -a will be passed to the ' +
+                        '"docker run" command. Useful for specifying ' +
+                        'resources and environment variables.',
+                        nargs=argparse.REMAINDER,
+                        default=[])
 
     args = parser.parse_args()
     # Append tag to image if the image has no tag
@@ -178,7 +175,6 @@ if __name__ == "__main__":
     import os
     import webbrowser
     import platform
-    import glob
 
     args = parse_args(description=__doc__)
 
@@ -221,15 +217,15 @@ if __name__ == "__main__":
                                             '-q']).find(img) >= 0:
             subprocess.Popen(["docker", "rmi", "-f", img.decode('utf-8')[:-1]])
 
+    # Create directory .ssh if not exist
+    if not os.path.exists(homedir + "/.ssh"):
+        os.mkdir(homedir + "/.ssh")
+
     docker_home = subprocess.check_output(["docker", "run", "--rm",
                                            args.image,
                                            "echo $DOCKER_HOME"]). \
         decode('utf-8')[:-1]
     user = docker_home[6:]
-
-    # Create directory .ssh if not exist
-    if not os.path.exists(homedir + "/.ssh"):
-        os.mkdir(homedir + "/.ssh")
 
     if args.reset:
         subprocess.check_output(["docker", "volume", "rm", "-f",
@@ -280,19 +276,11 @@ if __name__ == "__main__":
             "--env", "RESOLUT=" + size,
             "--env", "HOST_UID=" + uid]
 
-    devices = []
-    if args.audio and os.path.exists('/dev/snd'):
-        devices += ["--device", "/dev/snd"]
-
-    if args.cuda:
-        for d in glob.glob('/dev/nvidia*'):
-            devices += ['--device', d + ':' + d]
-
     # Start the docker image in the background and pipe the stderr
     port_vnc = str(find_free_port(6080, 50))
     subprocess.call(["docker", "run", "-d", rmflag, "--name", container,
                      "-p", "127.0.0.1:" + port_vnc + ":6080"] +
-                    envs + volumes + devices +
+                    envs + volumes + args.args +
                     [args.image, "startvnc.sh >> " +
                      docker_home + "/.log/vnc.log"])
 
