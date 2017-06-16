@@ -9,6 +9,16 @@ env:
   - XVFB=0
 
 before_install:
+  # Uninstall docker-engine
+  - sudo apt-get remove docker-engine
+  # Install latest version of docker-ce
+  - curl -O https://apt.dockerproject.org/repo/pool/main/d/docker-engine/docker-engine_17.05.0~ce-0~ubuntu-trusty_amd64.deb
+  - echo "Y\n" | sudo dpkg -i docker-engine_17.05.0~ce-0~ubuntu-trusty_amd64.deb
+  # Enable experimental features for Docker
+  # https://github.com/moby/moby/issues/30585
+  - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
+  - sudo service docker restart
+
   # Start up xvfb
   - '[[ "$XVFB" != "1" ]] || /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid
      --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16'
@@ -20,7 +30,7 @@ script:
   - docker --version
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_USERPASS"
   # Always rebuild
-  - 'docker build --tag x11vnc/desktop:next . &&
+  - 'docker build --squash --tag x11vnc/desktop:next . &&
      docker push x11vnc/desktop:next &&
      touch success'
   # Test scripts
