@@ -40,6 +40,10 @@ Plugin {
         }
         separator {
         }
+        item {
+            image=gnome-logout
+            command=logout
+        }
     }
 }
 
