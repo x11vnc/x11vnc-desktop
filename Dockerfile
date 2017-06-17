@@ -37,6 +37,7 @@ RUN locale-gen $LANG && \
         openssh-server \
         g++ \
         python \
+        python-tk \
         \
         xserver-xorg-video-dummy \
         lxde \
