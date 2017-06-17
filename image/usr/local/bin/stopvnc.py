@@ -18,15 +18,16 @@ def clickLogout():
 app = tk.Tk()
 app.title("Log out")
 app.geometry("400x300+300+300")
-app.configure(bg='light grey')
+app.configure(bg='steelblue4')
 
-tk.Label(app, text="", height=3, bg='light grey').pack()
+tk.Label(app, text="", height=3, bg='steelblue4').pack()
 tk.Label(app, text="Are you sure you want to quit all\n" +
-         "applications and log out now?", bg='light grey',
-          font=("Sans-serif", 12, "bold"), height=3, width=100).pack()
+         "applications and log out now?", fg='white', bg='steelblue4',
+         font=("Sans-serif", 12, "bold"), height=3, width=100).pack()
 
-tk.Label(app, text="Make sure you have saved all your data into a\n" +
-         "shared or mounted folder before logging out.", bg='light grey',
+tk.Label(app, text="Make sure you have saved your code and data to\n" +
+         "a shared or a mounted folder before logging out.",
+         fg='white', bg='steelblue4',
          font=("Sans-serif", 10), height=0, width=100).pack()
 
 button_shutdown = tk.Button(app, text="Log out",
