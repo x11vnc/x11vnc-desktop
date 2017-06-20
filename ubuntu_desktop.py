@@ -281,7 +281,8 @@ if __name__ == "__main__":
     subprocess.call(["docker", "run", "-d", rmflag, "--name", container,
                      "-p", "127.0.0.1:" + port_vnc + ":6080"] +
                     envs + volumes + args.args +
-                    [args.image, "startvnc.sh >> " +
+                    ['--security-opt', 'seccomp=unconfined',
+                     args.image, "startvnc.sh >> " +
                      docker_home + "/.log/vnc.log"])
 
     wait_for_url = True
