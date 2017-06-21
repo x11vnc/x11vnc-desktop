@@ -9,11 +9,6 @@ env:
   - XVFB=0
 
 before_install:
-  # Uninstall docker-engine
-  - sudo apt-get remove docker-engine
-  # Install latest version of docker-ce
-  - curl -O https://apt.dockerproject.org/repo/pool/main/d/docker-engine/docker-engine_17.05.0~ce-0~ubuntu-trusty_amd64.deb
-  - echo "Y\n" | sudo dpkg -i docker-engine_17.05.0~ce-0~ubuntu-trusty_amd64.deb
   # Enable experimental features for Docker
   # https://github.com/moby/moby/issues/30585
   - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
