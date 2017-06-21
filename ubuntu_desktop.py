@@ -222,7 +222,6 @@ if __name__ == "__main__":
         os.mkdir(homedir + "/.ssh")
 
     docker_home = subprocess.check_output(["docker", "run", "--rm",
-                                           "-v", pwd + ":/home/ubuntu/shared",
                                            args.image,
                                            "echo $DOCKER_HOME"]). \
         decode('utf-8')[:-1]
@@ -245,7 +244,7 @@ if __name__ == "__main__":
                          "[[ $DOCKER_HOME/.config/git/config -nt " +
                          "$DOCKER_HOME/.gitconfig_host ]] || " +
                          "(mkdir -p $DOCKER_HOME/.config/git && " +
-                         "cp $DOCKER_HOME/.gitconfig_host " +
+                         "sudo cp $DOCKER_HOME/.gitconfig_host " +
                          "$DOCKER_HOME/.config/git/config)"])
 
     if args.volume:
