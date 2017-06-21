@@ -9,13 +9,6 @@ env:
   - XVFB=0
 
 before_install:
-  # Enable experimental features for Docker
-  # https://github.com/moby/moby/issues/30585
-  - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
-  - sudo service docker restart
-
-  - sudo pip install docker-squash
-
   # Start up xvfb
   - '[[ "$XVFB" != "1" ]] || /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid
      --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16'
@@ -28,7 +21,6 @@ script:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_USERPASS"
   # Always rebuild
   - 'docker build --tag x11vnc/desktop:next . &&
-     docker-squash x11vnc/desktop:next &&
      docker push x11vnc/desktop:next &&
      touch success'
   # Test scripts
