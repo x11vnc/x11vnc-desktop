@@ -9,7 +9,7 @@ try:
 except:
     import Tkinter as tk
 
-    
+
 def clickLogout():
     import subprocess
     subprocess.call(['killall', 'startvnc.sh'])
