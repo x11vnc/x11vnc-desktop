@@ -100,6 +100,7 @@ RUN touch $DOCKER_HOME/.sudo_as_admin_successful && \
     mkdir -p $DOCKER_HOME/.vnc && \
     mkdir -p $DOCKER_HOME/.ssh && \
     mkdir -p $DOCKER_HOME/.log && touch $DOCKER_HOME/.log/vnc.log && \
+    ln -s -f .config/mozilla /home/$DOCKER_USER/.mozilla && \
     ln -s -f .config/zsh/zshrc /home/$DOCKER_USER/.zshrc && \
     ln -s -f .config/zsh/zprofile /home/$DOCKER_USER/.zprofile && \
     mkdir -p $DOCKER_HOME/.config/git && \
