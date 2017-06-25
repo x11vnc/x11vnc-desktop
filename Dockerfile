@@ -38,6 +38,7 @@ RUN locale-gen $LANG && \
         g++ \
         python \
         python-tk \
+        python3-tk \
         \
         xserver-xorg-video-dummy \
         lxde \
