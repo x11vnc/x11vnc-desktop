@@ -24,7 +24,7 @@ script:
         -z "$(git diff --name-only $TRAVIS_COMMIT_RANGE |
             grep -e Dockerfile -e .travis.yml -e image -e conf)" ]] || [[ "$XVFB" != "1" ]] ||
      (docker build --tag x11vnc/desktop:zh_CN . &&
-      docker push x11vnc/desktop &&
+      docker push x11vnc/desktop:zh_CN &&
       touch success)'
   # Test scripts
   - 'git clone --depth 1 https://github.com/x11vnc/docker-desktop master &&
