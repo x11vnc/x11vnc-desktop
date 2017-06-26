@@ -32,7 +32,7 @@ def parse_args(description):
     parser.add_argument('-t', '--tag',
                         help='Tag of the image. The default is latest. ' +
                         'If the image already has a tag, its tag prevails.',
-                        default="latest")
+                        default="")
 
     parser.add_argument('-v', '--volume',
                         help='A data volume to be mounted to ~/project.',
@@ -74,7 +74,10 @@ def parse_args(description):
     args = parser.parse_args()
     # Append tag to image if the image has no tag
     if args.image.find(':') < 0:
-        args.image += ':' + args.tag
+        if not args.tag:
+            pass
+        else:
+            args.image += ':' + args.tag
 
     return args
 
@@ -229,10 +232,10 @@ if __name__ == "__main__":
 
     if args.reset:
         subprocess.check_output(["docker", "volume", "rm", "-f",
-                                 APP + "_config"])
+                                 APP + args.tag + "_config"])
 
     volumes = ["-v", pwd + ":" + docker_home + "/shared",
-               "-v", APP + "_config:" + docker_home + "/.config",
+               "-v", APP + args.tag + "_config:" + docker_home + "/.config",
                "-v", homedir + "/.ssh" + ":" + docker_home + "/.ssh"]
 
     # Copy .gitconfig if exists on host and is newer than that in image
