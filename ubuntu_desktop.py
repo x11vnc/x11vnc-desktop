@@ -59,6 +59,16 @@ def parse_args(description):
                         'the current screen size.',
                         default="")
 
+    parser.add_argument('-A', '--audio',
+                        help='Mount the sound device ' +
+                        '(Linux only, experimental, sudo required).',
+                        default="")
+
+    parser.add_argument('-V', '--nvidia',
+                        help='Mount the Nvidia card for GPU computatio. ' +
+                        '(Linux only, experimental, sudo required).',
+                        default="")
+
     parser.add_argument('-n', '--no-browser',
                         help='Do not start web browser',
                         action='store_true',
@@ -178,6 +188,7 @@ if __name__ == "__main__":
     import os
     import webbrowser
     import platform
+    import glob
 
     args = parse_args(description=__doc__)
 
@@ -279,11 +290,19 @@ if __name__ == "__main__":
             "--env", "RESOLUT=" + size,
             "--env", "HOST_UID=" + uid]
 
+    devices = []
+    if args.audio and os.path.exists('/dev/snd'):
+        devices += ["--device", "/dev/snd"]
+
+    if args.nvidia:
+        for d in glob.glob('/dev/nvidia*'):
+            devices += ['--device', d + ':' + d]
+
     # Start the docker image in the background and pipe the stderr
     port_vnc = str(find_free_port(6080, 50))
     subprocess.call(["docker", "run", "-d", rmflag, "--name", container,
                      "-p", "127.0.0.1:" + port_vnc + ":6080"] +
-                    envs + volumes + args.args +
+                    envs + volumes + devices + args.args +
                     ['--security-opt', 'seccomp=unconfined',
                      args.image, "startvnc.sh >> " +
                      docker_home + "/.log/vnc.log"])
