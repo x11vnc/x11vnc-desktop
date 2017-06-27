@@ -7,7 +7,7 @@
 # Authors:
 # Xiangmin Jiao <xmjiao@gmail.com>
 
-FROM x11vnc/desktop:16.04
+FROM x11vnc/desktop:firefox
 LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
 ARG DOCKER_LANG=zh_CN
@@ -31,7 +31,7 @@ RUN locale-gen $LANG && \
     dpkg-reconfigure -f noninteractive locales && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-        chromium-browser-l10n \
+        firefox-locale-zh-hans \
         $DOCKER_OTHERPACKAGES && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
