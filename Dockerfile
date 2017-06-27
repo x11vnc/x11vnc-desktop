@@ -31,8 +31,7 @@ RUN locale-gen $LANG && \
     dpkg-reconfigure -f noninteractive locales && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-        firefox-locale-zh-hans \
-        browser-plugin-freshplayer-pepperflash \
+        chromium-browser-l10n \
         $DOCKER_OTHERPACKAGES && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
