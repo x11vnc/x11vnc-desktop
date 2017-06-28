@@ -43,6 +43,7 @@ RUN locale-gen $LANG && \
         xserver-xorg-video-dummy \
         lxde \
         x11-xserver-utils \
+        xterm \
         gnome-themes-standard \
         gtk2-engines-pixbuf \
         gtk2-engines-murrine \
@@ -57,7 +58,6 @@ RUN locale-gen $LANG && \
         \
         chromium-browser \
         xpdf && \
-    ln -s -f /usr/bin/lxterminal /usr/bin/xterm && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install websokify and noVNC
@@ -67,7 +67,7 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
         setuptools && \
     pip2 install -U https://github.com/novnc/websockify/archive/master.tar.gz && \
     mkdir /usr/local/noVNC && \
-    curl -s -L https://github.com/x11vnc/noVNC/archive/next.tar.gz | \
+    curl -s -L https://github.com/x11vnc/noVNC/archive/master.tar.gz | \
          bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \
     rm -rf /tmp/* /var/tmp/*
 
