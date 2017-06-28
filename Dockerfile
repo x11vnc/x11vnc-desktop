@@ -104,7 +104,7 @@ RUN touch $DOCKER_HOME/.sudo_as_admin_successful && \
     mkdir -p $DOCKER_HOME/.log && touch $DOCKER_HOME/.log/vnc.log && \
     ln -s -f .config/zsh/zshrc /home/$DOCKER_USER/.zshrc && \
     ln -s -f .config/zsh/zprofile /home/$DOCKER_USER/.zprofile && \
-    echo "[[ ! -f $HOME/WELCOME || -z "$DISPLAY" ]] || cat $HOME/WELCOME" \
+    echo "[[ ! -f $HOME/WELCOME || -z "$SHOW_WELCOME" ]] || cat $HOME/WELCOME" \
         >> $DOCKER_HOME/.profile && \
     mkdir -p $DOCKER_HOME/.config/git && \
     touch -d '50 years ago' $DOCKER_HOME/.config/git/config && \
