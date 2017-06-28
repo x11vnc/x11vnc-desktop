@@ -1,4 +1,4 @@
 @lxpanel --profile LXDE
 @pcmanfm --desktop --profile LXDE
 @xscreensaver -no-splash
-@lxterminal -e "bash -l"
+@lxterminal -l -e bash
