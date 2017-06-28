@@ -114,5 +114,5 @@ RUN touch $DOCKER_HOME/.sudo_as_admin_successful && \
 WORKDIR $DOCKER_HOME
 
 USER root
-ENTRYPOINT ["/sbin/my_init","--quiet","--","/sbin/setuser","ubuntu","/bin/bash","-l","-c"]
+ENTRYPOINT ["/sbin/my_init","--quiet","--","/sbin/setuser","ubuntu","/bin/bash","-c"]
 CMD ["$DOCKER_SHELL","-l","-i"]
