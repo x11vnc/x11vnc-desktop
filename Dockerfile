@@ -43,6 +43,7 @@ RUN locale-gen $LANG && \
         xserver-xorg-video-dummy \
         lxde \
         x11-xserver-utils \
+        xterm \
         gnome-themes-standard \
         gtk2-engines-pixbuf \
         gtk2-engines-murrine \
@@ -57,7 +58,6 @@ RUN locale-gen $LANG && \
         \
         chromium-browser \
         xpdf && \
-    ln -s -f /usr/bin/lxterminal /usr/bin/xterm && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install websokify and noVNC
