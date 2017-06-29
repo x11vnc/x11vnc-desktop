@@ -53,10 +53,8 @@ RUN locale-gen $LANG && \
         libgl1-mesa-dri \
         x11vnc \
         dbus-x11 \
-        alsa-base \
-        pulseaudio \
         \
-        chromium-browser \
+        midori \
         xpdf && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
