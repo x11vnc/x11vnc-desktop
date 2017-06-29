@@ -129,7 +129,7 @@ def find_free_port(port, retries):
         except socket.error:
             continue
 
-    print("Error: Could not find a free port.")
+    sys.stderr.write("Error: Could not find a free port.\n")
     sys.exit(-1)
 
 
@@ -212,8 +212,8 @@ if __name__ == "__main__":
     try:
         img = subprocess.check_output(['docker', 'images', '-q', args.image])
     except:
-        print("Docker failed. Please make sure docker was properly " +
-              "installed and has been started.")
+        sys.stderr.write("Docker failed. Please make sure docker was properly " +
+                         "installed and has been started.\n")
         sys.exit(-1)
 
     if args.pull or not img:
@@ -242,8 +242,11 @@ if __name__ == "__main__":
     user = docker_home[6:]
 
     if args.reset:
-        subprocess.check_output(["docker", "volume", "rm", "-f",
-                                 APP + args.tag + "_config"])
+        try:
+            output = subprocess.check_output(["docker", "volume", "rm", "-f",
+                                              APP + args.tag + "_config"])
+        except subprocess.CalledProcessError as e:
+            sys.stderr.write(e.output.decode('utf-8'))
 
     volumes = ["-v", pwd + ":" + docker_home + "/shared",
                "-v", APP + args.tag + "_config:" + docker_home + "/.config",
@@ -266,7 +269,7 @@ if __name__ == "__main__":
                     "-w", docker_home + "/project"]
     else:
         volumes += ["-w", docker_home + "/shared"]
-    print("Starting up docker image...")
+    sys.stderr.write("Starting up docker image...\n")
     if subprocess.check_output(["docker", "--version"]). \
             find(b"Docker version 1.") >= 0:
         rmflag = "-t"
@@ -363,7 +366,7 @@ if __name__ == "__main__":
                 if not subprocess.check_output(['docker', 'ps',
                                                 '-q', '-f',
                                                 'name=' + container]):
-                    print('Docker container is no longer running')
+                    sys.stderr.write('Docker container is no longer running\n')
                     sys.exit(-1)
                 time.sleep(1)
             except KeyboardInterrupt:
