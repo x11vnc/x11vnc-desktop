@@ -54,7 +54,7 @@ RUN locale-gen $LANG && \
         x11vnc \
         dbus-x11 \
         \
-        midori \
+        qupzilla \
         xpdf && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
