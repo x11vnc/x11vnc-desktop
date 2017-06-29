@@ -55,6 +55,7 @@ RUN locale-gen $LANG && \
         dbus-x11 \
         \
         midori \
+        browser-plugin-freshplayer-pepperflash \
         xpdf && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
