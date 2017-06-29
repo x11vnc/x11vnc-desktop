@@ -366,9 +366,13 @@ if __name__ == "__main__":
                 if not subprocess.check_output(['docker', 'ps',
                                                 '-q', '-f',
                                                 'name=' + container]):
-                    sys.stderr.write('Docker container is no longer running\n')
-                    sys.exit(-1)
-                time.sleep(1)
+                    raise subprocess.CalledProcessError
+                else:
+                    time.sleep(1)
+                    continue
+            except subprocess.CalledProcessError:
+                sys.stderr.write('Docker container is no longer running\n')
+                sys.exit(-1)
             except KeyboardInterrupt:
                 handle_interrupt(container)
 
