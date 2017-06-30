@@ -302,9 +302,11 @@ if __name__ == "__main__":
             devices += ['--device', d + ':' + d]
 
     # Start the docker image in the background and pipe the stderr
-    port_vnc = str(find_free_port(6080, 50))
+    port_http = str(find_free_port(6080, 50))
+    port_vnc = str(find_free_port(5950, 50))
     subprocess.call(["docker", "run", "-d", rmflag, "--name", container,
-                     "-p", "127.0.0.1:" + port_vnc + ":6080"] +
+                     "-p", "127.0.0.1:" + port_http + ":6080",
+                     "-p", "127.0.0.1:" + port_vnc + ":5900"] +
                     envs + volumes + devices + args.args +
                     ['--security-opt', 'seccomp=unconfined',
                      args.image, "startvnc.sh >> " +
@@ -336,12 +338,18 @@ if __name__ == "__main__":
                     if ind >= 0:
                         # Open browser if found URL
                         url = stdout_line.replace(":6080/",
-                                                  ':' + port_vnc + "/")
+                                                  ':' + port_http + "/")
                         sys.stdout.write(url)
 
                         if not args.no_browser:
-                            wait_net_service(int(port_vnc))
+                            wait_net_service(int(port_http))
                             webbrowser.open(url[ind:-1])
+
+                        passwd = stdout_line[url.find('password=') + 9:]
+                        sys.stdout.write("\nFor a better user experience, use a VNC client " +
+                                         "(such as VNC Viewer for Google Chrome)\nto connect " +
+                                         "to localhost:%s with password %s\n" %
+                                         (port_vnc, passwd))
 
                         p.stdout.close()
                         p.terminate()
