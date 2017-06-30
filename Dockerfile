@@ -28,6 +28,7 @@ RUN locale-gen $LANG && \
     apt-get install -y --no-install-recommends \
         man \
         sudo \
+        rsync \
         bsdtar \
         net-tools \
         xdotool \
