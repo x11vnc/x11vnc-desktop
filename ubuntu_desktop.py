@@ -252,23 +252,17 @@ if __name__ == "__main__":
                "-v", APP + args.tag + "_config:" + docker_home + "/.config",
                "-v", homedir + "/.ssh" + ":" + docker_home + "/.ssh"]
 
-    # Copy .gitconfig if exists on host and is newer than that in image
+    # Mount .gitconfig to Docker image
     if os.path.isfile(homedir + "/.gitconfig"):
-        subprocess.call(["docker", "run", "--rm"] + volumes +
-                        ["-v", homedir + "/.gitconfig" +
-                         ":" + docker_home + "/.gitconfig_host",
-                         args.image,
-                         "[[ $DOCKER_HOME/.config/git/config -nt " +
-                         "$DOCKER_HOME/.gitconfig_host ]] || " +
-                         "(mkdir -p $DOCKER_HOME/.config/git && " +
-                         "sudo cp $DOCKER_HOME/.gitconfig_host " +
-                         "$DOCKER_HOME/.config/git/config)"])
+        volumes += ["-v", homedir + "/.gitconfig" +
+                    ":" + docker_home + "/.gitconfig_host"]
 
     if args.volume:
         volumes += ["-v", args.volume + ":" + docker_home + "/project",
                     "-w", docker_home + "/project"]
     else:
         volumes += ["-w", docker_home + "/shared"]
+
     sys.stderr.write("Starting up docker image...\n")
     if subprocess.check_output(["docker", "--version"]). \
             find(b"Docker version 1.") >= 0:
