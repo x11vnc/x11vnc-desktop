@@ -33,6 +33,7 @@ eval `ssh-agent` > /dev/null
 # startup x11vnc with a new password
 export VNCPASS=`openssl rand -base64 6 | sed 's/\//-/'`
 
+mkdir -p $DOCKER_HOME/.vnc && \
 x11vnc -storepasswd $VNCPASS ~/.vnc/passwd > $DOCKER_HOME/.log/x11vnc.log 2>&1
 x11vnc -display :0 -xkb -forever -shared  -usepw >> $DOCKER_HOME/.log/x11vnc.log 2>&1 &
 

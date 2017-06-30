@@ -148,7 +148,7 @@ def wait_net_service(port, timeout=30):
             continue
         else:
             sock.close()
-            time.sleep(2)
+            time.sleep(3)
             return True
 
 
@@ -235,11 +235,8 @@ if __name__ == "__main__":
     if not os.path.exists(homedir + "/.ssh"):
         os.mkdir(homedir + "/.ssh")
 
-    docker_home = subprocess.check_output(["docker", "run", "--rm",
-                                           args.image,
-                                           "echo $DOCKER_HOME"]). \
-        decode('utf-8')[:-1]
-    user = docker_home[6:]
+    user = "ubuntu"
+    docker_home = "/home/ubuntu"
 
     if args.reset:
         try:
@@ -335,15 +332,15 @@ if __name__ == "__main__":
                                                   ':' + port_http + "/")
                         sys.stdout.write(url)
 
-                        if not args.no_browser:
-                            wait_net_service(int(port_http))
-                            webbrowser.open(url[ind:-1])
-
                         passwd = stdout_line[url.find('password=') + 9:]
                         sys.stdout.write("\nFor a better user experience, use a VNC client " +
                                          "(such as VNC Viewer for Google Chrome)\nto connect " +
                                          "to localhost:%s with password %s\n" %
                                          (port_vnc, passwd))
+
+                        if not args.no_browser:
+                            wait_net_service(int(port_http))
+                            webbrowser.open(url[ind:-1])
 
                         p.stdout.close()
                         p.terminate()
