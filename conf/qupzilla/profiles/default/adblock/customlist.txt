@@ -1,0 +1,5 @@
+Title: Custom Rules
+Url: 
+[Adblock Plus 1.1.1]
+@@||duckduckgo.com^$document
+duckduckgo.com#@#.has-ad

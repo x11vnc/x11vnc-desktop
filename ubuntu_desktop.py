@@ -74,7 +74,10 @@ def parse_args(description):
     args = parser.parse_args()
     # Append tag to image if the image has no tag
     if args.image.find(':') < 0:
-        args.image += ':' + args.tag
+        if not args.tag:
+            pass
+        else:
+            args.image += ':' + args.tag
 
     return args
 
@@ -116,7 +119,7 @@ def find_free_port(port, retries):
         except socket.error:
             continue
 
-    print("Error: Could not find a free port.")
+    sys.stderr.write("Error: Could not find a free port.\n")
     sys.exit(-1)
 
 
@@ -175,6 +178,7 @@ if __name__ == "__main__":
     import os
     import webbrowser
     import platform
+    import glob
 
     args = parse_args(description=__doc__)
 
@@ -198,8 +202,8 @@ if __name__ == "__main__":
     try:
         img = subprocess.check_output(['docker', 'images', '-q', args.image])
     except:
-        print("Docker failed. Please make sure docker was properly " +
-              "installed and has been started.")
+        sys.stderr.write("Docker failed. Please make sure docker was properly " +
+                         "installed and has been started.\n")
         sys.exit(-1)
 
     if args.pull or not img:
@@ -228,11 +232,14 @@ if __name__ == "__main__":
     user = docker_home[6:]
 
     if args.reset:
-        subprocess.check_output(["docker", "volume", "rm", "-f",
-                                 APP + "_config"])
+        try:
+            output = subprocess.check_output(["docker", "volume", "rm", "-f",
+                                              APP + args.tag + "_config"])
+        except subprocess.CalledProcessError as e:
+            sys.stderr.write(e.output.decode('utf-8'))
 
     volumes = ["-v", pwd + ":" + docker_home + "/shared",
-               "-v", APP + "_config:" + docker_home + "/.config",
+               "-v", APP + args.tag + "_config:" + docker_home + "/.config",
                "-v", homedir + "/.ssh" + ":" + docker_home + "/.ssh"]
 
     # Copy .gitconfig if exists on host and is newer than that in image
@@ -252,7 +259,7 @@ if __name__ == "__main__":
                     "-w", docker_home + "/project"]
     else:
         volumes += ["-w", docker_home + "/shared"]
-    print("Starting up docker image...")
+    sys.stderr.write("Starting up docker image...\n")
     if subprocess.check_output(["docker", "--version"]). \
             find(b"Docker version 1.") >= 0:
         rmflag = "-t"
@@ -276,11 +283,19 @@ if __name__ == "__main__":
             "--env", "RESOLUT=" + size,
             "--env", "HOST_UID=" + uid]
 
+    devices = []
+    if args.audio and os.path.exists('/dev/snd'):
+        devices += ["--device", "/dev/snd"]
+
+    if args.nvidia:
+        for d in glob.glob('/dev/nvidia*'):
+            devices += ['--device', d + ':' + d]
+
     # Start the docker image in the background and pipe the stderr
     port_vnc = str(find_free_port(6080, 50))
     subprocess.call(["docker", "run", "-d", rmflag, "--name", container,
                      "-p", "127.0.0.1:" + port_vnc + ":6080"] +
-                    envs + volumes + args.args +
+                    envs + volumes + devices + args.args +
                     ['--security-opt', 'seccomp=unconfined',
                      args.image, "startvnc.sh >> " +
                      docker_home + "/.log/vnc.log"])
@@ -341,9 +356,13 @@ if __name__ == "__main__":
                 if not subprocess.check_output(['docker', 'ps',
                                                 '-q', '-f',
                                                 'name=' + container]):
-                    print('Docker container is no longer running')
-                    sys.exit(-1)
-                time.sleep(1)
+                    raise subprocess.CalledProcessError
+                else:
+                    time.sleep(1)
+                    continue
+            except subprocess.CalledProcessError:
+                sys.stderr.write('Docker container is no longer running\n')
+                sys.exit(-1)
             except KeyboardInterrupt:
                 handle_interrupt(container)
 
