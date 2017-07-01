@@ -4,6 +4,22 @@
 # You can overwrite its behavior by creating a file
 # ~/.config/init_vnc (not recommended)
 
+move_to_config()
+{
+  if [ -n "$1" ]; then
+      # Config the module by copying defaults into $HOME/.config
+      if [ ! -e $DOCKER_HOME/.config/$1 ]; then
+          mkdir -p $DOCKER_HOME/.config/$1
+          rsync -a $DOCKER_HOME/.$1/ $DOCKER_HOME/.config/$1
+      fi
+
+      # Link the files and directories back to home directory
+      rm -rf $DOCKER_HOME/.$1/*
+      ln -s -f $DOCKER_HOME/.config/$1/* $DOCKER_HOME/.$1
+  fi
+}
+
+
 if [ -e $DOCKER_HOME/.config/init_vnc ]; then
     bash $DOCKER_HOME/.config/init_vnc
     exit 0
