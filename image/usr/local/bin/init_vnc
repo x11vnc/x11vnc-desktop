@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# This script is called before X11 starts.
+# You can overwrite its behavior by creating a file
+# ~/.config/init_vnc (not recommended)
+
+move_to_config()
+{
+  if [ -n "$1" ]; then
+      # Config the module by copying defaults into $HOME/.config
+      if [ ! -e $DOCKER_HOME/.config/$1 ]; then
+          mkdir -p $DOCKER_HOME/.config/$1
+          rsync -a $DOCKER_HOME/.$1/ $DOCKER_HOME/.config/$1
+      fi
+
+      # Link the files and directories back to home directory
+      rm -rf $DOCKER_HOME/.$1/*
+      ln -s -f $DOCKER_HOME/.config/$1/* $DOCKER_HOME/.$1
+  fi
+}
+
+
+if [ -e $DOCKER_HOME/.config/init_vnc ]; then
+    bash $DOCKER_HOME/.config/init_vnc
+    exit 0
+fi
+
+# Config zsh by copying defaults into $HOME/.config
+if [ ! -e $DOCKER_HOME/.config/zsh ]; then
+    mkdir -p $DOCKER_HOME/.config/zsh
+    cp $DOCKER_HOME/.zshrc $DOCKER_HOME/.config/zsh/zshrc
+    cp $DOCKER_HOME/.zprofile $DOCKER_HOME/.config/zsh/zprofile
+fi
+ln -s -f .config/zsh/zshrc $DOCKER_HOME/.zshrc
+ln -s -f .config/zsh/zprofile $DOCKER_HOME/.zprofile
+
+# Config git
+mkdir -p $DOCKER_HOME/.config/git
+if [ -e $DOCKER_HOME/.gitconfig_host ]; then
+    rsync -u $DOCKER_HOME/.gitconfig_host $DOCKER_HOME/.config/gitconfig
+elif [ ! -e $DOCKER_HOME/.config/gitconfig ]; then
+  touch $DOCKER_HOME/.config/gitconfig
+fi
+
+ln -s -f .config/gitconfig $DOCKER_HOME/.gitconfig

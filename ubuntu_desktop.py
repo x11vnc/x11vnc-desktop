@@ -148,7 +148,7 @@ def wait_net_service(port, timeout=30):
             continue
         else:
             sock.close()
-            time.sleep(2)
+            time.sleep(3)
             return True
 
 
@@ -235,11 +235,8 @@ if __name__ == "__main__":
     if not os.path.exists(homedir + "/.ssh"):
         os.mkdir(homedir + "/.ssh")
 
-    docker_home = subprocess.check_output(["docker", "run", "--rm",
-                                           args.image,
-                                           "echo $DOCKER_HOME"]). \
-        decode('utf-8')[:-1]
-    user = docker_home[6:]
+    user = "ubuntu"
+    docker_home = "/home/ubuntu"
 
     if args.reset:
         try:
@@ -252,23 +249,17 @@ if __name__ == "__main__":
                "-v", APP + args.tag + "_config:" + docker_home + "/.config",
                "-v", homedir + "/.ssh" + ":" + docker_home + "/.ssh"]
 
-    # Copy .gitconfig if exists on host and is newer than that in image
+    # Mount .gitconfig to Docker image
     if os.path.isfile(homedir + "/.gitconfig"):
-        subprocess.call(["docker", "run", "--rm"] + volumes +
-                        ["-v", homedir + "/.gitconfig" +
-                         ":" + docker_home + "/.gitconfig_host",
-                         args.image,
-                         "[[ $DOCKER_HOME/.config/git/config -nt " +
-                         "$DOCKER_HOME/.gitconfig_host ]] || " +
-                         "(mkdir -p $DOCKER_HOME/.config/git && " +
-                         "sudo cp $DOCKER_HOME/.gitconfig_host " +
-                         "$DOCKER_HOME/.config/git/config)"])
+        volumes += ["-v", homedir + "/.gitconfig" +
+                    ":" + docker_home + "/.gitconfig_host"]
 
     if args.volume:
         volumes += ["-v", args.volume + ":" + docker_home + "/project",
                     "-w", docker_home + "/project"]
     else:
         volumes += ["-w", docker_home + "/shared"]
+
     sys.stderr.write("Starting up docker image...\n")
     if subprocess.check_output(["docker", "--version"]). \
             find(b"Docker version 1.") >= 0:
@@ -302,9 +293,11 @@ if __name__ == "__main__":
             devices += ['--device', d + ':' + d]
 
     # Start the docker image in the background and pipe the stderr
-    port_vnc = str(find_free_port(6080, 50))
+    port_http = str(find_free_port(6080, 50))
+    port_vnc = str(find_free_port(5950, 50))
     subprocess.call(["docker", "run", "-d", rmflag, "--name", container,
-                     "-p", "127.0.0.1:" + port_vnc + ":6080"] +
+                     "-p", "127.0.0.1:" + port_http + ":6080",
+                     "-p", "127.0.0.1:" + port_vnc + ":5900"] +
                     envs + volumes + devices + args.args +
                     ['--security-opt', 'seccomp=unconfined',
                      args.image, "startvnc.sh >> " +
@@ -336,11 +329,17 @@ if __name__ == "__main__":
                     if ind >= 0:
                         # Open browser if found URL
                         url = stdout_line.replace(":6080/",
-                                                  ':' + port_vnc + "/")
+                                                  ':' + port_http + "/")
                         sys.stdout.write(url)
 
+                        passwd = stdout_line[url.find('password=') + 9:]
+                        sys.stdout.write("\nFor a better user experience, use a VNC client " +
+                                         "(such as VNC Viewer for Google Chrome)\nto connect " +
+                                         "to localhost:%s with password %s\n" %
+                                         (port_vnc, passwd))
+
                         if not args.no_browser:
-                            wait_net_service(int(port_vnc))
+                            wait_net_service(int(port_http))
                             webbrowser.open(url[ind:-1])
 
                         p.stdout.close()

@@ -28,6 +28,7 @@ RUN locale-gen $LANG && \
     apt-get install -y --no-install-recommends \
         man \
         sudo \
+        rsync \
         bsdtar \
         net-tools \
         xdotool \
@@ -92,21 +93,16 @@ RUN useradd -m -s $DOCKER_SHELL -G sudo,docker_env $DOCKER_USER && \
     touch /etc/service/syslog-forwarder/down && \
     ldconfig
 
-ADD image /
-ADD conf/ $DOCKER_HOME/.config
+ADD image/etc /etc
+ADD image/usr /usr
+ADD image/home $DOCKER_HOME
 
 RUN touch $DOCKER_HOME/.sudo_as_admin_successful && \
     mkdir -p $DOCKER_HOME/shared && \
-    mkdir -p $DOCKER_HOME/.vnc && \
     mkdir -p $DOCKER_HOME/.ssh && \
     mkdir -p $DOCKER_HOME/.log && touch $DOCKER_HOME/.log/vnc.log && \
-    ln -s -f .config/zsh/zshrc /home/$DOCKER_USER/.zshrc && \
-    ln -s -f .config/zsh/zprofile /home/$DOCKER_USER/.zprofile && \
     echo "[ ! -f $HOME/WELCOME -o -z \"\$DISPLAY\" ] || cat $HOME/WELCOME" \
         >> $DOCKER_HOME/.profile && \
-    mkdir -p $DOCKER_HOME/.config/git && \
-    touch -d '50 years ago' $DOCKER_HOME/.config/git/config && \
-    ln -s -f .config/git/config /home/$DOCKER_USER/.gitconfig && \
     chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME
 
 WORKDIR $DOCKER_HOME
