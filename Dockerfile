@@ -44,7 +44,7 @@ ENV XMODIFIERS=@im=fcitx
 RUN echo "$DOCKER_TIMEZONE" > /etc/timezone && \
     ln -s -f /usr/share/zoneinfo/$DOCKER_TIMEZONE /etc/localtime
 
-ADD conf/ $DOCKER_HOME/.config
+ADD image/home $DOCKER_HOME/
 
 RUN im-config -n fcitx && \
     echo '@fcitx-autostart' >> $DOCKER_HOME/.config/lxsession/LXDE/autostart && \
