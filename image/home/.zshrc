@@ -56,5 +56,3 @@ alias la='ls -A'
 alias l='ls -CF'
 alias rm='rm -i'
 alias h='history'
-
-export NO_AT_BRIDGE=1
