@@ -43,4 +43,4 @@ echo "Open your web browser with URL:"
 echo "    http://localhost:6080/vnc.html?resize=downscale&autoconnect=1&password=$VNCPASS"
 
 # startup novnc
-/usr/local/noVNC/utils/launch.sh --listen 6080 > $DOCKER_HOME/.log/novnc.log 2>&1
+/usr/local/noVNC/utils/launch.sh --web /usr/local/noVNC --listen 6080 > $DOCKER_HOME/.log/novnc.log 2>&1
