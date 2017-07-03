@@ -249,6 +249,10 @@ if __name__ == "__main__":
                "-v", APP + args.tag + "_config:" + docker_home + "/.config",
                "-v", homedir + "/.ssh" + ":" + docker_home + "/.ssh"]
 
+    if os.path.exists(homedir + "/.gnupg"):
+        volumes += ["-v", homedir + "/.gnupg" +
+                    ":" + docker_home + "/.gnupg"]
+
     # Mount .gitconfig to Docker image
     if os.path.isfile(homedir + "/.gitconfig"):
         volumes += ["-v", homedir + "/.gitconfig" +
