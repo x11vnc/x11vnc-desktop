@@ -34,6 +34,7 @@ RUN locale-gen $LANG && \
         xdotool \
         zsh \
         git \
+        dos2unix \
         \
         openssh-server \
         g++ \
