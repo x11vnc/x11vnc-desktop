@@ -337,9 +337,9 @@ if __name__ == "__main__":
                         sys.stdout.write(url)
 
                         passwd = stdout_line[url.find('password=') + 9:]
-                        sys.stdout.write("\nFor a better user experience, use a VNC client " +
-                                         "(such as VNC Viewer for Google Chrome)\nto connect " +
-                                         "to localhost:%s with password %s\n" %
+                        sys.stdout.write("\nFor a better experience, use VNC Viewer (" +
+                                         'http://realvnc.com/download/viewer)\n' +
+                                         "to connect to localhost:%s with password %s\n" %
                                          (port_vnc, passwd))
 
                         if not args.no_browser:
