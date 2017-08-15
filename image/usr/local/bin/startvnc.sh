@@ -49,6 +49,11 @@ x11vnc -display :0 -xkb -forever -shared  -usepw >> $DOCKER_HOME/.log/x11vnc.log
 
 sudo service dbus start > $DOCKER_HOME/.log/dbus.log 2>&1
 
+(while [ true ]; do \
+     xset r on; \
+     sleep 1; \
+done) &
+
 echo "Open your web browser with URL:"
 echo "    http://localhost:6080/vnc.html?resize=downscale&autoconnect=1&password=$VNCPASS"
 
