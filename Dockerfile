@@ -57,7 +57,7 @@ RUN locale-gen $LANG && \
         x11vnc \
         dbus-x11 \
         \
-        qupzilla \
+        firefox \
         xpdf && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -104,6 +104,7 @@ RUN touch $DOCKER_HOME/.sudo_as_admin_successful && \
     mkdir -p $DOCKER_HOME/.ssh && \
     mkdir -p $DOCKER_HOME/.log && touch $DOCKER_HOME/.log/vnc.log && \
     echo "export NO_AT_BRIDGE=1" >> $DOCKER_HOME/.profile && \
+    ln -s -f .config/mozilla $HOME/.mozilla && \
     echo "[ ! -f $HOME/WELCOME -o -z \"\$DISPLAY\" ] || cat $HOME/WELCOME" \
         >> $DOCKER_HOME/.profile && \
     chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME
