@@ -31,9 +31,11 @@ RUN locale-gen $LANG && \
         rsync \
         bsdtar \
         net-tools \
+        inetutils-ping \
         xdotool \
         zsh \
         git \
+        dos2unix \
         \
         openssh-server \
         g++ \
@@ -55,7 +57,7 @@ RUN locale-gen $LANG && \
         x11vnc \
         dbus-x11 \
         \
-        qupzilla \
+        firefox \
         xpdf && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -66,7 +68,7 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
         setuptools && \
     pip2 install -U https://github.com/novnc/websockify/archive/master.tar.gz && \
     mkdir /usr/local/noVNC && \
-    curl -s -L https://github.com/x11vnc/noVNC/archive/next.tar.gz | \
+    curl -s -L https://github.com/x11vnc/noVNC/archive/master.tar.gz | \
          bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \
     rm -rf /tmp/* /var/tmp/*
 
