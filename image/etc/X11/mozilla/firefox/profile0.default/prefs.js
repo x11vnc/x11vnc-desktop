@@ -9,3 +9,5 @@
  */
 
 user_pref("browser.tabs.remote.autostart.2", false);
+user_pref("browser.startup.homepage", "https://www.google.com/");
+user_pref("browser.startup.page", 0);
