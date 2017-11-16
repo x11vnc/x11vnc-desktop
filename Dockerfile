@@ -7,7 +7,7 @@
 # Authors:
 # Xiangmin Jiao <xmjiao@gmail.com>
 
-FROM x11vnc/baseimage:0.9.22
+FROM x11vnc/baseimage:17.10
 LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
 ARG DOCKER_LANG=en_US
@@ -92,7 +92,6 @@ RUN useradd -m -s $DOCKER_SHELL -G sudo,docker_env $DOCKER_USER && \
     echo "$DOCKER_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
     echo "$DOCKER_TIMEZONE" > /etc/timezone && \
     ln -s -f /usr/share/zoneinfo/$DOCKER_TIMEZONE /etc/localtime && \
-    touch /etc/service/syslog-forwarder/down && \
     ldconfig
 
 ADD image/etc /etc

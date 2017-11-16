@@ -7,8 +7,8 @@ script:
   - docker --version
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_USERPASS"
   # Build only if the commit range of a push contains Dockerfile or .travis.yml
-  - 'docker build --tag x11vnc/desktop:16.04 --tag x11vnc/desktop:latest . &&
-     docker push x11vnc/desktop &&
+  - 'docker build --tag x11vnc/desktop:17.10 . &&
+     docker push x11vnc/desktop:17.10 &&
      touch success'
   # Test scripts
   - ./ubuntu_desktop.py -d -n -t latest && docker stop $(docker ps -q)
