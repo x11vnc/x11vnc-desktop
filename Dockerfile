@@ -38,9 +38,6 @@ RUN locale-gen $LANG && \
 ENV XMODIFIERS=@im=fcitx
 
 # Change the default timezone to $DOCKER_TIMEZONE
-# Disable forward logging (https://github.com/phusion/baseimage-docker/issues/186)
-# Run ldconfig so that /usr/local/lib etc. are in the default
-# search path for dynamic linker
 RUN echo "$DOCKER_TIMEZONE" > /etc/timezone && \
     ln -s -f /usr/share/zoneinfo/$DOCKER_TIMEZONE /etc/localtime
 
