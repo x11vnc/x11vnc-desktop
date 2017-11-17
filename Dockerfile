@@ -55,10 +55,10 @@ RUN locale-gen $LANG && \
         mesa-utils \
         libgl1-mesa-dri \
         x11vnc \
-        dbus-x11 \
         \
         firefox \
         xpdf && \
+    apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install websokify and noVNC
