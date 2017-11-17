@@ -7,7 +7,7 @@ script:
   - docker --version
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_USERPASS"
   # Build only if the commit range of a push contains Dockerfile or .travis.yml
-  - 'docker build --tag x11vnc/desktop:17.10 . &&
+  - 'docker build --tag x11vnc/desktop:17.10 --tag x11vnc/desktop:artful . &&
      docker push x11vnc/desktop:17.10 &&
      touch success'
   # Test scripts

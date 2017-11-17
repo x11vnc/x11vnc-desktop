@@ -32,7 +32,6 @@ RUN locale-gen $LANG && \
         bsdtar \
         net-tools \
         inetutils-ping \
-        xdotool \
         zsh \
         git \
         dos2unix \
