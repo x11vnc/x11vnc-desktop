@@ -68,7 +68,7 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
         setuptools && \
     pip2 install -U https://github.com/novnc/websockify/archive/master.tar.gz && \
     mkdir /usr/local/noVNC && \
-    curl -s -L https://github.com/x11vnc/noVNC/archive/master.tar.gz | \
+    curl -s -L https://github.com/x11vnc/noVNC/archive/next.tar.gz | \
          bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \
     rm -rf /tmp/* /var/tmp/*
 
@@ -84,7 +84,6 @@ ENV DOCKER_GROUP=$DOCKER_USER \
     HOME=/home/$DOCKER_USER
 
 # Change the default timezone to $DOCKER_TIMEZONE
-# Disable forward logging (https://github.com/phusion/baseimage-docker/issues/186)
 # Run ldconfig so that /usr/local/lib etc. are in the default
 # search path for dynamic linker
 RUN useradd -m -s $DOCKER_SHELL -G sudo,docker_env $DOCKER_USER && \
@@ -92,7 +91,6 @@ RUN useradd -m -s $DOCKER_SHELL -G sudo,docker_env $DOCKER_USER && \
     echo "$DOCKER_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
     echo "$DOCKER_TIMEZONE" > /etc/timezone && \
     ln -s -f /usr/share/zoneinfo/$DOCKER_TIMEZONE /etc/localtime && \
-    touch /etc/service/syslog-forwarder/down && \
     ldconfig
 
 ADD image/etc /etc
