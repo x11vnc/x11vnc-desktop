@@ -7,7 +7,7 @@
 # Authors:
 # Xiangmin Jiao <xmjiao@gmail.com>
 
-FROM x11vnc/baseimage:0.9.22
+FROM x11vnc/baseimage:17.10
 LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
 ARG DOCKER_LANG=en_US
@@ -32,7 +32,6 @@ RUN locale-gen $LANG && \
         bsdtar \
         net-tools \
         inetutils-ping \
-        xdotool \
         zsh \
         git \
         dos2unix \
@@ -55,10 +54,10 @@ RUN locale-gen $LANG && \
         mesa-utils \
         libgl1-mesa-dri \
         x11vnc \
-        dbus-x11 \
         \
         firefox \
         xpdf && \
+    apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install websokify and noVNC
