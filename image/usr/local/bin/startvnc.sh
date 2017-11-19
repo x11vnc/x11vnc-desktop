@@ -38,7 +38,7 @@ x11vnc -storepasswd $VNCPASS ~/.vnc/passwd > $DOCKER_HOME/.log/x11vnc.log 2>&1
 # https://ubuntuforums.org/showthread.php?t=1344610
 x11vnc -display :0 -xkb -repeat -forever -shared  -usepw >> $DOCKER_HOME/.log/x11vnc.log 2>&1 &
 
-sudo service dbus start > $DOCKER_HOME/.log/dbus.log 2>&1
+# sudo service dbus start > $DOCKER_HOME/.log/dbus.log 2>&1
 
 echo "Open your web browser with URL:"
 echo "    http://localhost:6080/vnc.html?resize=downscale&autoconnect=1&password=$VNCPASS"

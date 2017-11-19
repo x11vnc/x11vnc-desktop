@@ -33,6 +33,7 @@ RUN locale-gen $LANG && \
         net-tools \
         inetutils-ping \
         zsh \
+        build-essential \
         git \
         dos2unix \
         \
@@ -70,6 +71,23 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
     curl -s -L https://github.com/x11vnc/noVNC/archive/master.tar.gz | \
          bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \
     rm -rf /tmp/* /var/tmp/*
+
+# Install x11vnc from source
+# Install x-related to compile x11vnc from source code.
+# https://bugs.launchpad.net/ubuntu/+source/x11vnc/+bug/1686084
+RUN apt-get update && \
+    apt-get install -y libxtst-dev libssl-dev libjpeg-dev && \
+    \
+    mkdir -p /tmp/x11vnc-0.9.14 && \
+    curl -s -L http://x11vnc.sourceforge.net/dev/x11vnc-0.9.14-dev.tar.gz | \
+        bsdtar zxf - -C /tmp/x11vnc-0.9.14 --strip-components 1 && \
+    cd /tmp/x11vnc-0.9.14 && \
+    ./configure --prefix=/usr/local CFLAGS='-O2 -fno-stack-protector -Wall' && \
+    make && \
+    make install && \
+    apt-get -y remove libxtst-dev libssl-dev libjpeg-dev && \
+    apt-get -y autoremove && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ########################################################
 # Customization for user and location
