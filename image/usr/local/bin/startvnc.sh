@@ -34,9 +34,10 @@ export VNCPASS=`openssl rand -base64 6 | sed 's/\//-/'`
 mkdir -p $DOCKER_HOME/.vnc && \
 x11vnc -storepasswd $VNCPASS ~/.vnc/passwd > $DOCKER_HOME/.log/x11vnc.log 2>&1
 
-# Use the -repeat option to enable keyboard repeat
-# https://ubuntuforums.org/showthread.php?t=1344610
-x11vnc -display :0 -xkb -repeat -forever -shared  -usepw >> $DOCKER_HOME/.log/x11vnc.log 2>&1 &
+# Do not use -repeat option to enable keyboard repeat.
+# The user can use “xset r on" twice to re-enable it.
+export X11VNC_IDLE_TIMEOUT=2147483647
+x11vnc -display :0 -xkb -norepeat 2 -forever -shared  -usepw >> $DOCKER_HOME/.log/x11vnc.log 2>&1 &
 
 sudo service dbus start > $DOCKER_HOME/.log/dbus.log 2>&1
 
