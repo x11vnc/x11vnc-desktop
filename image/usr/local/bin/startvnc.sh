@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Start up VNC server and launch xlsession and novnc
+# Start up VNC server and launch xsession and novnc
 
 # Author: Xiangmin Jiao <xmjiao@gmail.com>
 

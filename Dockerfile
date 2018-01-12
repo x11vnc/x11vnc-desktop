@@ -32,6 +32,8 @@ RUN locale-gen $LANG && \
         bsdtar \
         net-tools \
         inetutils-ping \
+        csh \
+        tcsh \
         zsh \
         build-essential \
         git \
