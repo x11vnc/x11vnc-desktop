@@ -7,6 +7,6 @@ before_script:
 
 script:
   # Build image, test script and trigger children
-  - ./ci-util/build-docker.sh : x11vnc/desktop:latest,17.10,artful &&
-    ./ubuntu_desktop.py -d -n && docker stop $(docker ps -q) &&
-    ./ci-util/trigger-via-api.sh ${CHILDREN}
+  - './ci-util/build-docker.sh : x11vnc/desktop:latest,17.10,artful &&
+     ./ubuntu_desktop.py -d -n && docker stop $(docker ps -q) &&
+     ./ci-util/trigger-via-api.sh ${CHILDREN}'
