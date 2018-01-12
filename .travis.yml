@@ -3,7 +3,7 @@ language: python
 services: docker
 
 before_script:
-  - git clone --depth=1 https://$GIT_TOKEN:github.com/xmjiao/ci-util.git
+  - git clone --depth=1 https://$GIT_TOKEN@github.com/xmjiao/ci-util.git
 
 script:
   # Build image, test script and trigger children
