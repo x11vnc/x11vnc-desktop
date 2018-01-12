@@ -2,8 +2,6 @@ os: linux
 language: python
 services: docker
 
-env: CHILDREN=CHILDREN_${TRAVIS_BRANCH}
-
 before_script:
   - git clone --depth=1 https://$GIT_TOKEN@github.com/xmjiao/ci-util.git
 
@@ -11,4 +9,4 @@ script:
   # Build image, test script and trigger children
   - './ci-util/build-docker.sh : x11vnc/desktop:latest,17.10,artful &&
      ./ubuntu_desktop.py -d -n && docker stop $(docker ps -q) &&
-     ./ci-util/trigger-via-api.sh ${!CHILDREN}'
+     ./ci-util/trigger-via-api.sh

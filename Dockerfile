@@ -2,7 +2,7 @@
 #
 # The built image can be found at:
 #
-#   https://hub.docker.com/r/x11vnc/ubuntu
+#   https://hub.docker.com/r/x11vnc/desktop
 #
 # Authors:
 # Xiangmin Jiao <xmjiao@gmail.com>
