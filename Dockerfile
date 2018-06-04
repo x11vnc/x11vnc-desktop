@@ -31,6 +31,7 @@ RUN locale-gen $LANG && \
         rsync \
         bsdtar \
         net-tools \
+        gpg-agent \
         inetutils-ping \
         csh \
         tcsh \
