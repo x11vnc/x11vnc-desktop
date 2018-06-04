@@ -300,6 +300,7 @@ if __name__ == "__main__":
     port_http = str(find_free_port(6080, 50))
     port_vnc = str(find_free_port(5950, 50))
     subprocess.call(["docker", "run", "-d", rmflag, "--name", container,
+                     "--shm-size", "2g",
                      "-p", "127.0.0.1:" + port_http + ":6080",
                      "-p", "127.0.0.1:" + port_vnc + ":5900"] +
                     envs + volumes + devices + args.args +
