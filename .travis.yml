@@ -6,6 +6,6 @@ before_script:
   - git clone --depth=1 https://$GIT_TOKEN@github.com/xmjiao/ci-util.git
 
 script:
-  - './ci-util/build-docker.sh : x11vnc/desktop:18.04:bionic &&
+  - './ci-util/build-docker.sh : x11vnc/desktop:18.04,bionic &&
      ./ci-util/trigger-via-api.sh'
   - docker images
