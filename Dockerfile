@@ -2,12 +2,12 @@
 #
 # The built image can be found at:
 #
-#   https://hub.docker.com/r/x11vnc/ubuntu
+#   https://hub.docker.com/r/x11vnc/desktop
 #
 # Authors:
 # Xiangmin Jiao <xmjiao@gmail.com>
 
-FROM x11vnc/baseimage:0.9.22
+FROM x11vnc/baseimage:17.10
 LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
 ARG DOCKER_LANG=en_US
@@ -31,9 +31,12 @@ RUN locale-gen $LANG && \
         rsync \
         bsdtar \
         net-tools \
+        gpg-agent \
         inetutils-ping \
-        xdotool \
+        csh \
+        tcsh \
         zsh \
+        build-essential \
         git \
         dos2unix \
         \
@@ -55,10 +58,10 @@ RUN locale-gen $LANG && \
         mesa-utils \
         libgl1-mesa-dri \
         x11vnc \
-        dbus-x11 \
         \
         firefox \
         xpdf && \
+    apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install websokify and noVNC
@@ -71,6 +74,23 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
     curl -s -L https://github.com/x11vnc/noVNC/archive/next.tar.gz | \
          bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \
     rm -rf /tmp/* /var/tmp/*
+
+# Install x11vnc from source
+# Install x-related to compile x11vnc from source code.
+# https://bugs.launchpad.net/ubuntu/+source/x11vnc/+bug/1686084
+RUN apt-get update && \
+    apt-get install -y libxtst-dev libssl-dev libjpeg-dev && \
+    \
+    mkdir -p /tmp/x11vnc-0.9.14 && \
+    curl -s -L http://x11vnc.sourceforge.net/dev/x11vnc-0.9.14-dev.tar.gz | \
+        bsdtar zxf - -C /tmp/x11vnc-0.9.14 --strip-components 1 && \
+    cd /tmp/x11vnc-0.9.14 && \
+    ./configure --prefix=/usr/local CFLAGS='-O2 -fno-stack-protector -Wall' && \
+    make && \
+    make install && \
+    apt-get -y remove libxtst-dev libssl-dev libjpeg-dev && \
+    apt-get -y autoremove && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ########################################################
 # Customization for user and location

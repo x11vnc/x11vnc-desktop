@@ -6,7 +6,7 @@ This is a Docker image for Ubuntu with X11 and VNC. It is similar to
  - VNC is protected by a unique random password for each session
  - Desktop runs in a standard user account instead of the root account
  - Supports dynamic resizing of the desktop and 24-bit true color
- - Supports both Ubuntu 16.04 and 14.04, with very fast launching
+ - Supports Ubuntu 17.10, 16.04 and 14.04, with very fast launching
  - Support Simplified Chinese (add `-t zh_CN` to the command-line option for `ubuntu_desktop.py`)
  - Auto-starts in full-size resolution and auto-launches web-browser
  - Automatically shares the current work directory from host to Docker image

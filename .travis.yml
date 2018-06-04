@@ -1,15 +1,11 @@
 os: linux
-dist: trusty
 language: python
 services: docker
 
+before_script:
+  - git clone --depth=1 https://$GIT_TOKEN@github.com/xmjiao/ci-util.git
+
 script:
-  - docker --version
-  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_USERPASS"
-  # Always rebuild
-  - 'docker build --tag x11vnc/desktop:next . &&
-     docker push x11vnc/desktop:next &&
-     touch success'
-  # Test scripts
-  - ./ubuntu_desktop.py -d -n -t next && docker stop $(docker ps -q)
+  - './ci-util/build-docker.sh : x11vnc/desktop &&
+     ./ci-util/trigger-via-api.sh'
   - docker images
