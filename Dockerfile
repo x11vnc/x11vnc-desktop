@@ -7,7 +7,7 @@
 # Authors:
 # Xiangmin Jiao <xmjiao@gmail.com>
 
-FROM x11vnc/baseimage:18.04
+FROM x11vnc/baseimage:17.10
 LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
 ARG DOCKER_LANG=en_US
