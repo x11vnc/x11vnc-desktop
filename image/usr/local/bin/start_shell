@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cat $HOME/WELCOME 2> /dev/null
+exec $SHELL
