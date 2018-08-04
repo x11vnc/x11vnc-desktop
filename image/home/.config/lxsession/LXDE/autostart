@@ -1,4 +1,4 @@
 @lxpanel --profile LXDE
 @pcmanfm --desktop --profile LXDE
 @xscreensaver -no-splash
-@lxterminal -l -e zsh
+@lxterminal -e "cat $HOME/WELCOME 2> /dev/null; $SHELL"

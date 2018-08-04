@@ -25,6 +25,7 @@ export USER=$DOCKER_USER
 export LOGFILE=$DOCKER_USER
 
 eval `ssh-agent` > /dev/null
+export NO_AT_BRIDGE=1
 source $DOCKER_HOME/.profile
 
 /usr/bin/lxsession -s LXDE -e LXDE > $DOCKER_HOME/.log/lxsession.log 2>&1 &
