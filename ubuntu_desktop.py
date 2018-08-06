@@ -14,10 +14,13 @@ import sys
 import subprocess
 import time
 
-proj = "x11vnc"
-repo = "desktop"
-image = proj + '/' + repo
+owner = "x11vnc"
+proj = "ubuntu"
+image = owner + "/desktop"
 tag = ""
+projdir = "project"
+workdir = "project"
+config = proj + '_' + 'tag' + '_config'
 
 def parse_args(description):
     "Parse command-line arguments"
@@ -38,9 +41,14 @@ def parse_args(description):
                         default=tag)
 
     parser.add_argument('-v', '--volume',
-                        help='A data volume to be mounted at ~/project. ' +
-                        'The default is ' + repo + '_project.',
-                        default=repo + "_project")
+                        help='A data volume to be mounted at ~/" + projdir + ". ' +
+                        'The default is ' + proj + '_project.',
+                        default=proj + "_project")
+
+    parser.add_argument('-w', '--workdir',
+                        help='The starting work directory in container. ' +
+                        'The default is ~/' + workdir + '.',
+                        default=workdir)
 
     parser.add_argument('-p', '--pull',
                         help='Pull the latest Docker image. ' +
@@ -76,6 +84,7 @@ def parse_args(description):
     parser.add_argument('-N', '--nvidia',
                         help='Mount the Nvidia card for GPU computation. ' +
                         '(Linux only, experimental, sudo required).',
+                        action='store_true',
                         default="")
 
     parser.add_argument('-V', '--verbose',
@@ -88,12 +97,10 @@ def parse_args(description):
                         action='store_true',
                         default=False)
 
-    parser.add_argument('-a', '--args',
-                        help='All the arguments after -a will be passed to the ' +
-                        '"docker run" command. Useful for specifying ' +
-                        'resources and environment variables.',
-                        nargs=argparse.REMAINDER,
-                        default=[])
+    parser.add_argument('-A', '--args',
+                        help='Additional arguments for the "docker run" command. ' +
+                        'Useful for specifying additional resources or environment variables.',
+                        default="")
 
     args = parser.parse_args()
     # Append tag to image if the image has no tag
@@ -126,7 +133,7 @@ def id_generator(size=6):
     import string
 
     chars = string.ascii_lowercase
-    return repo + "-" + (''.join(random.choice(chars) for _ in range(size)))
+    return proj + "-" + (''.join(random.choice(chars) for _ in range(size)))
 
 
 def find_free_port(port, retries):
@@ -276,15 +283,14 @@ if __name__ == "__main__":
     if args.reset:
         try:
             if args.verbose:
-                stdout_write("Removing old docker volume " +
-                             repo + args.tag + "_config" + ".\n")
-            output = subprocess.check_output(["docker", "volume", "rm", "-f",
-                                              repo + args.tag + "_config"])
+                stdout_write("Removing old docker volume " + config + ".\n")
+            output = subprocess.check_output(
+                ["docker", "volume", "rm", "-f", config])
         except subprocess.CalledProcessError as e:
             stderr_write(e.output.decode('utf-8'))
 
     volumes = ["-v", pwd + ":" + docker_home + "/shared",
-               "-v", repo + "_" + args.tag + "_config:" + docker_home + "/.config",
+               "-v", config + ":" + docker_home + "/.config",
                "-v", homedir + "/.ssh" + ":" + docker_home + "/.ssh"]
 
     if os.path.exists(homedir + "/.gnupg"):
@@ -300,17 +306,19 @@ if __name__ == "__main__":
         if args.clear:
             try:
                 if args.verbose:
-                    stdout_write("Removing old docker volume " +
-                                 repo + args.tag + "_config" + ".\n")
+                    stdout_write(
+                        "Removing old docker volume " + config + ".\n")
                 output = subprocess.check_output(["docker", "volume",
                                                   "rm", "-f", args.volume])
             except subprocess.CalledProcessError as e:
                 stderr_write(e.output.decode('utf-8'))
 
-        volumes += ["-v", args.volume + ":" + docker_home + "/project",
-                    "-w", docker_home + "/project"]
+        volumes += ["-v", args.volume + ":" + docker_home + "/" + projdir]
+
+    if args.workdir[0] == '/':
+        volumes += ["-w", args.workdir]
     else:
-        volumes += ["-w", docker_home + "/shared"]
+        volumes += ["-w", docker_home + "/" + args.workdir]
 
     stderr_write("Starting up docker image...\n")
     if subprocess.check_output(["docker", "--version"]). \
@@ -357,6 +365,7 @@ if __name__ == "__main__":
     # Start the docker image in the background and pipe the stderr
     port_http = str(find_free_port(6080, 50))
     port_vnc = str(find_free_port(5950, 50))
+
     if not port_http or not port_vnc:
         stderr_write("Error: Could not find a free port.\n")
         sys.exit(-1)
@@ -364,7 +373,7 @@ if __name__ == "__main__":
     cmd = ["docker", "run", "-d", rmflag, "--name", container,
                      "--shm-size", "2g", "-p", "127.0.0.1:" + port_http + ":6080",
                      "-p", "127.0.0.1:" + port_vnc + ":5900"] + \
-        envs + volumes + devices + args.args + \
+        envs + volumes + devices + args.args.split() + \
         ['--security-opt', 'seccomp=unconfined',
          args.image, "startvnc.sh >> " +
          docker_home + "/.log/vnc.log"]
