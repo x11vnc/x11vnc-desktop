@@ -7,5 +7,8 @@ before_script:
 
 script:
   - './ci-util/build-docker.sh : x11vnc/desktop &&
-     ./ci-util/trigger-via-api.sh'
-  - docker images
+     TAG=`./ci-util/new_built_tag.sh`
+     ./ubuntu_desktop.py -t "$TAG" -d -n -V && docker stop $(docker ps -q)'
+
+after_success:
+  - ./ci-util/trigger-via-api.sh

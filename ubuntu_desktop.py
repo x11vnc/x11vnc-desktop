@@ -3,7 +3,7 @@
 """
 Launch a Docker image with Ubuntu and LXDE window manager, and
 automatically open up the URL in the default web browser. 
-It also sets up ssh port forwarding.
+It also sets up port forwarding for ssh.
 """
 
 # Author: Xiangmin Jiao <xmjiao@gmail.com>
