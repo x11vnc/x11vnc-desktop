@@ -13,9 +13,10 @@ from __future__ import print_function
 import sys
 import subprocess
 import time
+import os
 
 owner = "x11vnc"
-proj = "ubuntu"
+proj = os.path.basename(sys.argv[0]).split('_')[0]
 image = owner + "/desktop"
 tag = ""
 projdir = "project"
@@ -205,7 +206,6 @@ def handle_interrupt(container):
 
 
 if __name__ == "__main__":
-    import os
     import webbrowser
     import platform
     import glob
