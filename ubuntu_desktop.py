@@ -33,7 +33,7 @@ def parse_args(description):
     parser.add_argument('-t', '--tag',
                         help='Tag of the image. The default is latest. ' +
                         'If the image already has a tag, its tag prevails.',
-                        default="")
+                        default="latest")
 
     parser.add_argument('-v', '--volume',
                         help='A data volume to be mounted at ~/' + APP + '. ' +
