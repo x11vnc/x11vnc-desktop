@@ -7,8 +7,7 @@ before_script:
 
 script:
   - './ci-util/build-docker.sh : x11vnc/desktop &&
-     TAG=`./ci-util/new_built_tag.sh`
-     ./ubuntu_desktop.py -t "$TAG" -d -n -V && docker stop $(docker ps -q)'
+     ./ubuntu_desktop.py -t $TRAVIS_BRANCH -d -n -V && docker stop $(docker ps -q)'
 
 after_success:
   - ./ci-util/trigger-via-api.sh

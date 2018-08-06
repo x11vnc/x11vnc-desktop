@@ -14,8 +14,10 @@ import sys
 import subprocess
 import time
 
-APP = "ubuntu"
-
+proj = "x11vnc"
+repo = "desktop"
+image = proj + '/' + repo
+tag = ""
 
 def parse_args(description):
     "Parse command-line arguments"
@@ -27,18 +29,18 @@ def parse_args(description):
 
     parser.add_argument('-i', '--image',
                         help='The Docker image to use. ' +
-                        'The default is x11vnc/desktop.',
-                        default="x11vnc/desktop")
+                        'The default is ' + image + '.',
+                        default=image)
 
     parser.add_argument('-t', '--tag',
                         help='Tag of the image. The default is latest. ' +
                         'If the image already has a tag, its tag prevails.',
-                        default="latest")
+                        default=tag)
 
     parser.add_argument('-v', '--volume',
-                        help='A data volume to be mounted at ~/' + APP + '. ' +
-                        'The default is ' + APP + '_project.',
-                        default=APP + "_project")
+                        help='A data volume to be mounted at ~/project. ' +
+                        'The default is ' + repo + '_project.',
+                        default=repo + "_project")
 
     parser.add_argument('-p', '--pull',
                         help='Pull the latest Docker image. ' +
@@ -124,7 +126,7 @@ def id_generator(size=6):
     import string
 
     chars = string.ascii_lowercase
-    return APP + "-" + (''.join(random.choice(chars) for _ in range(size)))
+    return repo + "-" + (''.join(random.choice(chars) for _ in range(size)))
 
 
 def find_free_port(port, retries):
@@ -275,14 +277,14 @@ if __name__ == "__main__":
         try:
             if args.verbose:
                 stdout_write("Removing old docker volume " +
-                             APP + args.tag + "_config" + ".\n")
+                             repo + args.tag + "_config" + ".\n")
             output = subprocess.check_output(["docker", "volume", "rm", "-f",
-                                              APP + args.tag + "_config"])
+                                              repo + args.tag + "_config"])
         except subprocess.CalledProcessError as e:
             stderr_write(e.output.decode('utf-8'))
 
     volumes = ["-v", pwd + ":" + docker_home + "/shared",
-               "-v", APP + args.tag + "_config:" + docker_home + "/.config",
+               "-v", repo + "_" + args.tag + "_config:" + docker_home + "/.config",
                "-v", homedir + "/.ssh" + ":" + docker_home + "/.ssh"]
 
     if os.path.exists(homedir + "/.gnupg"):
@@ -299,7 +301,7 @@ if __name__ == "__main__":
             try:
                 if args.verbose:
                     stdout_write("Removing old docker volume " +
-                                 APP + args.tag + "_config" + ".\n")
+                                 repo + args.tag + "_config" + ".\n")
                 output = subprocess.check_output(["docker", "volume",
                                                   "rm", "-f", args.volume])
             except subprocess.CalledProcessError as e:
@@ -396,9 +398,6 @@ if __name__ == "__main__":
                     ind = stdout_line.find("http://localhost:")
 
                     if ind >= 0:
-                        if args.verbose:
-                            stdout_write(stdout_line)
-
                         # Open browser if found URL
                         url = stdout_line.replace(":6080/",
                                                   ':' + port_http + "/")
