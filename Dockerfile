@@ -21,7 +21,7 @@ WORKDIR /tmp
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Install some required system tools and packages for X Windows
+# Install some required system tools and packages for X Windows and enable ssh
 RUN locale-gen $LANG && \
     dpkg-reconfigure -f noninteractive locales && \
     apt-get update && \
@@ -57,11 +57,18 @@ RUN locale-gen $LANG && \
         xfonts-base xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic \
         mesa-utils \
         libgl1-mesa-dri \
+        xauth \
         x11vnc \
         \
         firefox \
         xpdf && \
     apt-get -y autoremove && \
+    ssh-keygen -A && \
+    perl -p -i -e 's/#?X11Forwarding\s+\w+/X11Forwarding yes/g; \
+        s/#?X11UseLocalhost\s+\w+/X11UseLocalhost no/g; \
+        s/#?PasswordAuthentication\s+\w+/PasswordAuthentication no/g; \
+        s/#?PermitEmptyPasswords\s+\w+/PermitEmptyPasswords no/g' \
+        /etc/ssh/sshd_config && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install websokify and noVNC
@@ -107,7 +114,7 @@ ENV DOCKER_GROUP=$DOCKER_USER \
 # Run ldconfig so that /usr/local/lib etc. are in the default
 # search path for dynamic linker
 RUN useradd -m -s $DOCKER_SHELL -G sudo,docker_env $DOCKER_USER && \
-    echo "$DOCKER_USER:docker" | chpasswd && \
+    echo "$DOCKER_USER:"`openssl rand -base64 12` | chpasswd && \
     echo "$DOCKER_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
     echo "$DOCKER_TIMEZONE" > /etc/timezone && \
     ln -s -f /usr/share/zoneinfo/$DOCKER_TIMEZONE /etc/localtime && \
