@@ -253,7 +253,8 @@ if __name__ == "__main__":
     if args.pull or not img:
         try:
             if args.verbose:
-                stdout_write("Pulling latest docker image " + args.image + '.\n')
+                stdout_write("Pulling latest docker image " +
+                             args.image + '.\n')
             err = subprocess.call(["docker", "pull", args.image])
         except BaseException:
             err = -1
@@ -273,8 +274,8 @@ if __name__ == "__main__":
     if args.reset:
         try:
             if args.verbose:
-                stdout_write("Removing old docker volume " + \
-                    APP + args.tag + "_config" + ".\n")
+                stdout_write("Removing old docker volume " +
+                             APP + args.tag + "_config" + ".\n")
             output = subprocess.check_output(["docker", "volume", "rm", "-f",
                                               APP + args.tag + "_config"])
         except subprocess.CalledProcessError as e:
@@ -297,8 +298,8 @@ if __name__ == "__main__":
         if args.clear:
             try:
                 if args.verbose:
-                    stdout_write("Removing old docker volume " + \
-                        APP + args.tag + "_config" + ".\n")
+                    stdout_write("Removing old docker volume " +
+                                 APP + args.tag + "_config" + ".\n")
                 output = subprocess.check_output(["docker", "volume",
                                                   "rm", "-f", args.volume])
             except subprocess.CalledProcessError as e:
@@ -371,7 +372,6 @@ if __name__ == "__main__":
 
     subprocess.call(cmd)
 
-
     wait_for_url = True
 
     # Wait for user to press Ctrl-C
@@ -406,13 +406,15 @@ if __name__ == "__main__":
 
                         passwd = stdout_line[url.find('password=') + 9:]
                         stdout_write("\nFor a better experience, use VNC Viewer (" +
-                                         'http://realvnc.com/download/viewer)\n' +
-                                         "to connect to localhost:%s with password %s\n" %
-                                         (port_vnc, passwd))
+                                     'http://realvnc.com/download/viewer)\n' +
+                                     "to connect to localhost:%s with password %s\n" %
+                                     (port_vnc, passwd))
 
-                        print("You can also run 'ssh -X -p " + port_ssh + " " + \
-                            docker_user + "@localhost'" + " to log into the container\n" + 
-                            "using an authorized key in ~/.ssh/authorized_keys on this localhost.\n")
+                        stdout_write("You can also run 'ssh -X -p " + port_ssh + " " +
+                                     docker_user + "@localhost'" +
+                                     " to log into the container\n" +
+                                     "using an authorized key in " +
+                                     homedir + "/.ssh/authorized_keys.\n")
 
                         if not args.no_browser:
                             wait_net_service(int(port_http))
@@ -442,7 +444,8 @@ if __name__ == "__main__":
             try:
                 # If Docker process no long exists, exit
                 if args.verbose:
-                    stdout_write("Check whether docker container is running.\n")
+                    stdout_write(
+                        "Check whether docker container is running.\n")
                 if not subprocess.check_output(['docker', 'ps',
                                                 '-q', '-f',
                                                 'name=' + container]):
