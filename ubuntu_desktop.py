@@ -290,8 +290,7 @@ if __name__ == "__main__":
             stderr_write(e.output.decode('utf-8'))
 
     volumes = ["-v", pwd + ":" + docker_home + "/shared",
-               "-v", config + ":" + docker_home + "/.config",
-               "-v", homedir + "/.ssh" + ":" + docker_home + "/.ssh"]
+               "-v", config + ":" + docker_home + "/.config"]
 
     if os.path.exists(homedir + "/.gnupg"):
         volumes += ["-v", homedir + "/.gnupg" +
