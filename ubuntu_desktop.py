@@ -368,7 +368,7 @@ if __name__ == "__main__":
          docker_home + "/.log/vnc.log"]
 
     if args.verbose:
-        stdout_write(' '.join(cmd[:-2]) + ' "' + cmd[-1] + '"\n')
+        stdout_write(' '.join(cmd[:-1]) + ' "' + cmd[-1] + '"\n')
 
     subprocess.call(cmd)
 
