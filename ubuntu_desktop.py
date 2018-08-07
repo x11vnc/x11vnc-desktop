@@ -348,7 +348,7 @@ if __name__ == "__main__":
     if not port_ssh:
         stderr_write("Error: Could not find a free port.\n")
         sys.exit(-1)
-    envs += ["-p", "127.0.0.1:" + port_ssh + ":22"]
+    envs += ["-p", port_ssh + ":22"]
 
     # Create directory .ssh if not exist
     if not os.path.exists(homedir + "/.ssh"):
@@ -370,8 +370,8 @@ if __name__ == "__main__":
         sys.exit(-1)
 
     cmd = ["docker", "run", "-d", rmflag, "--name", container,
-                     "--shm-size", "2g", "-p", "127.0.0.1:" + port_http + ":6080",
-                     "-p", "127.0.0.1:" + port_vnc + ":5900"] + \
+                     "--shm-size", "2g", "-p", port_http + ":6080",
+                     "-p", port_vnc + ":5900"] + \
         envs + volumes + devices + args.args.split() + \
         ['--security-opt', 'seccomp=unconfined',
          args.image, "startvnc.sh >> " +
@@ -417,8 +417,8 @@ if __name__ == "__main__":
                                      "to connect to localhost:%s with password %s\n" %
                                      (port_vnc, passwd))
 
-                        stdout_write("You can also run 'ssh -X -p " + port_ssh + " " +
-                                     docker_user + "@localhost'" +
+                        stdout_write("You can also use command 'ssh -X -p " + port_ssh + " " +
+                                     docker_user + "@localhost -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'" +
                                      " to log into the container\n" +
                                      "using an authorized key in " +
                                      homedir + "/.ssh/authorized_keys.\n")
