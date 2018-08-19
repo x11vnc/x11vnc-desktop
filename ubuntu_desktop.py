@@ -373,7 +373,7 @@ if __name__ == "__main__":
                      "--shm-size", "2g", "-p", port_http + ":6080",
                      "-p", port_vnc + ":5900"] + \
         envs + volumes + devices + args.args.split() + \
-        ['--security-opt', 'seccomp=unconfined',
+        ['--security-opt', 'seccomp=unconfined', '--cap-add=SYS_PTRACE',
          args.image, "startvnc.sh >> " +
          docker_home + "/.log/vnc.log"]
 
