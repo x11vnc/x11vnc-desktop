@@ -6,8 +6,9 @@ before_script:
   - git clone --depth=1 https://$GIT_TOKEN@github.com/xmjiao/ci-util.git
 
 script:
-  - './ci-util/build-docker.sh : x11vnc/desktop &&
-     ./ubuntu_desktop.py -t $TRAVIS_BRANCH -d -n -V && docker stop $(docker ps -q)'
+  - 'touch $HOME/.skip_push &&
+    ./ci-util/build-docker.sh : x11vnc/desktop &&
+    ./ubuntu_desktop.py -t $TRAVIS_BRANCH -d -n -V && docker stop $(docker ps -q)'
 
 after_success:
   - ./ci-util/trigger-via-api.sh
