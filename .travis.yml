@@ -6,7 +6,7 @@ services: docker
 before_script:
   - git clone --depth=1 https://$GIT_TOKEN@github.com/xmjiao/ci-util.git
   - 'sudo apt-get update -qqq && 
-     sudo apt-get install -y squashfs-tools ibarchive-dev'
+     sudo apt-get install -y squashfs-tools libarchive-dev'
   - 'git clone https://github.com/singularityware/singularity.git singularity_src &&
     cd singularity_src && git fetch --all && git checkout 2.6.0 &&
     ./autogen.sh && ./configure --prefix=/usr/local && 
