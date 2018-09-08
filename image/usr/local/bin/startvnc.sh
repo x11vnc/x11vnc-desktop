@@ -16,13 +16,15 @@
 err_handle()
 {
     if [ -n "$SSH_AGENT_PID" ]; then
-        ssh-agent -k 2> /dev/null
+        ssh-agent -k > /dev/null
     fi
     rm -f /tmp/.X${DISP}-lock
     pkill -P $$
 }
 
-trap err_handle EXIT TERM
+trap "" INT
+trap exit TERM
+trap err_handle EXIT
 
 # unset all environment variables related to desktop manager
 for var in $(env | cut -d= -f1 | grep -E "^XDG|SESSION|^GTK|XKEYS|WINDOWMANAGER|XAUTHORITY"); do
