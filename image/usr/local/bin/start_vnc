@@ -1,12 +1,6 @@
 #!/bin/bash
 
 # Start up VNC server and launch xsession and novnc
-#
-# Usage: 
-#    startvnc.sh [resolution]
-# where the resolution by default is 1440x900.
-# One can also pass the resolution using the RESOLUT environment variable.
-#
 # It will use the first available display between :0 and :9. VNC will be 
 # started using port 5900+DISPLAY and the NoVNC will use port 6080+DISPLAY.
 
@@ -22,6 +16,21 @@ err_handle()
     pkill -P $$
 }
 
+if [ "$1" = "-h" -o "$1" = "--help" ]; then
+    if [ -n "$SINGULARITY_NAME" ]; then
+        CMD="singularity run $SINGULARITY_NAME"
+    else
+        CMD=$0
+    fi
+    echo "Usage:"
+    echo
+    echo "    $CMD [-s resolution]"
+    echo
+    echo "where resolution has the format <width>x<height>. The default resolution"
+    echo "is 1440x900."
+    exit
+fi
+
 trap "" INT
 trap exit TERM
 trap err_handle EXIT
@@ -32,8 +41,8 @@ for var in $(env | cut -d= -f1 | grep -E "^XDG|SESSION|^GTK|XKEYS|WINDOWMANAGER|
 done
 
 # Start up xdummy with the given size
-if [ -n "$1" ]; then
-    RESOLUT=$1
+if [ -n "$2" ]; then
+    RESOLUT=$2
 else
     RESOLUT="${RESOLUT:-1440x900}"
 fi

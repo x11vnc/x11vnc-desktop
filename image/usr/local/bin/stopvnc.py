@@ -15,7 +15,7 @@ def clickLogout():
     if os.getenv('SESSION_PID'):
         subprocess.call(['pkill', '-P', os.getenv('SESSION_PID')])
     else:
-        subprocess.call(['killall', 'startvnc.sh'])
+        subprocess.call(['sudo', 'kill', 'my_init'])
 
 
 bgc = "steelblue3"

@@ -124,6 +124,7 @@ ENV DOCKER_GROUP=$DOCKER_USER \
     DOCKER_HOME=/home/$DOCKER_USER \
     SHELL=$DOCKER_SHELL
 
+
 # Change the default timezone to $DOCKER_TIMEZONE
 # Run ldconfig so that /usr/local/lib etc. are in the default
 # search path for dynamic linker
@@ -149,6 +150,8 @@ RUN mkdir -p $DOCKER_HOME/.config/mozilla && \
 
 WORKDIR $DOCKER_HOME
 
+ENV DOCKER_CMD=start_vnc
+
 USER root
-ENTRYPOINT ["/sbin/my_init", "--quiet", "--", "/sbin/setuser", "ubuntu", "/bin/bash", "-c"]
-CMD ["startvnc.sh"]
+ENTRYPOINT ["/sbin/my_init", "--quiet", "--", "/sbin/setuser", "ubuntu"]
+CMD ["$DOCKER_CMD"]

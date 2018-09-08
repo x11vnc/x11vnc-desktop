@@ -55,14 +55,22 @@ def main():
         os.environ['UID'] = str(user.pw_uid)
 
     try:
-        os.execvp(sys.argv[2], sys.argv[2:])
+        # Append $DOCKER_CMD (or, if empty, $SHELL) for Singularity
+        if len(sys.argv) <= 2 or len(sys.argv[2].strip()) == 0:
+            args = [os.getenv("DOCKER_CMD", os.getenv('SHELL'))]
+        elif sys.argv[2].strip()[:1] =='-':
+            args = [os.getenv("DOCKER_CMD")] + sys.argv[2:]
+        else:
+            args = sys.argv[2:]
+
+        os.execvp('/bin/bash', ['-c', '--noprofile', '--rcfile', '/etc/profile'] + args)
     except OSError as e:
         abort("cannot execute %s: %s" % (sys.argv[2], str(e)))
 
 if __name__ == '__main__':
 
-    if len(sys.argv) < 3:
-        sys.stderr.write("Usage: /sbin/setuser USERNAME COMMAND [args..]\n")
+    if len(sys.argv) < 2:
+        sys.stderr.write("Usage: /sbin/setuser USERNAME [COMMAND args..]\n")
         sys.exit(1)
 
     main()
