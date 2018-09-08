@@ -8,11 +8,14 @@ try:
     import tkinter as tk
 except:
     import Tkinter as tk
-
+import os
 
 def clickLogout():
     import subprocess
-    subprocess.call(['killall', 'startvnc.sh'])
+    if os.getenv('SESSION_PID'):
+        subprocess.call(['kill', os.getenv('SESSION_PID')])
+    else:
+        subprocess.call(['killall', 'startvnc.sh'])
 
 
 bgc = "steelblue3"

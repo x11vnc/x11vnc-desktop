@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cat $HOME/WELCOME 2> /dev/null
+cat $DOCKER_HOME/WELCOME 2> /dev/null
 exec $SHELL
