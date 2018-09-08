@@ -13,7 +13,7 @@ import os
 def clickLogout():
     import subprocess
     if os.getenv('SESSION_PID'):
-        subprocess.call(['kill', os.getenv('SESSION_PID')])
+        subprocess.call(['pkill', '-P', os.getenv('SESSION_PID')])
     else:
         subprocess.call(['killall', 'startvnc.sh'])
 

@@ -16,13 +16,13 @@
 err_handle()
 {
     if [ -n "$SSH_AGENT_PID" ]; then
-        kill $SSH_AGENT_PID 2> /dev/null
+        ssh-agent -k 2> /dev/null
     fi
     rm -f /tmp/.X${DISP}-lock
     pkill -P $$
 }
 
-trap err_handle ERR EXIT
+trap err_handle EXIT TERM
 
 # unset all environment variables related to desktop manager
 for var in $(env | cut -d= -f1 | grep -E "^XDG|SESSION|^GTK|XKEYS|WINDOWMANAGER|XAUTHORITY"); do
@@ -38,7 +38,7 @@ fi
 SCREEN_SIZE=`echo $RESOLUT | sed -e "s/x/ /"`
 
 # Find an available display and set ports for VNC and NoVNC
-for i in $(seq 1 9); do
+for i in $(seq 0 9); do
     if [ ! -e /tmp/.X${i}-lock ]; then
         DISP=$i
         break
@@ -69,7 +69,6 @@ perl -i -p -e "s/Virtual \d+ \d+/Virtual $SCREEN_SIZE/" $HOME/.config/X11/xorg.c
 mkdir -p $HOME/.log
 Xorg -noreset -logfile $HOME/.log/Xorg.log -config $HOME/.config/X11/xorg.conf :$DISP \
     2> $HOME/.log/Xorg_err.log &
-export XORG_PID=$!
 sleep 0.1
 
 # startup lxsession with proper environment variables

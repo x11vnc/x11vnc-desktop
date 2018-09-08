@@ -1,6 +1,29 @@
 #!/usr/bin/python3 -u
 # -*- coding: utf-8 -*-
 
+'''
+Copyright (c) 2013-2015 Phusion Holding B.V.
+Copyright (c) 2018 Xiangmin Jiao
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+'''
+
 import argparse
 import errno
 import json
@@ -55,9 +78,7 @@ def debug(message):
         sys.stderr.write("*** %s\n" % message)
 
 
-def ignore_signals_and_raise_keyboard_interrupt(signame):
-    signal.signal(signal.SIGTERM, signal.SIG_IGN)
-    signal.signal(signal.SIGINT, signal.SIG_IGN)
+def raise_keyboard_interrupt(signame):
     raise KeyboardInterrupt(signame)
 
 
@@ -326,6 +347,22 @@ def install_insecure_key():
     run_command_killable("/usr/sbin/enable_insecure_key")
 
 
+def handle_interrupt(signame, command, pid):
+    """Handle keyboard interrupt"""
+    try:
+        if signame == "SIGTERM":
+            raise KeyboardInterrupt
+        print("Press Ctrl-C again to stop the container: ")
+        time.sleep(5)
+        print('Invalid response. Resuming...')
+    except KeyboardInterrupt:
+        signal.signal(signal.SIGTERM, signal.SIG_IGN)
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
+        print('*** Stopping the container.')
+        stop_child_process(command, pid)
+        raise
+
+
 def main(args):
     import_envvars(False, False)
     export_envvars()
@@ -356,21 +393,22 @@ def main(args):
         else:
             info("Running %s..." % " ".join(args.main_command))
             pid = os.spawnvp(os.P_NOWAIT, args.main_command[0], args.main_command)
-            try:
-                exit_code = waitpid_reap_other_children(pid)
-                if exit_code is None:
-                    info("%s exited with unknown status." % args.main_command[0])
-                    exit_status = 1
-                else:
-                    exit_status = os.WEXITSTATUS(exit_code)
-                    info("%s exited with status %d." % (args.main_command[0], exit_status))
-            except KeyboardInterrupt:
-                stop_child_process(args.main_command[0], pid)
-                raise
-            except BaseException:
-                warn("An error occurred. Aborting.")
-                stop_child_process(args.main_command[0], pid)
-                raise
+            while True:
+                try:
+                    exit_code = waitpid_reap_other_children(pid)
+                    if exit_code is None:
+                        info("%s exited with unknown status." % args.main_command[0])
+                        exit_status = 1
+                    else:
+                        exit_status = os.WEXITSTATUS(exit_code)
+                        info("%s exited with status %d." % (args.main_command[0], exit_status))
+                    break
+                except KeyboardInterrupt as e:
+                    handle_interrupt(str(e), args.main_command[0], pid)
+                except BaseException:
+                    warn("An error occurred. Aborting.")
+                    stop_child_process(args.main_command[0], pid)
+                    raise
         sys.exit(exit_status)
     finally:
         if not args.skip_runit:
@@ -415,13 +453,11 @@ if args.skip_runit and len(args.main_command) == 0:
     sys.exit(1)
 
 # Run main function.
-signal.signal(signal.SIGTERM, lambda signum, frame: ignore_signals_and_raise_keyboard_interrupt('SIGTERM'))
-signal.signal(signal.SIGINT, lambda signum, frame: ignore_signals_and_raise_keyboard_interrupt('SIGINT'))
+signal.signal(signal.SIGTERM, lambda signum, frame: raise_keyboard_interrupt('SIGTERM'))
 signal.signal(signal.SIGALRM, lambda signum, frame: raise_alarm_exception())
 try:
     main(args)
 except KeyboardInterrupt:
-    warn("Init system aborted.")
     exit(2)
 finally:
     if args.kill_all_on_exit:
