@@ -11,3 +11,5 @@ fi
 if [ -d "$HOME/.local/bin" -a -z "$(echo $PATH | grep $HOME/.local/bin)" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
+
+export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/tmp/runtime-$USER}
