@@ -36,7 +36,7 @@ trap cleanup EXIT
 
 # unset all environment variables related to desktop manager
 for var in $(env | cut -d= -f1 | grep -E \
-	"^XDG|SESSION|^GTK|XKEYS|WINDOWMANAGER|XAUTHORITY"); do
+	"^XDG|SESSION|^GTK|XKEYS|WINDOWMANAGER"); do
     unset $var
 done
 
@@ -88,7 +88,7 @@ if [ $HOME/.zprofile ]; then
 fi
 
 # start ssh-agent if not set by caller and stop if automatically
-if [ -z "$SSH_CONNECTION" ]; then
+if [ -z "$SSH_AUTH_SOCK" ]; then
     eval `ssh-agent -s` > /dev/null
 fi
 
