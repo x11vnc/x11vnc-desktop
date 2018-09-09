@@ -62,6 +62,7 @@ RUN apt-get update && \
         gnome-themes-standard \
         gtk2-engines-pixbuf \
         gtk2-engines-murrine \
+        libcanberra-gtk-module libcanberra-gtk3-module \
         ttf-ubuntu-font-family \
         xfonts-base xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic \
         mesa-utils \
