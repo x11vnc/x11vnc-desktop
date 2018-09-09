@@ -409,6 +409,11 @@ if os.geteuid():
     args.skip_runit = True
     args.kill_all_on_exit = False
 
+    # unset environment variable related to X11
+    for var in ['XDG_RUNTIME_DIR', 'XAUTHORITY']:
+        if os.getenv(var):
+            del os.environ[var]
+            os.unsetenv(var)
 
 if args.skip_runit and len(args.main_command) == 0:
     error("When --skip-runit is given, you must also pass a main command.")
