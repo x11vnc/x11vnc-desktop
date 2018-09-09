@@ -1,6 +1,6 @@
-emulate sh
+[ -n "$ZSH_VERSION" ] && emulate sh
 . /etc/profile
-emulate zsh
+[ -n "$ZSH_VERSION" ] && emulate zsh
 
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/bin" -a -z "$(echo $PATH | grep $HOME/bin)" ] ; then

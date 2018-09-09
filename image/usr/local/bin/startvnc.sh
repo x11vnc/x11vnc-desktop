@@ -36,7 +36,8 @@ trap exit TERM
 trap err_handle EXIT
 
 # unset all environment variables related to desktop manager
-for var in $(env | cut -d= -f1 | grep -E "^XDG|SESSION|^GTK|XKEYS|WINDOWMANAGER|XAUTHORITY"); do
+for var in $(env | cut -d= -f1 | grep -E \
+	"^XDG|SESSION|^GTK|XKEYS|WINDOWMANAGER|XAUTHORITY"); do
     unset $var
 done
 
@@ -83,8 +84,8 @@ Xorg -noreset -logfile $HOME/.log/Xorg.log -config $HOME/.config/X11/xorg.conf :
 sleep 0.1
 
 # startup lxsession with proper environment variables
-if [ -e $HOME/.profile ]; then
-    source $HOME/.profile
+if [ $HOME/.zprofile ]; then
+   source $HOME/.zprofile
 fi
 
 # start ssh-agent if not set by caller and stop if automatically
