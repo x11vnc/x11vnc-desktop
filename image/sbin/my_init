@@ -411,7 +411,7 @@ if os.geteuid():
 
     # unset environment variable related to X11
     for var in ['XDG_RUNTIME_DIR', 'XAUTHORITY']:
-        if os.getenv(var):
+        if os.getenv(var).startwith('/run'):
             del os.environ[var]
             os.unsetenv(var)
 
