@@ -355,7 +355,12 @@ def main(args):
                         info("Runit exited with status %d" % exit_status)
         else:
             info("Running %s..." % " ".join(args.main_command))
-            pid = os.spawnvp(os.P_NOWAIT, args.main_command[0], args.main_command)
+            if os.getenv('SINGULARITY_CONTAINER'):
+                # when running with singularity, replace current process
+                os.execvp(args.main_command[0], args.main_command)
+            else:
+                pid = os.spawnvp(os.P_NOWAIT, args.main_command[0], args.main_command)
+
             try:
                 exit_code = waitpid_reap_other_children(pid)
                 if exit_code is None:

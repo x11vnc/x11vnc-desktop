@@ -7,7 +7,7 @@
 # Author: Xiangmin Jiao <xmjiao@gmail.com>
 # Copyright Xiangmin Jiao 2017--2018. All rights reserved.
 
-err_handle()
+cleanup()
 {
     if [ -n "$SSH_AGENT_PID" ]; then
         ssh-agent -k > /dev/null
@@ -32,7 +32,7 @@ if [ "$1" = "-h" -o "$1" = "--help" ]; then
 fi
 
 trap exit TERM
-trap err_handle EXIT
+trap cleanup EXIT
 
 # unset all environment variables related to desktop manager
 for var in $(env | cut -d= -f1 | grep -E \
