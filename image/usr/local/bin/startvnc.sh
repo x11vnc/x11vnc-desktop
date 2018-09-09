@@ -31,7 +31,6 @@ if [ "$1" = "-h" -o "$1" = "--help" ]; then
     exit
 fi
 
-trap "" INT
 trap exit TERM
 trap err_handle EXIT
 
