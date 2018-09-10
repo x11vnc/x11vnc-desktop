@@ -31,7 +31,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
         less \
-        vim-tiny \
+        vim \
         psmisc \
         runit \
         apt-transport-https ca-certificates \
@@ -80,7 +80,6 @@ RUN apt-get update && \
         s/#?PasswordAuthentication\s+\w+/PasswordAuthentication no/g; \
         s/#?PermitEmptyPasswords\s+\w+/PermitEmptyPasswords no/g' \
         /etc/ssh/sshd_config && \
-    ln -s -f /usr/bin/vim.tiny /usr/bin/vim && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install websokify and noVNC
