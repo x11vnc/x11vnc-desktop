@@ -50,7 +50,7 @@ SCREEN_SIZE=`echo $RESOLUT | sed -e "s/x/ /"`
 
 # Find an available display and set ports for VNC and NoVNC
 for i in $(seq 0 9); do
-    if [ ! -e /tmp/.X${i}-lock ]; then
+    if [ ! -e /tmp/.X${i}-lock -a ! -e /tmp/.X11-unix/X${i} ]; then
         DISP=$i
         break
     fi

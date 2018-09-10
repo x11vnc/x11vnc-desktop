@@ -119,7 +119,7 @@ RUN apt-get update && \
 ENV DOCKER_USER=ubuntu \
     DOCKER_UID=9999 \
     DOCKER_GID=9999 \
-    DOCKER_SHELL=/usr/bin/zsh
+    DOCKER_SHELL=/bin/zsh
 
 ENV DOCKER_GROUP=$DOCKER_USER \
     DOCKER_HOME=/home/$DOCKER_USER \
