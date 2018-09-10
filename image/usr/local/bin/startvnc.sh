@@ -80,6 +80,7 @@ perl -i -p -e "s/Virtual \d+ \d+/Virtual $SCREEN_SIZE/" $HOME/.config/X11/xorg.c
 mkdir -p $HOME/.log
 Xorg -noreset -logfile $HOME/.log/Xorg.log -config $HOME/.config/X11/xorg.conf :$DISP \
     2> $HOME/.log/Xorg_err.log &
+XORG_PID=$!
 sleep 0.1
 
 # startup lxsession with proper environment variables
@@ -93,6 +94,7 @@ if [ -z "$SSH_AUTH_SOCK" ]; then
 fi
 
 /usr/bin/lxsession -s LXDE -e LXDE > $HOME/.log/lxsession.log 2>&1 &
+LXSESSION_PID=$!
 
 # startup x11vnc with a new password
 export VNCPASS=`openssl rand -base64 6 | sed 's/\//-/'`
@@ -103,11 +105,21 @@ x11vnc -storepasswd $VNCPASS ~/.vnc/passwd > $HOME/.log/x11vnc.log 2>&1
 # The user can use “xset r on" twice to re-enable it.
 export X11VNC_IDLE_TIMEOUT=2147483647
 x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -norepeat 2 -forever -shared -usepw >> $HOME/.log/x11vnc.log 2>&1 &
+X11VNC_PID=$!
+
+# startup novnc
+/usr/local/noVNC/utils/launch.sh --web /usr/local/noVNC \
+    --vnc localhost:$VNC_PORT --listen $WEB_PORT > $HOME/.log/novnc.log 2>&1 &
+NOVNC_PID=$1
+
+# Error checking
+ps $XORG_PID > /dev/null || { cat $HOME/.log/Xorg_err.log && exit -1; }
+ps $LXSESSION_PID > /dev/null || { cat $HOME/.log/lxsession.log && exit -1; }
+ps $X11VNC_PID > /dev/null || { cat $HOME/.log/x11vnc.log && exit -1; }
+ps $NOVNC_PID > /dev/null || { cat $HOME/.log/novnc.log && exit -1; }
 
 echo "Open your web browser with URL:"
 echo "    http://localhost:$WEB_PORT/vnc.html?resize=downscale&autoconnect=1&password=$VNCPASS"
 echo "or connect your VNC viewer to localhost:$VNC_PORT with password $VNCPASS"
 
-# startup novnc
-/usr/local/noVNC/utils/launch.sh --web /usr/local/noVNC \
-    --vnc localhost:$VNC_PORT --listen $WEB_PORT > $HOME/.log/novnc.log 2>&1
+wait
