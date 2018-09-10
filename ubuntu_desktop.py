@@ -21,7 +21,6 @@ image = owner + "/desktop"
 tag = ""
 projdir = "project"
 workdir = "project"
-config = proj + '_' + 'tag' + '_config'
 
 def parse_args(description):
     "Parse command-line arguments"
@@ -211,6 +210,7 @@ if __name__ == "__main__":
     import glob
 
     args = parse_args(description=__doc__)
+    config = proj + '_' + args.tag + '_config'
 
     if args.quiet:
         def print(*args, **kwargs):
@@ -373,7 +373,7 @@ if __name__ == "__main__":
                      "--shm-size", "2g", "-p", port_http + ":6080",
                      "-p", port_vnc + ":5900"] + \
         envs + volumes + devices + args.args.split() + \
-        ['--security-opt', 'seccomp=unconfined',
+        ['--security-opt', 'seccomp=unconfined', '--cap-add=SYS_PTRACE',
          args.image, "startvnc.sh >> " +
          docker_home + "/.log/vnc.log"]
 

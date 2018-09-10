@@ -19,6 +19,13 @@ move_to_config()
   fi
 }
 
+# If running with a different HOME directory, copy configuration files
+if [ "$DOCKER_HOME" != "$HOME" ]; then
+    rsync -au $DOCKER_HOME/.config/ $HOME/.config/
+    rsync -au $DOCKER_HOME/.zshrc $HOME/.zshrc
+    rsync -au $DOCKER_HOME/.zprofile $HOME/.zprofile
+    exit 0
+fi
 
 if [ -e $DOCKER_HOME/.config/init_vnc ]; then
     bash $DOCKER_HOME/.config/init_vnc
