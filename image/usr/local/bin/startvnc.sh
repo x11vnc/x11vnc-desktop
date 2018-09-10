@@ -69,12 +69,13 @@ export NO_AT_BRIDGE=1
 export SESSION_PID=$$
 
 # Initialize configurations
-/usr/local/bin/init_vnc
-
 mkdir -p $HOME/.config/X11
 cp /etc/X11/xorg.conf $HOME/.config/X11
+
 grep -s -q $RESOLUT $HOME/.config/X11/xorg.conf && \
 perl -i -p -e "s/Virtual \d+ \d+/Virtual $SCREEN_SIZE/" $HOME/.config/X11/xorg.conf
+
+/usr/local/bin/init_vnc && sync
 
 # Start Xorg
 mkdir -p $HOME/.log

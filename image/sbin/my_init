@@ -415,7 +415,7 @@ if os.geteuid():
     args.kill_all_on_exit = False
 
     # unset environment variable related to X11
-    for var in ['XDG_RUNTIME_DIR', 'XAUTHORITY', 'SSH_AUTH_SOCK']:
+    for var in ['XDG_RUNTIME_DIR', 'XAUTHORITY', 'SSH_AUTH_SOCK', 'GPG_AGENT_INFO']:
         if os.getenv(var) and os.environ[var].startswith('/run'):
             del os.environ[var]
             os.unsetenv(var)
