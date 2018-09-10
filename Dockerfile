@@ -48,6 +48,7 @@ RUN apt-get update && \
         tcsh \
         zsh \
         build-essential \
+        libssl-dev \
         git \
         dos2unix \
         \
