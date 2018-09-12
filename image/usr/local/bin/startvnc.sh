@@ -103,9 +103,9 @@ mkdir -p $HOME/.vnc && \
 x11vnc -storepasswd $VNCPASS ~/.vnc/passwd > $HOME/.log/x11vnc.log 2>&1
 
 # Do not use -repeat option to enable keyboard repeat.
-# The user can use “xset r on" twice to re-enable it.
+# The user can use “xset r on" to re-enable it.
 export X11VNC_IDLE_TIMEOUT=2147483647
-x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -norepeat 2 -forever -shared -usepw >> $HOME/.log/x11vnc.log 2>&1 &
+x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -norepeat 0 -forever -shared -usepw >> $HOME/.log/x11vnc.log 2>&1 &
 X11VNC_PID=$!
 
 # startup novnc
