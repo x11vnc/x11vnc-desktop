@@ -1,21 +1,21 @@
-# Docker Image for Ubuntu with X11 and VNC
+# Docker Image for CentOS 7.5 with X11 and VNC
 
-This is a Docker image for Ubuntu with X11 and VNC. It is similar to
-[fcwu/docker-ubuntu-vnc-desktop](https://github.com/fcwu/docker-ubuntu-vnc-desktop), but with enhancements on security and features.
+This is a Docker image for CentOS 7.5 with X11 and VNC. It is similar to
+[fcwu/docker-ubuntu-vnc-desktop](https://github.com/fcwu/docker-ubuntu-vnc-desktop), but it is based on CentOS 7.5, with enhancements on security and features.
 
  - VNC is protected by a unique random password for each session
  - Desktop runs in a standard user account instead of the root account
  - Supports dynamic resizing of the desktop and 24-bit true color
- - Supports Ubuntu 18.04, 17.10, 16.04 and 14.04, with very fast launching
- - Support Simplified Chinese (add `-t zh_CN` to the command-line option for `ubuntu_desktop.py`)
+ - Supports CentOS 7.5 with LXQT desktop manager
  - Auto-starts in full-size resolution and auto-launches web-browser
  - Automatically shares the current work directory from host to Docker image
  - Is compatible with Singularity (tested with Singularity v2.6)
 
-[![Build Status](https://travis-ci.org/x11vnc/docker-desktop.svg?branch=18.04)](https://travis-ci.org/x11vnc/docker-desktop)
-[![Docker Image](https://images.microbadger.com/badges/image/x11vnc/desktop:18.04.svg)](https://microbadger.com/images/x11vnc/desktop)
+[![Build Status](https://travis-ci.org/x11vnc/x11vnc-desktop.svg?branch=centos7)](https://travis-ci.org/x11vnc/x11vnc-desktop)
+[![Docker Image](https://images.microbadger.com/badges/image/x11vnc/desktop:centos7.svg]
+(https://microbadger.com/images/x11vnc/desktop:centos7)
 
-![screenshot](https://raw.github.com/x11vnc/x11vnc-desktop/18.04/screenshots/screenshot.png)
+![screenshot](https://raw.github.com/x11vnc/x11vnc-desktop/centos7/screenshots/screenshot.png)
 
 ## Preparation for Using with Docker
 Before you start, you need to first install Python and Docker on
@@ -45,23 +45,18 @@ Then, log out and log back in before you can use Docker.
 To run the Docker image, first download the script [`x11vnc_desktop.py`](https://raw.githubusercontent.com/x11vnc/x11vnc-desktop/centos7/x11vnc_desktop.py)
 and save it to the working directory where you will store your codes and data. You can download the script using command line: On Windows, start `Windows PowerShell`, use the `cd` command to change to the working directory where you will store your codes and data, and then run the following command:
 ```
-curl https://raw.githubusercontent.com/x11vnc/x11vnc-desktop/18.04/x11vnc_desktop.py -outfile x11vnc_desktop.py
+curl https://raw.githubusercontent.com/x11vnc/x11vnc-desktop/centos7/x11vnc_desktop.py -outfile x11vnc_desktop.py
 ```
 On Linux or Mac, start a terminal, use the `cd` command to change to the working directory, and then run the following command:
 ```
-curl -s -O https://raw.githubusercontent.com/x11vnc/x11vnc-desktop/18.04/x11vnc_desktop.py
+curl -s -O https://raw.githubusercontent.com/x11vnc/x11vnc-desktop/centos7/x11vnc_desktop.py
 ```
 
 After downloading the script, you can start the Docker image using the command
 ```
-python x11vnc_desktop.py -p -t 18.04
+python x11vnc_desktop.py -p -t centos7
 ```
 This will download and run the Docker image and then launch your default web browser to show the desktop environment. The `-p` option is optional, and it instructs the Python script to pull and update the image to the latest version. The work directory by default will be mapped to the current working directory on your host.
-
-To use the Chinese localization, use the command
-```
-python ubuntu_desktop.py -t zh_CN
-```
 
 For additional command-line options, use the command
 ```
@@ -100,7 +95,7 @@ singularity run docker://x11vnc/desktop:centos7
 
 Alternatively, you may use the commands
 ```
-singularity pull --name x11vnc-desktop:18.04.simg docker://x11vnc/desktop:18.04
+singularity pull --name x11vnc-desktop:centos7.simg docker://x11vnc/desktop:centos7
 ./x11vnc-desktop:centos7.simg
 ```
 
