@@ -1,5 +1,0 @@
-# This file will be sourced by ~/.zprofile in singularity image
-
-if [ -e $DOCKER_HOME/.local/bin ]; then
-    PATH=$DOCKER_HOME/.local/bin:$PATH
-fi
