@@ -11,3 +11,8 @@ fi
 if [ -d "$HOME/.local/bin" -a -z "$(echo $PATH | grep $HOME/.local/bin)" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
+
+# append additional path in Docker container for singularity user
+if [ "$USER" != "$DOCKER_USER" -a -e $DOCKER_HOME/.docker_path ]; then
+    source $DOCKER_HOME/.docker_path
+fi
