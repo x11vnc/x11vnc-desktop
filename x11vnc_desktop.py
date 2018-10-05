@@ -18,7 +18,7 @@ import os
 owner = "x11vnc"
 proj = os.path.basename(sys.argv[0]).split('_')[0]
 image = owner + "/desktop"
-tag = ""
+tag = "18.04"
 projdir = "project"
 workdir = "project"
 
@@ -36,7 +36,7 @@ def parse_args(description):
                         default=image)
 
     parser.add_argument('-t', '--tag',
-                        help='Tag of the image. The default is latest. ' +
+                        help='Tag of the image. The default is 18.04. ' +
                         'If the image already has a tag, its tag prevails.',
                         default=tag)
 
