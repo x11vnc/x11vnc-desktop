@@ -42,7 +42,7 @@ sudo adduser $USER docker
 Then, log out and log back in before you can use Docker.
 
 ## Running the Docker Image
-To run the Docker image, first download the script [`x11vnc_desktop.py`](https://raw.githubusercontent.com/x11vnc/x11vnc-desktop/centos7/x11vnc_desktop.py)
+To run the Docker image, first download the script [`x11vnc_desktop.py`](https://raw.githubusercontent.com/x11vnc/x11vnc-desktop/18.04/x11vnc_desktop.py)
 and save it to the working directory where you will store your codes and data. You can download the script using command line: On Windows, start `Windows PowerShell`, use the `cd` command to change to the working directory where you will store your codes and data, and then run the following command:
 ```
 curl https://raw.githubusercontent.com/x11vnc/x11vnc-desktop/18.04/x11vnc_desktop.py -outfile x11vnc_desktop.py
@@ -95,13 +95,13 @@ It is recommended you use Singularity v2.6 or later.
 
 To use the Docker image with Singularity, please issue the commands
 ```
-singularity run docker://x11vnc/desktop:centos7
+singularity run docker://x11vnc/desktop:18.04
 ```
 
 Alternatively, you may use the commands
 ```
 singularity pull --name x11vnc-desktop:18.04.simg docker://x11vnc/desktop:18.04
-./x11vnc-desktop:centos7.simg
+./x11vnc-desktop:18.04.simg
 ```
 
 Notes regarding singularity:
