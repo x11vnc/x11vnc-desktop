@@ -18,7 +18,7 @@ import os
 owner = "x11vnc"
 proj = os.path.basename(sys.argv[0]).split('_')[0]
 image = owner + "/desktop"
-tag = ""
+tag = "latest"
 projdir = "project"
 workdir = "project"
 
