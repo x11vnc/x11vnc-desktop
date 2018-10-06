@@ -8,7 +8,6 @@ This is a Docker image for Ubuntu with X11 and VNC. It is similar to
  - Supports dynamic resizing of the desktop and 24-bit true color
  - Supports Ubuntu 18.04, 17.10, 16.04 and 14.04, with very fast launching
  - Support Simplified Chinese (add `-t zh_CN` to the command-line option for `ubuntu_desktop.py`)
- - Auto-starts in full-size resolution and auto-launches web-browser
  - Automatically shares the current work directory from host to Docker image
  - Is compatible with Singularity (tested with Singularity v2.6)
 
@@ -67,12 +66,6 @@ For additional command-line options, use the command
 ```
 python x11vnc_desktop.py -h
 ```
-
-To resize the desktop, start `lxterminal` within the desktop and run the `xrandr` command with the `-s <width>x<height>` option. For example, use the command
-```
-xrandr -s 1920x1080
-```
-to change the desktop size to 1920x1080.
 
 ### Building Your Own Images
 
