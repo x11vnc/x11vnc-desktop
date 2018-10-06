@@ -1,15 +1,8 @@
-# ~/.profile: executed by the command interpreter for login shells.
-# This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login
-# exists.
-# see /usr/share/doc/bash/examples/startup-files for examples.
-# the files are located in the bash-doc package.
+# $DOCKER_HOME/.profile: executed by the command interpreter for login shells.
 
-# Note: For best compatability with Singularity images, use $DOCKER_HOME
-# instead of $HOME when initializing the path
-
-# the default umask is set in /etc/profile; for setting the umask
-# for ssh logins, install and configure the libpam-umask package.
-#umask 022
+# Note: It is sourced automatically when Docker or Singularity starts.
+# For best compatability with Singularity images, use $DOCKER_HOME
+# instead of $HOME when initializing the paths.
 
 # if running bash
 if [ -n "$BASH_VERSION" ]; then
@@ -29,7 +22,9 @@ if [ -d "$DOCKER_HOME/.local/bin" -a -z "$(echo $PATH | grep $DOCKER_HOME/.local
     PATH="$DOCKER_HOME/.local/bin:$PATH"
 fi
 
-# Set additional environment variables for Docker image
-if [ -n "$SINGULARITY_CONTAINER" -a -e $DOCKER_HOME/.docker_envs ]; then
-    . $DOCKER_HOME/.docker_envs
+# initialize the configuration of zsh
+if [ "$DOCKER_HOME" != "$HOME" ]; then
+    # copy from $DOCKER_HOME to $HOME for Singularity
+    rsync -aub $DOCKER_HOME/.zshrc $HOME/.zshrc
+    rsync -aub $DOCKER_HOME/.zprofile $HOME/.zprofile
 fi
