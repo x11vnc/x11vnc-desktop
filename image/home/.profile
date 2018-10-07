@@ -24,6 +24,7 @@ fi
 
 # initialize the configuration of zsh
 if [ "$DOCKER_HOME" != "$HOME" ]; then
+    export PYTHONUSERBASE=$DOCKER_HOME/.local
     # copy from $DOCKER_HOME to $HOME for Singularity
     rsync -aub $DOCKER_HOME/.zshrc $HOME/.zshrc
     rsync -aub $DOCKER_HOME/.zprofile $HOME/.zprofile
