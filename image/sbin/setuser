@@ -40,8 +40,8 @@ def main():
     using execvp(3) to execute the command without the necessity of a TTY
     '''
 
-    # change user only if current user is root
     if os.geteuid() == 0:
+        # change user only if current user is root
         username = sys.argv[1]
         try:
             user = pwd.getpwnam(username)
@@ -53,6 +53,13 @@ def main():
         os.environ['USER'] = username
         os.environ['HOME'] = user.pw_dir
         os.environ['UID'] = str(user.pw_uid)
+    elif os.getenv("SINGULARITY_NAME"):
+        # When running in Singularity, remove all the environment 
+        # variables associated with python
+        for key in ['PYTHONPATH', 'PYTHONUSERBASE', 
+            'PYTHONUSERSITE', 'PYTHONNOUSERSITE']:
+            if key in os.environ:
+                del os.environ[key]
 
     try:
         # Append $DOCKER_CMD (or, if empty, $SHELL) for Singularity
