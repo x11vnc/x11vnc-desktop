@@ -67,7 +67,7 @@ RUN apt-get update && \
         libcanberra-gtk-module libcanberra-gtk3-module \
         ttf-ubuntu-font-family \
         xfonts-base xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic \
-        mesa-utils libglu1-mesa libgl1-mesa-dri \
+        mesa-utils libglu1-mesa libgl1-mesa-dri libjpeg8 libjpeg62 \
         xauth \
         x11vnc \
         \
