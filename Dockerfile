@@ -76,6 +76,7 @@ RUN apt-get update && \
     chmod 755 /usr/local/share/zsh/site-functions && \
     apt-get -y autoremove && \
     ssh-keygen -A && \
+    ln -s -f /lib64/ld-linux-x86-64.so.2 /lib64/ld-lsb-x86-64.so && \
     perl -p -i -e 's/#?X11Forwarding\s+\w+/X11Forwarding yes/g; \
         s/#?X11UseLocalhost\s+\w+/X11UseLocalhost no/g; \
         s/#?PasswordAuthentication\s+\w+/PasswordAuthentication no/g; \
