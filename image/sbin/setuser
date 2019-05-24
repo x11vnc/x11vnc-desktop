@@ -70,8 +70,8 @@ def main():
         else:
             args = " ".join(sys.argv[2:])
 
-        # Always source /etc/.profile and $DOCKER_HOME/.profile to set up path
-        args = "source /etc/profile && source $DOCKER_HOME/.profile; " + args
+        # Always source /etc/profile and $HOME/.zprofile to set up path
+        args = "source /etc/profile && source $HOME/.zprofile; " + args
 
         os.execvp('/bin/bash', ['--', '--noprofile', '-c', args])
     except OSError as e:
