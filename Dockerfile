@@ -23,13 +23,13 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Install some required system tools and packages for X Windows and ssh
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         apt-utils \
         locales \
         language-pack-en && \
     locale-gen $LANG && \
     dpkg-reconfigure -f noninteractive locales && \
-    apt-get install -y --no-install-recommends \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         curl \
         less \
         vim \
