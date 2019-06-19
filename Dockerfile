@@ -25,6 +25,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         apt-utils \
+        apt-file \
         locales \
         language-pack-en && \
     locale-gen $LANG && \
@@ -67,7 +68,7 @@ RUN apt-get update && \
         libcanberra-gtk-module libcanberra-gtk3-module \
         ttf-ubuntu-font-family \
         xfonts-base xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic \
-        mesa-utils libglu1-mesa libgl1-mesa-dri libjpeg8 libjpeg62 \
+        libopengl0 mesa-utils libglu1-mesa libgl1-mesa-dri libjpeg8 libjpeg62 \
         xauth \
         x11vnc \
         \
