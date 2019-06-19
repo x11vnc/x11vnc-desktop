@@ -6,10 +6,10 @@ This is a Docker image for Ubuntu with X11 and VNC. It is similar to
  - VNC is protected by a unique random password for each session
  - Desktop runs in a standard user account instead of the root account
  - Supports dynamic resizing of the desktop and 24-bit true color
- - Supports Ubuntu 18.04, 17.10, 16.04 and 14.04, with very fast launching
+ - Supports Ubuntu LTS releases 18.04, 16.04 and 14.04, with very fast launching
  - Support Simplified Chinese (add `-t zh_CN` to the command-line option for `ubuntu_desktop.py`)
  - Automatically shares the current work directory from host to Docker image
- - Is compatible with Singularity (tested with Singularity v2.6)
+ - Is compatible with Singularity (tested with Singularity v2.6 and v3.2)
 
 [![Build Status](https://travis-ci.org/x11vnc/docker-desktop.svg?branch=master)](https://travis-ci.org/x11vnc/docker-desktop)
 [![Docker Image](https://images.microbadger.com/badges/image/x11vnc/desktop:master.svg)](https://microbadger.com/images/x11vnc/desktop)
@@ -79,7 +79,7 @@ and then use the `x11vnc_desktop.py` command.
 ## Use with Singularity
 
 This Docker image is constructed to be compatible with Singularity. This 
-has been tested with Singularity v2.6. If you system does not yet have
+has been tested with Singularity v2.6 and v3.2. If you system does not yet have
 Singularity, you may need to install it by following [these instructions](https://www.sylabs.io/guides/2.6/user-guide/quick_start.html#quick-installation-steps).
 You must have root access in order to install Singularity, but you can use
 Singularity as a regular user after it has been installed. If you do not
