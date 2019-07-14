@@ -54,6 +54,7 @@ RUN apt-get update && \
         dos2unix \
         \
         openssh-server \
+        python \
         python3 \
         python3-distutils \
         python3-tk \
@@ -87,10 +88,10 @@ RUN apt-get update && \
 
 # Install websokify and noVNC
 RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
-    python3 get-pip.py && \
-    pip3 install --no-cache-dir \
+    python2 get-pip.py && \
+    pip2 install --no-cache-dir \
         setuptools && \
-    pip3 install -U https://github.com/novnc/websockify/archive/v0.8.0.tar.gz && \
+    pip2 install -U https://github.com/novnc/websockify/archive/60acf3c.tar.gz && \
     mkdir /usr/local/noVNC && \
     curl -s -L https://github.com/x11vnc/noVNC/archive/master.tar.gz | \
          bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \
