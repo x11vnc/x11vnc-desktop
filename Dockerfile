@@ -55,7 +55,8 @@ RUN apt-get update && \
         \
         openssh-server \
         python \
-        python-tk \
+        python3 \
+        python3-distutils \
         python3-tk \
         \
         xserver-xorg-video-dummy \
@@ -90,7 +91,7 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
     python2 get-pip.py && \
     pip2 install --no-cache-dir \
         setuptools && \
-    pip2 install -U https://github.com/novnc/websockify/archive/master.tar.gz && \
+    pip2 install -U https://github.com/novnc/websockify/archive/60acf3c.tar.gz && \
     mkdir /usr/local/noVNC && \
     curl -s -L https://github.com/x11vnc/noVNC/archive/master.tar.gz | \
          bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \
