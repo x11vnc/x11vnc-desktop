@@ -193,14 +193,18 @@ def get_screen_resolution():
 def handle_interrupt(container):
     """Handle keyboard interrupt"""
     try:
-        print("Press Ctrl-C again to stop the server: ")
+        print("Press Ctrl-C again to stop the container: ")
         time.sleep(5)
         print('Invalid response. Resuming...')
     except KeyboardInterrupt:
-        print('*** Stopping the server.')
-        subprocess.Popen(["docker", "exec", container,
-                          "killall", "my_init"],
-                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print('*** Stopping the container ' + container)
+        if platform.system() == "Windows":
+            subprocess.check_output(["docker", "stop", container])
+        else:
+            subprocess.Popen(["docker", "exec", container,
+                              "killall", "my_init"],
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
         sys.exit(0)
 
 
@@ -417,10 +421,11 @@ if __name__ == "__main__":
                                      "to connect to localhost:%s with password %s\n" %
                                      (port_vnc, passwd))
 
-                        stdout_write("You can also log into the container using the command\n    ssh -X -p " + port_ssh + " " +
-                                     docker_user + "@localhost -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no\n" +
-                                     "with an authorized key in " +
-                                     homedir + "/.ssh/authorized_keys.\n")
+                        if platform.system() != 'Windows':
+                            stdout_write("You can also log into the container using the command\n    ssh -X -p " + port_ssh + " " +
+                                         docker_user + "@localhost -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no\n" +
+                                         "with an authorized key in " +
+                                         homedir + "/.ssh/authorized_keys.\n")
 
                         if not args.no_browser:
                             wait_net_service(int(port_http))
@@ -438,7 +443,7 @@ if __name__ == "__main__":
                 print('To stop it, use "docker stop ' + container + '".')
                 sys.exit(0)
 
-            print("Press Ctrl-C to stop the server.")
+            print("Press Ctrl-C to stop the container.")
             time.sleep(1)
 
             # Wait until the container exits or Ctlr-C is pressed
@@ -451,7 +456,7 @@ if __name__ == "__main__":
                 # If Docker process no long exists, exit
                 if args.verbose:
                     stdout_write(
-                        "Check whether docker container is running.\n")
+                        "Check whether the docker container is running.\n")
                 if not subprocess.check_output(['docker', 'ps',
                                                 '-q', '-f',
                                                 'name=' + container]):
