@@ -23,7 +23,7 @@ if [ -d "$DOCKER_HOME/.local/bin" -a -z "$(echo $PATH | grep $DOCKER_HOME/.local
 fi
 
 # initialize the configuration of zsh
-if [ "$DOCKER_HOME" != "$HOME" ]; then
+if [ -n "$SINGULARITY_NAME" ]; then
     # copy from $DOCKER_HOME to $HOME for Singularity
     rsync -aub $DOCKER_HOME/.zshrc $HOME/.zshrc
     rsync -aub $DOCKER_HOME/.zprofile $HOME/.zprofile
