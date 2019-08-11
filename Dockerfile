@@ -52,12 +52,14 @@ RUN apt-get update && \
         libssl-dev \
         git \
         dos2unix \
+        dbus-x11 \
         \
         openssh-server \
         python \
         python3 \
         python3-distutils \
         python3-tk \
+        python3-dbus \
         \
         xserver-xorg-video-dummy \
         lxde \
