@@ -28,3 +28,8 @@ if [ -n "$SINGULARITY_NAME" ]; then
     rsync -aub $DOCKER_HOME/.zshrc $HOME/.zshrc
     rsync -aub $DOCKER_HOME/.zprofile $HOME/.zprofile
 fi
+
+# Use native OpenGL rendering for remote display
+if [ "${DISPLAY:0:1}" != ":" ]; then
+    export LIBGL_ALWAYS_INDIRECT=1
+fi
