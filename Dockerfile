@@ -22,6 +22,7 @@ WORKDIR /tmp
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Install some required system tools and packages for X Windows and ssh
+# Also remove the message regarding unminimize
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         apt-utils \
@@ -86,6 +87,7 @@ RUN apt-get update && \
         s/#?PasswordAuthentication\s+\w+/PasswordAuthentication no/g; \
         s/#?PermitEmptyPasswords\s+\w+/PermitEmptyPasswords no/g' \
         /etc/ssh/sshd_config && \
+    rm -f /etc/update-motd.d/??-unminimize && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install websokify and noVNC
