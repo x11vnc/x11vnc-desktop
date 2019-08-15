@@ -30,6 +30,9 @@ if [ -n "$SINGULARITY_NAME" ]; then
 fi
 
 # Use native OpenGL rendering for remote display
-if [ "${DISPLAY:0:1}" != ":" ]; then
+if [ -n "$DISPLAY" -a "${DISPLAY:0:1}" != ":" ]; then
     export LIBGL_ALWAYS_INDIRECT=1
+else
+    export LIBGL_ALWAYS_INDIRECT=0
 fi
+
