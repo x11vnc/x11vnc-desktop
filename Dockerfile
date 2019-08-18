@@ -117,7 +117,7 @@ RUN apt-get update && \
     ./configure --prefix=/usr/local CFLAGS='-O2 -fno-stack-protector -Wall' && \
     make && \
     make install && \
-    perl -e 's/,\s*ISO_Left_Tab/Tab/g' -p -i /usr/share/X11/xkb/symbols/pc && \
+    perl -e 's/,\s*ISO_Left_Tab//g' -p -i /usr/share/X11/xkb/symbols/pc && \
     apt-get -y remove libxtst-dev libssl-dev libjpeg-dev && \
     apt-get -y autoremove && \
     ldconfig && \
