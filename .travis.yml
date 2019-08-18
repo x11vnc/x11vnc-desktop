@@ -1,4 +1,5 @@
 os: linux
+sudo: required
 language: python
 services: docker
 
@@ -7,5 +8,7 @@ before_script:
 
 script:
   - './ci-util/build-docker.sh : x11vnc/desktop &&
-     ./ci-util/trigger-via-api.sh'
-  - docker images
+     ./x11vnc_desktop.py -t $TRAVIS_BRANCH -d -n -V && docker stop $(docker ps -q)'
+
+after_success:
+  - ./ci-util/trigger-via-api.sh

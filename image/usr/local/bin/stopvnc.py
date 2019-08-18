@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 """
 Stop VNC server and exit Docker desktop
@@ -8,11 +8,14 @@ try:
     import tkinter as tk
 except:
     import Tkinter as tk
-
+import os
 
 def clickLogout():
     import subprocess
-    subprocess.call(['killall', 'startvnc.sh'])
+    if os.getenv('SESSION_PID'):
+        subprocess.call(['pkill', '-P', os.getenv('SESSION_PID')])
+    else:
+        subprocess.call(['sudo', 'kill', 'my_init'])
 
 
 bgc = "steelblue3"

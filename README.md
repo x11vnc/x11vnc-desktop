@@ -8,16 +8,17 @@ This is a Docker image for Ubuntu with X11 and VNC. It is similar to
  - Supports dynamic resizing of the desktop and 24-bit true color
  - Supports Ubuntu 18.04, 17.10, 16.04 and 14.04, with very fast launching
  - Support Simplified Chinese (add `-t zh_CN` to the command-line option for `ubuntu_desktop.py`)
- - Auto-starts in full-size resolution and auto-launches web-browser
  - Automatically shares the current work directory from host to Docker image
+ - Is compatible with Singularity (tested with Singularity v2.6)
 
-[![Build Status](https://travis-ci.org/x11vnc/docker-desktop.svg?branch=master)](https://travis-ci.org/x11vnc/docker-desktop)
-[![Docker Image](https://images.microbadger.com/badges/image/x11vnc/desktop.svg)](https://microbadger.com/images/x11vnc/desktop)
+[![Build Status](https://travis-ci.org/x11vnc/docker-desktop.svg?branch=18.04)](https://travis-ci.org/x11vnc/docker-desktop)
+[![Docker Image](https://images.microbadger.com/badges/image/x11vnc/desktop:18.04.svg)](https://microbadger.com/images/x11vnc/desktop)
 
-![screenshot](https://raw.github.com/x11vnc/docker-desktop/master/screenshots/screenshot.png)
+![screenshot](https://raw.github.com/x11vnc/x11vnc-desktop/18.04/screenshots/screenshot.png)
 
-## Preparation
-Before you start, you need to first install Python and Docker on your computer by following the steps below.
+## Preparation for Using with Docker
+Before you start, you need to first install Python and Docker on
+your computer by following the steps below.
 
 ### Installing Python
 If you use Linux or Mac, Python is most likely already installed on your computer, so you can skip this step.
@@ -40,19 +41,19 @@ sudo adduser $USER docker
 Then, log out and log back in before you can use Docker.
 
 ## Running the Docker Image
-To run the Docker image, first download the script [`ubuntu_desktop.py`](https://raw.githubusercontent.com/x11vnc/docker-desktop/master/ubuntu_desktop.py)
+To run the Docker image, first download the script [`x11vnc_desktop.py`](https://raw.githubusercontent.com/x11vnc/x11vnc-desktop/18.04/x11vnc_desktop.py)
 and save it to the working directory where you will store your codes and data. You can download the script using command line: On Windows, start `Windows PowerShell`, use the `cd` command to change to the working directory where you will store your codes and data, and then run the following command:
 ```
-curl https://raw.githubusercontent.com/x11vnc/docker-desktop/master/ubuntu_desktop.py -outfile ubuntu_desktop.py
+curl https://raw.githubusercontent.com/x11vnc/x11vnc-desktop/18.04/x11vnc_desktop.py -outfile x11vnc_desktop.py
 ```
 On Linux or Mac, start a terminal, use the `cd` command to change to the working directory, and then run the following command:
 ```
-curl -s -O https://raw.githubusercontent.com/x11vnc/docker-desktop/master/ubuntu_desktop.py
+curl -s -O https://raw.githubusercontent.com/x11vnc/x11vnc-desktop/18.04/x11vnc_desktop.py
 ```
 
 After downloading the script, you can start the Docker image using the command
 ```
-python ubuntu_desktop.py -p
+python x11vnc_desktop.py -p -t 18.04
 ```
 This will download and run the Docker image and then launch your default web browser to show the desktop environment. The `-p` option is optional, and it instructs the Python script to pull and update the image to the latest version. The work directory by default will be mapped to the current working directory on your host.
 
@@ -63,23 +64,54 @@ python ubuntu_desktop.py -t zh_CN
 
 For additional command-line options, use the command
 ```
-python ubuntu_desktop.py -h
+python x11vnc_desktop.py -h
 ```
-
-To resize the desktop, start `lxterminal` within the desktop and run the `xrandr` command with the `-s <width>x<height>` option. For example, use the command
-```
-xrandr -s 1920x1080
-```
-to change the desktop size to 1920x1080.
 
 ### Building Your Own Images
 
 To build your own image, run the following commands:
 ```
-git clone https://github.com/x11vnc/docker-desktop.git
-docker build --rm -t x11vnc/desktop docker-desktop
+git clone https://github.com/x11vnc/x11vnc-desktop.git
+docker build --rm -t x11vnc/desktop x11vnc-desktop
 ```
-and then use the `ubuntu_desktop.py` command.
+and then use the `x11vnc_desktop.py` command.
+
+## Use with Singularity
+
+This Docker image is constructed to be compatible with Singularity. This 
+has been tested with Singularity v2.6. If you system does not yet have
+Singularity, you may need to install it by following [these instructions](https://www.sylabs.io/guides/2.6/user-guide/quick_start.html#quick-installation-steps).
+You must have root access in order to install Singularity, but you can use
+Singularity as a regular user after it has been installed. If you do not
+have root access, uou may need to ask your system administrator to install it for you.
+It is recommended you use Singularity v2.6 or later.
+
+To use the Docker image with Singularity, please issue the commands
+```
+singularity run docker://x11vnc/desktop:18.04
+```
+
+Alternatively, you may use the commands
+```
+singularity pull --name x11vnc-desktop:18.04.simg docker://x11vnc/desktop:18.04
+./x11vnc-desktop:18.04.simg
+```
+
+Notes regarding singularity:
+- When using Singularity, the user name in the container will be the same
+  as that on the host, and the home directory on the host will be mounted
+  at /home/$USER by default. You will still have read access to
+  /home/$DOCKER_USER.
+- To avoid conflict with the user configuration on the host when using
+  Singularity, this image uses /bin/zsh as the login shell in the container.
+  By default, /home/$DOCKER_USER/.zprofile and /home/$DOCKER_USER/.zshrc
+  will be copied to your home directory if they are older than those in
+  /home/$DOCKER_USER. In particular, /home/$DOCKER_USER/.profile will be
+  sourced by /home/$USER/.zprofile. This works the best if you use another
+  login shell (such as /bin/bash) on the host.
+- To avoid potential conflict with your X11 configuration, this image uses
+  LXQT for the desktop manager. This works best if you do not use LXQT on
+  your host.
 
 ## License
 

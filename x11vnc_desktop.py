@@ -2,7 +2,8 @@
 
 """
 Launch a Docker image with Ubuntu and LXDE window manager, and
-automatically open up the URL in the default web browser.
+automatically open up the URL in the default web browser. 
+It also sets up port forwarding for ssh.
 """
 
 # Author: Xiangmin Jiao <xmjiao@gmail.com>
@@ -12,10 +13,15 @@ from __future__ import print_function  # Only Python 2.x
 import sys
 import subprocess
 import time
+import os
 
-APP = "ubuntu"
-
-
+owner = "x11vnc"
+proj = os.path.basename(sys.argv[0]).split('_')[0]
+image = owner + "/desktop"
+tag = "18.04"
+projdir = "project"
+workdir = "project"
+volume = proj + "_project"
 def parse_args(description):
     "Parse command-line arguments"
 
@@ -26,17 +32,23 @@ def parse_args(description):
 
     parser.add_argument('-i', '--image',
                         help='The Docker image to use. ' +
-                        'The default is x11vnc/desktop.',
-                        default="x11vnc/desktop")
+                        'The default is ' + image + '.',
+                        default=image)
 
     parser.add_argument('-t', '--tag',
                         help='Tag of the image. The default is latest. ' +
                         'If the image already has a tag, its tag prevails.',
-                        default="")
+                        default=tag)
 
     parser.add_argument('-v', '--volume',
-                        help='A data volume to be mounted to ~/project.',
-                        default="")
+                        help='A data volume to be mounted at ~/" + projdir + ". ' +
+                        'The default is ' + volume + '.',
+                       default=volume)
+
+    parser.add_argument('-w', '--workdir',
+                        help='The starting work directory in container. ' +
+                        'The default is ~/' + workdir + '.',
+                        default=workdir)
 
     parser.add_argument('-p', '--pull',
                         help='Pull the latest Docker image. ' +
@@ -46,6 +58,11 @@ def parse_args(description):
 
     parser.add_argument('-r', '--reset',
                         help='Reset configurations to default.',
+                        action='store_true',
+                        default=False)
+
+    parser.add_argument('-c', '--clear',
+                        help='Clear the project data volume (please use with caution).',
                         action='store_true',
                         default=False)
 
@@ -59,27 +76,31 @@ def parse_args(description):
                         'the current screen size.',
                         default="")
 
-    parser.add_argument('-A', '--audio',
-                        help='Mount the sound device ' +
-                        '(Linux only, experimental, sudo required).',
-                        default="")
-
-    parser.add_argument('-V', '--nvidia',
-                        help='Mount the Nvidia card for GPU computatio. ' +
-                        '(Linux only, experimental, sudo required).',
-                        default="")
-
     parser.add_argument('-n', '--no-browser',
                         help='Do not start web browser',
                         action='store_true',
                         default=False)
 
-    parser.add_argument('-a', '--args',
-                        help='All the arguments after -a will be passed to the ' +
-                        '"docker run" command. Useful for specifying ' +
-                        'resources and environment variables.',
-                        nargs=argparse.REMAINDER,
-                        default=[])
+    parser.add_argument('-N', '--nvidia',
+                        help='Mount the Nvidia card for GPU computation. ' +
+                        '(Linux only, experimental, sudo required).',
+                        action='store_true',
+                        default="")
+
+    parser.add_argument('-V', '--verbose',
+                        help='Enable verbose mode and print debug info to stderr.',
+                        action='store_true',
+                        default=False)
+
+    parser.add_argument('-q', '--quiet',
+                        help='Disable screen output (some Docker output cannot be disabled).',
+                        action='store_true',
+                        default=False)
+
+    parser.add_argument('-A', '--args',
+                        help='Additional arguments for the "docker run" command. ' +
+                        'Useful for specifying additional resources or environment variables.',
+                        default="")
 
     args = parser.parse_args()
     # Append tag to image if the image has no tag
@@ -112,7 +133,7 @@ def id_generator(size=6):
     import string
 
     chars = string.ascii_lowercase
-    return APP + "-" + (''.join(random.choice(chars) for _ in range(size)))
+    return proj + "-" + (''.join(random.choice(chars) for _ in range(size)))
 
 
 def find_free_port(port, retries):
@@ -129,8 +150,7 @@ def find_free_port(port, retries):
         except socket.error:
             continue
 
-    sys.stderr.write("Error: Could not find a free port.\n")
-    sys.exit(-1)
+    return ''
 
 
 def wait_net_service(port, timeout=30):
@@ -173,24 +193,49 @@ def get_screen_resolution():
 def handle_interrupt(container):
     """Handle keyboard interrupt"""
     try:
-        print("Press Ctrl-C again to stop the server: ")
+        print("Press Ctrl-C again to terminate the container: ")
         time.sleep(5)
         print('Invalid response. Resuming...')
     except KeyboardInterrupt:
-        print('*** Stopping the server.')
-        subprocess.Popen(["docker", "exec", container,
-                          "killall", "my_init"],
-                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print('*** Stopping the container ' + container)
+        if platform.system() == "Windows":
+            subprocess.check_output(["docker", "stop", container])
+        else:
+            subprocess.Popen(["docker", "exec", container,
+                              "killall", "my_init"],
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
         sys.exit(0)
 
 
 if __name__ == "__main__":
-    import os
     import webbrowser
     import platform
     import glob
 
     args = parse_args(description=__doc__)
+    config = proj + '_' + args.tag + '_config'
+
+    if args.quiet:
+        def print(*args, **kwargs):
+            "Do nothing"
+            pass
+
+        def stdout_write(*args, **kwargs):
+            "Do nothing"
+            pass
+
+        def stderr_write(*args, **kwargs):
+            "Do nothing"
+            pass
+    else:
+        def stdout_write(*args, **kwargs):
+            "Call sys.stderr.write"
+            sys.stdout.write(*args, **kwargs)
+
+        def stderr_write(*args, **kwargs):
+            "Call sys.stderr.write"
+            sys.stderr.write(*args, **kwargs)
 
     pwd = os.getcwd()
     homedir = os.path.expanduser('~')
@@ -210,14 +255,19 @@ if __name__ == "__main__":
         uid = ""
 
     try:
+        if args.verbose:
+            stdout_write("Check whether Docker is up and running.\n")
         img = subprocess.check_output(['docker', 'images', '-q', args.image])
     except:
-        sys.stderr.write("Docker failed. Please make sure docker was properly " +
-                         "installed and has been started.\n")
+        stderr_write("Docker failed. Please make sure docker was properly " +
+                     "installed and has been started.\n")
         sys.exit(-1)
 
     if args.pull or not img:
         try:
+            if args.verbose:
+                stdout_write("Pulling latest docker image " +
+                             args.image + '.\n')
             err = subprocess.call(["docker", "pull", args.image])
         except BaseException:
             err = -1
@@ -231,23 +281,20 @@ if __name__ == "__main__":
                                             '-q']).find(img) >= 0:
             subprocess.Popen(["docker", "rmi", "-f", img.decode('utf-8')[:-1]])
 
-    # Create directory .ssh if not exist
-    if not os.path.exists(homedir + "/.ssh"):
-        os.mkdir(homedir + "/.ssh")
-
-    user = "ubuntu"
-    docker_home = "/home/ubuntu"
+    docker_user = "ubuntu"
+    docker_home = "/home/" + docker_user
 
     if args.reset:
         try:
-            output = subprocess.check_output(["docker", "volume", "rm", "-f",
-                                              APP + args.tag + "_config"])
+            if args.verbose:
+                stdout_write("Removing old docker volume " + config + ".\n")
+            output = subprocess.check_output(
+                ["docker", "volume", "rm", "-f", config])
         except subprocess.CalledProcessError as e:
-            sys.stderr.write(e.output.decode('utf-8'))
+            stderr_write(e.output.decode('utf-8'))
 
     volumes = ["-v", pwd + ":" + docker_home + "/shared",
-               "-v", APP + args.tag + "_config:" + docker_home + "/.config",
-               "-v", homedir + "/.ssh" + ":" + docker_home + "/.ssh"]
+               "-v", config + ":" + docker_home + "/.config"]
 
     if os.path.exists(homedir + "/.gnupg"):
         volumes += ["-v", homedir + "/.gnupg" +
@@ -259,12 +306,24 @@ if __name__ == "__main__":
                     ":" + docker_home + "/.gitconfig_host"]
 
     if args.volume:
-        volumes += ["-v", args.volume + ":" + docker_home + "/project",
-                    "-w", docker_home + "/project"]
-    else:
-        volumes += ["-w", docker_home + "/shared"]
+        if args.clear:
+            try:
+                if args.verbose:
+                    stdout_write(
+                        "Removing old docker volume " + config + ".\n")
+                output = subprocess.check_output(["docker", "volume",
+                                                  "rm", "-f", args.volume])
+            except subprocess.CalledProcessError as e:
+                stderr_write(e.output.decode('utf-8'))
 
-    sys.stderr.write("Starting up docker image...\n")
+        volumes += ["-v", args.volume + ":" + docker_home + "/" + projdir]
+
+    if args.workdir[0] == '/':
+        volumes += ["-w", args.workdir]
+    else:
+        volumes += ["-w", docker_home + "/" + args.workdir]
+
+    stderr_write("Starting up docker image...\n")
     if subprocess.check_output(["docker", "--version"]). \
             find(b"Docker version 1.") >= 0:
         rmflag = "-t"
@@ -288,10 +347,24 @@ if __name__ == "__main__":
             "--env", "RESOLUT=" + size,
             "--env", "HOST_UID=" + uid]
 
-    devices = []
-    if args.audio and os.path.exists('/dev/snd'):
-        devices += ["--device", "/dev/snd"]
+    # Find a free port for ssh tunning
+    port_ssh = str(find_free_port(2222, 50))
+    if not port_ssh:
+        stderr_write("Error: Could not find a free port.\n")
+        sys.exit(-1)
+    envs += ["-p", port_ssh + ":22"]
 
+    # Create directory .ssh if not exist
+    if not os.path.exists(homedir + "/.ssh"):
+        os.mkdir(homedir + "/.ssh")
+
+    if platform.system() != 'Windows':
+        volumes += ["-v", homedir + "/.ssh" + ":" + docker_home + "/.ssh"]
+    else:
+        # On Windows, cannot use ~/.ssh directly. Mount it into ~/.ssh-host.
+        volumes += ["-v", homedir + "/.ssh" + ":" + docker_home + "/.ssh-host"]
+
+    devices = []
     if args.nvidia:
         for d in glob.glob('/dev/nvidia*'):
             devices += ['--device', d + ':' + d]
@@ -299,14 +372,23 @@ if __name__ == "__main__":
     # Start the docker image in the background and pipe the stderr
     port_http = str(find_free_port(6080, 50))
     port_vnc = str(find_free_port(5950, 50))
-    subprocess.call(["docker", "run", "-d", rmflag, "--name", container,
-                     "--shm-size", "2g",
-                     "-p", "127.0.0.1:" + port_http + ":6080",
-                     "-p", "127.0.0.1:" + port_vnc + ":5900"] +
-                    envs + volumes + devices + args.args +
-                    ['--security-opt', 'seccomp=unconfined',
-                     args.image, "startvnc.sh >> " +
-                     docker_home + "/.log/vnc.log"])
+
+    if not port_http or not port_vnc:
+        stderr_write("Error: Could not find a free port.\n")
+        sys.exit(-1)
+
+    cmd = ["docker", "run", "-d", rmflag, "--name", container,
+                     "--shm-size", "2g", "-p", port_http + ":6080",
+                     "-p", port_vnc + ":5900"] + \
+        envs + volumes + devices + args.args.split() + \
+        ['--security-opt', 'seccomp=unconfined', '--cap-add=SYS_PTRACE',
+         args.image, "startvnc.sh >> " +
+         docker_home + "/.log/vnc.log"]
+
+    if args.verbose:
+        stdout_write(' '.join(cmd[:-1]) + ' "' + cmd[-1] + '"\n')
+
+    subprocess.call(cmd)
 
     wait_for_url = True
 
@@ -335,13 +417,24 @@ if __name__ == "__main__":
                         # Open browser if found URL
                         url = stdout_line.replace(":6080/",
                                                   ':' + port_http + "/")
-                        sys.stdout.write(url)
+                        stdout_write(url)
 
                         passwd = stdout_line[url.find('password=') + 9:]
-                        sys.stdout.write("\nFor a better experience, use VNC Viewer (" +
-                                         'http://realvnc.com/download/viewer)\n' +
-                                         "to connect to localhost:%s with password %s\n" %
-                                         (port_vnc, passwd))
+                        stdout_write("\nFor a better experience, use VNC Viewer (" +
+                                     'http://realvnc.com/download/viewer)\n' +
+                                     "to connect to localhost:%s with password %s\n" %
+                                     (port_vnc, passwd))
+
+                        if platform.system() == 'Windows':
+                            # Copy ssh config files
+                            subprocess.check_output(["docker", "exec", container,
+                                    "rsync", "-rog", "--chown=ubuntu:ubuntu", "--chmod=600",
+                                    "/home/ubuntu/.ssh-host/", "/home/ubuntu/.ssh/"])
+
+                        stdout_write("You can also log into the container using the command\n    ssh -X -p " + port_ssh + " " +
+                                     docker_user + "@localhost -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no\n" +
+                                     "with an authorized key in " +
+                                     homedir + "/.ssh/authorized_keys.\n")
 
                         if not args.no_browser:
                             wait_net_service(int(port_http))
@@ -352,33 +445,39 @@ if __name__ == "__main__":
                         wait_for_url = False
                         break
                     else:
-                        sys.stdout.write(stdout_line)
+                        stdout_write(stdout_line)
 
             if args.detach:
                 print('Started container ' + container + ' in background.')
-                print('To stop it, use "docker stop ' + container + '".')
+                print('To terminate it, use "docker stop ' + container + '".')
                 sys.exit(0)
 
-            print("Press Ctrl-C to stop the server.")
+            print("Press Ctrl-C to terminate the container.")
+            time.sleep(1)
 
-            # Wait till the container exits or Ctlr-C is pressed
+            # Wait until the container exits or Ctlr-C is pressed
             subprocess.check_output(["docker", "exec", container,
                                      "tail", "-f", "/dev/null"])
+            sys.exit(0)
+
         except subprocess.CalledProcessError:
             try:
                 # If Docker process no long exists, exit
+                if args.verbose:
+                    stdout_write(
+                        "Check whether the docker container is running.\n")
                 if not subprocess.check_output(['docker', 'ps',
                                                 '-q', '-f',
                                                 'name=' + container]):
-                    sys.stderr.write('Docker container ' +
-                                     container + ' is no longer running\n')
+                    stdout_write('Docker container ' +
+                                 container + ' is no longer running\n')
                     sys.exit(-1)
                 else:
                     time.sleep(1)
                     continue
             except subprocess.CalledProcessError:
-                sys.stderr.write('Docker container ' +
-                                 container + ' is no longer running\n')
+                stderr_write('Docker container ' +
+                             container + ' is no longer running\n')
                 sys.exit(-1)
             except KeyboardInterrupt:
                 handle_interrupt(container)
