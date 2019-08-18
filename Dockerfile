@@ -37,6 +37,7 @@ RUN apt-get update && \
         vim \
         psmisc \
         runit \
+        xdotool \
         apt-transport-https ca-certificates \
         software-properties-common \
         man \
