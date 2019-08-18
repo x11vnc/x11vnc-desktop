@@ -85,6 +85,9 @@ Xorg -noreset +extension GLX +extension RANDR +extension RENDER \
 XORG_PID=$!
 sleep 0.1
 
+# Fix issue with Shift-Tab
+xmodmap -e 'keycode 23 = Tab'
+
 # start ssh-agent if not set by caller and stop if automatically
 if [ -z "$SSH_AUTH_SOCK" ]; then
     eval `ssh-agent -s` > /dev/null
