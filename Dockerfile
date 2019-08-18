@@ -88,6 +88,7 @@ RUN apt-get update && \
         s/#?PermitEmptyPasswords\s+\w+/PermitEmptyPasswords no/g' \
         /etc/ssh/sshd_config && \
     rm -f /etc/update-motd.d/??-unminimize && \
+    rm -f /etc/xdg/autostart/lxpolkit.desktop && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install websokify and noVNC
