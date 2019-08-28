@@ -102,7 +102,7 @@ LXSESSION_PID=$!
      WIN="$(xdotool search --name Error)"; \
      if [ -n "$WIN" ]; then \
          xdotool key --window $WIN space; \
-         echo "Resolved error $WIN after $COUNTER iterations"; \
+         echo "Resolved error $WIN after $COUNTER iterations" > $HOME/.log/xdotool.log; \
          break; \
      fi; \
      sleep 0.1; \
