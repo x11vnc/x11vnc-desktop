@@ -96,19 +96,6 @@ fi
 /usr/bin/lxsession -s LXDE -e LXDE > $HOME/.log/lxsession.log 2>&1 &
 LXSESSION_PID=$!
 
-# Get rid of error message "No session of pid"
-(COUNTER=0; \
- while [ $COUNTER -lt 100 ]; do \
-     WIN="$(xdotool search --name Error)"; \
-     if [ -n "$WIN" ]; then \
-         xdotool key --window $WIN space; \
-         echo "Resolved error $WIN after $COUNTER iterations" > $HOME/.log/xdotool.log; \
-         break; \
-     fi; \
-     sleep 0.1; \
-     let COUNTER=COUNTER+1; \
-done) &
-
 # startup x11vnc with a new password
 export VNCPASS=`openssl rand -base64 6 | sed 's/\//-/'`
 mkdir -p $HOME/.vnc && \
