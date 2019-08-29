@@ -53,7 +53,6 @@ RUN apt-get update && \
         libssl-dev \
         git \
         dos2unix \
-        dbus-x11 \
         \
         openssh-server \
         python \
