@@ -85,9 +85,6 @@ Xorg -noreset +extension GLX +extension RANDR +extension RENDER \
 XORG_PID=$!
 sleep 0.1
 
-# Fix issue with Shift-Tab
-xmodmap -e 'keycode 23 = Tab'
-
 # start ssh-agent if not set by caller and stop if automatically
 if [ -z "$SSH_AUTH_SOCK" ]; then
     eval `ssh-agent -s` > /dev/null
@@ -95,19 +92,6 @@ fi
 
 /usr/bin/lxsession -s LXDE -e LXDE > $HOME/.log/lxsession.log 2>&1 &
 LXSESSION_PID=$!
-
-# Get rid of error message "No session of pid"
-(COUNTER=0; \
- while [ $COUNTER -lt 100 ]; do \
-     WIN="$(xdotool search --name Error)"; \
-     if [ -n "$WIN" ]; then \
-         xdotool key --window $WIN space; \
-         echo "Resolved error $WIN after $COUNTER iterations" > $HOME/.log/xdotool.log; \
-         break; \
-     fi; \
-     sleep 0.1; \
-     let COUNTER=COUNTER+1; \
-done) &
 
 # startup x11vnc with a new password
 export VNCPASS=`openssl rand -base64 6 | sed 's/\//-/'`
@@ -131,5 +115,9 @@ ps $NOVNC_PID > /dev/null || { cat $HOME/.log/novnc.log && exit -1; }
 echo "Open your web browser with URL:"
 echo "    http://localhost:$WEB_PORT/vnc.html?resize=downscale&autoconnect=1&password=$VNCPASS"
 echo "or connect your VNC viewer to localhost:$VNC_PORT with password $VNCPASS"
+
+sleep 3
+# Fix issue with Shift-Tab
+xmodmap -e 'keycode 23 = Tab'
 
 wait
