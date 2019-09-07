@@ -90,7 +90,7 @@ if [ -z "$SSH_AUTH_SOCK" ]; then
     eval `ssh-agent -s` > /dev/null
 fi
 
-dbus-launch /usr/bin/lxsession -s LXDE -e LXDE > $HOME/.log/lxsession.log 2>&1 &
+/usr/bin/lxsession -s LXDE -e LXDE > $HOME/.log/lxsession.log 2>&1 &
 LXSESSION_PID=$!
 
 # startup x11vnc with a new password
@@ -117,7 +117,8 @@ echo "    http://localhost:$WEB_PORT/vnc.html?resize=downscale&autoconnect=1&pas
 echo "or connect your VNC viewer to localhost:$VNC_PORT with password $VNCPASS"
 
 sleep 3
-# Fix issue with Shift-Tab
+# Fix issues with Shift-Tab and dbus
 xmodmap -e 'keycode 23 = Tab'
+killall dbus-daemon 2> /dev/null || true
 
 wait
