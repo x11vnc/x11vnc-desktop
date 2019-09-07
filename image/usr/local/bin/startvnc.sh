@@ -119,6 +119,6 @@ echo "or connect your VNC viewer to localhost:$VNC_PORT with password $VNCPASS"
 sleep 3
 # Fix issues with Shift-Tab and dbus
 xmodmap -e 'keycode 23 = Tab'
-killall dbus-daemon 2> /dev/null || true
+killall dbus-launch 2> /dev/null || true
 
 wait
