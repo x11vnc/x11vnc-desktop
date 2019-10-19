@@ -63,8 +63,7 @@ fi
 VNC_PORT=$((5900 + DISP))
 WEB_PORT=$((6080 + DISP))
 
-export XDG_RUNTIME_DIR=/tmp/runtime-$USER
-mkdir -p -m 0700 $XDG_RUNTIME_DIR
+export XDG_RUNTIME_DIR=$(mktemp -d -t runtime-$USER-XXXXX)
 export DISPLAY=:$DISP.0
 export LOGFILE=$HOME/.log/Xorg.log
 export NO_AT_BRIDGE=1
