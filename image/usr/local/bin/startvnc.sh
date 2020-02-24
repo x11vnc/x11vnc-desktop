@@ -94,8 +94,8 @@ fi
 /usr/bin/lxsession -s LXDE -e LXDE > $HOME/.log/lxsession.log 2>&1 &
 LXSESSION_PID=$!
 
-# startup x11vnc with a new password
-export VNCPASS=`openssl rand -base64 6 | sed 's/\//-/'`
+# startup x11vnc with a stable or a new random password
+export VNCPASS=${VNCPASS:-$(openssl rand -base64 6 | sed 's/\//-/')}
 mkdir -p $HOME/.vnc && \
 x11vnc -storepasswd $VNCPASS ~/.vnc/passwd$DISP > $HOME/.log/x11vnc.log 2>&1
 
