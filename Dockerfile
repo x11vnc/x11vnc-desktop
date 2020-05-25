@@ -7,7 +7,7 @@
 # Authors:
 # Xiangmin Jiao <xmjiao@gmail.com>
 
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
 ARG DOCKER_LANG=en_US
@@ -42,7 +42,7 @@ RUN apt-get update && \
         man \
         sudo \
         rsync \
-        bsdtar \
+        libarchive-tools \
         net-tools \
         gpg-agent \
         inetutils-ping \
@@ -76,8 +76,7 @@ RUN apt-get update && \
         xauth \
         x11vnc \
         \
-        firefox \
-        xpdf && \
+        firefox && \
     chmod 755 /usr/local/share/zsh/site-functions && \
     apt-get -y autoremove && \
     ssh-keygen -A && \
