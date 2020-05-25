@@ -42,7 +42,7 @@ RUN apt-get update && \
         man \
         sudo \
         rsync \
-        bsdtar \
+        libarchive-tools \
         net-tools \
         gpg-agent \
         inetutils-ping \
