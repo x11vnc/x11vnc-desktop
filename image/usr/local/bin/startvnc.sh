@@ -99,7 +99,7 @@ export VNCPASS=${VNCPASS:-$(openssl rand -base64 6 | sed 's/\//-/')}
 mkdir -p $HOME/.vnc && \
 x11vnc -storepasswd $VNCPASS ~/.vnc/passwd$DISP > $HOME/.log/x11vnc.log 2>&1
 
-x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -repeat -skip_dups -forever -shared -rfbauth ~/.vnc/passwd$DISP >> $HOME/.log/x11vnc.log 2>&1 &
+x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -norepeat 1 -skip_dups -forever -shared -rfbauth ~/.vnc/passwd$DISP >> $HOME/.log/x11vnc.log 2>&1 &
 X11VNC_PID=$!
 
 # startup novnc
