@@ -74,31 +74,21 @@ export SESSION_PID=$$
 
 /usr/local/bin/init_vnc && sync
 
-# Start Xorg and set screen size
+# Start Xorg
 mkdir -p $HOME/.log
 Xorg -noreset +extension GLX +extension RANDR +extension RENDER \
     -logfile $HOME/.log/Xorg.log :$DISP 2> $HOME/.log/Xorg_err.log &
 XORG_PID=$!
-sleep 0.1
-
-grep -s -q $RESOLUT /etc/X11/xorg.conf && xrandr -s $RESOLUT
 
 # start ssh-agent if not set by caller and stop if automatically
 if [ -z "$SSH_AUTH_SOCK" ]; then
     eval `ssh-agent -s` > /dev/null
 fi
 
-lxsession -s LXDE -e LXDE > $HOME/.log/lxsession.log 2>&1 &
-LXSESSION_PID=$!
-
 # startup x11vnc with a stable or a new random password
 export VNCPASS=${VNCPASS:-$(openssl rand -base64 6 | sed 's/\//-/')}
 mkdir -p $HOME/.vnc && \
 x11vnc -storepasswd $VNCPASS ~/.vnc/passwd$DISP > $HOME/.log/x11vnc.log 2>&1
-
-x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -repeat -skip_dups -forever \
-    -shared -rfbauth ~/.vnc/passwd$DISP >> $HOME/.log/x11vnc.log 2>&1 &
-X11VNC_PID=$!
 
 # startup novnc
 /usr/local/noVNC/utils/launch.sh --web /usr/local/noVNC \
@@ -107,13 +97,21 @@ NOVNC_PID=$1
 
 # Error checking
 ps $XORG_PID > /dev/null || { cat $HOME/.log/Xorg_err.log && exit -1; }
-ps $LXSESSION_PID > /dev/null || { cat $HOME/.log/lxsession.log && exit -1; }
-ps $X11VNC_PID > /dev/null || { cat $HOME/.log/x11vnc.log && exit -1; }
 ps $NOVNC_PID > /dev/null || { cat $HOME/.log/novnc.log && exit -1; }
 
 echo "Open your web browser with URL:"
 echo "    http://localhost:$WEB_PORT/vnc.html?resize=downscale&autoconnect=1&password=$VNCPASS"
 echo "or connect your VNC viewer to localhost:$VNC_PORT with password $VNCPASS"
+
+# Start LXDE and set screen size
+lxsession -s LXDE -e LXDE > $HOME/.log/lxsession.log 2>&1 &
+LXSESSION_PID=$!
+ps $LXSESSION_PID > /dev/null || { cat $HOME/.log/lxsession.log && exit -1; }
+grep -s -q $RESOLUT /etc/X11/xorg.conf && \
+    sleep 1 && xrandr --output default --mode $RESOLUT -s $RESOLUT > /dev/null 2>&1
+x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -repeat -skip_dups -forever \
+    -shared -rfbauth ~/.vnc/passwd$DISP >> $HOME/.log/x11vnc.log 2>&1 &
+X11VNC_PID=$!
 
 sleep 3
 # Fix issues with Shift-Tab and dbus
@@ -126,6 +124,6 @@ while true ; do
     x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -repeat -skip_dups -forever \
         -shared -rfbauth ~/.vnc/passwd$DISP >> $HOME/.log/x11vnc.log 2>&1 &
     X11VNC_PID=$!
-    echo "X11vnc was restarted probably due to change of screen resolution."
+    echo "X11vnc was restarted due to screen-resolution change."
     echo "Please refresh the web browser or reconnect your VNC viewer."
 done

@@ -462,11 +462,9 @@ if __name__ == "__main__":
                 sys.exit(0)
 
             print("Press Ctrl-C to terminate the container.")
-            time.sleep(1)
-
             # Wait until the container exits or Ctlr-C is pressed
-            subprocess.check_output(["docker", "exec", container,
-                                     "tail", "-f", "/dev/null"])
+            subprocess.run(["docker", "exec", container,
+                            "tail", "-f", "-n", "0", docker_home + "/.log/vnc.log"])
             sys.exit(0)
 
         except subprocess.CalledProcessError:
