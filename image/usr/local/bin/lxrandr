@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Configure screen resolution and restart x11vnc
+
+/usr/bin/lxrandr
+killall x11vnc
