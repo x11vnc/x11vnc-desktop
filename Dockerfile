@@ -56,7 +56,6 @@ RUN apt-get update && \
         dbus-x11 \
         \
         openssh-server \
-        python \
         python3 \
         python3-distutils \
         python3-tk \
@@ -93,10 +92,10 @@ RUN apt-get update && \
 
 # Install websokify and noVNC
 RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
-    python2 get-pip.py && \
-    pip2 install --no-cache-dir \
+    python3 get-pip.py && \
+    pip3 install --no-cache-dir \
         setuptools && \
-    pip2 install -U https://github.com/novnc/websockify/archive/60acf3c.tar.gz && \
+    pip3 install -U https://github.com/novnc/websockify/archive/eca301c.tar.gz && \
     mkdir /usr/local/noVNC && \
     curl -s -L https://github.com/x11vnc/noVNC/archive/master.tar.gz | \
          bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \

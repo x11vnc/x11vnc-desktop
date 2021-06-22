@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Launch a Docker image with Ubuntu and LXDE window manager, and
-automatically open up the URL in the default web browser. 
+automatically open up the URL in the default web browser.
 It also sets up port forwarding for ssh.
 """
 
@@ -77,13 +77,13 @@ def parse_args(description):
                         default="")
 
     parser.add_argument('-n', '--no-browser',
-                        help='Do not start web browser. It is false by default, unless ' + 
+                        help='Do not start web browser. It is false by default, unless ' +
                         'the current screen size cannot be determined automatically.',
                         action='store_true',
                         default=False)
 
     parser.add_argument('--password',
-                        help='Specify a password for VNC instead of generating a random one. ' + 
+                        help='Specify a password for VNC instead of generating a random one. ' +
                         'You can also set a password using the VNCPASS environment variable.',
                         default="")
 
