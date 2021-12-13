@@ -93,7 +93,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install websokify and noVNC
-RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
+RUN curl -O https://bootstrap.pypa.io/pip/2.7/get-pip.py && \
     python2 get-pip.py && \
     pip2 install --no-cache-dir \
         setuptools && \
