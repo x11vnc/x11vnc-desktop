@@ -67,19 +67,25 @@ def parse_args(description):
                         default=False)
 
     parser.add_argument('-d', '--detach',
-                        help='Run in background and print container id',
+                        help='Run in background and print the container id.',
                         action='store_true',
                         default=False)
 
     parser.add_argument('-s', '--size',
-                        help='Size of the screen. The default is to use ' +
-                        'the current screen size.',
+                        help='Size of the screen, such as 1440x900. The default ' +
+                        'is to use the current screen size.',
                         default="")
 
     parser.add_argument('-n', '--no-browser',
-                        help='Do not start web browser',
+                        help='Do not start web browser. It is false by default, unless ' + 
+                        'the current screen size cannot be determined automatically.',
                         action='store_true',
                         default=False)
+
+    parser.add_argument('--password',
+                        help='Specify a password for VNC instead of generating a random one. ' + 
+                        'You can also set a password using the VNCPASS environment variable.',
+                        default="")
 
     parser.add_argument('-N', '--nvidia',
                         help='Mount the Nvidia card for GPU computation. ' +
@@ -109,6 +115,8 @@ def parse_args(description):
             pass
         else:
             args.image += ':' + args.tag
+    if args.password == '':
+        args.password = os.getenv('VNCPASS', '')
 
     return args
 
@@ -344,6 +352,7 @@ if __name__ == "__main__":
     container = id_generator()
 
     envs = ["--hostname", container,
+            "--env", "VNCPASS=" + args.password,
             "--env", "RESOLUT=" + size,
             "--env", "HOST_UID=" + uid]
 
