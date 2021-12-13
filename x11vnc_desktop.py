@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Launch a Docker image with Ubuntu and LXDE window manager, and
-automatically open up the URL in the default web browser. 
+automatically open up the URL in the default web browser.
 It also sets up port forwarding for ssh.
 """
 
@@ -77,13 +77,13 @@ def parse_args(description):
                         default="")
 
     parser.add_argument('-n', '--no-browser',
-                        help='Do not start web browser. It is false by default, unless ' + 
+                        help='Do not start web browser. It is false by default, unless ' +
                         'the current screen size cannot be determined automatically.',
                         action='store_true',
                         default=False)
 
-    parser.add_argument('--password',
-                        help='Specify a password for VNC instead of generating a random one. ' + 
+    parser.add_argument('--password',                        
+                        help='Specify a password for VNC instead of generating a random one. ' +
                         'You can also set a password using the VNCPASS environment variable.',
                         default="")
 
@@ -462,11 +462,9 @@ if __name__ == "__main__":
                 sys.exit(0)
 
             print("Press Ctrl-C to terminate the container.")
-            time.sleep(1)
-
             # Wait until the container exits or Ctlr-C is pressed
-            subprocess.check_output(["docker", "exec", container,
-                                     "tail", "-f", "/dev/null"])
+            subprocess.run(["docker", "exec", container,
+                            "tail", "-f", "-n", "0", docker_home + "/.log/vnc.log"])
             sys.exit(0)
 
         except subprocess.CalledProcessError:
