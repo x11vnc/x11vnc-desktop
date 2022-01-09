@@ -7,7 +7,7 @@
 # Authors:
 # Xiangmin Jiao <xmjiao@gmail.com>
 
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
 ARG DOCKER_LANG=en_US
@@ -31,7 +31,7 @@ RUN apt-get update && \
         language-pack-en && \
     locale-gen $LANG && \
     dpkg-reconfigure -f noninteractive locales && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         curl \
         less \
         vim \
@@ -42,7 +42,7 @@ RUN apt-get update && \
         man \
         sudo \
         rsync \
-        bsdtar \
+        tar \
         net-tools \
         gpg-agent \
         inetutils-ping \
@@ -56,7 +56,6 @@ RUN apt-get update && \
         dbus-x11 \
         \
         openssh-server \
-        python \
         python3 \
         python3-distutils \
         python3-tk \
@@ -93,14 +92,15 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install websokify and noVNC
-RUN curl -O https://bootstrap.pypa.io/pip/2.7/get-pip.py && \
-    python2 get-pip.py && \
-    pip2 install --no-cache-dir \
+RUN curl -O https://bootstrap.pypa.io/pip/3.5/get-pip.py && \
+    python3 get-pip.py && \
+    /usr/bin/python3 -m pip install --upgrade pip && \
+    pip3 install --no-cache-dir \
         setuptools && \
-    pip2 install -U https://github.com/novnc/websockify/archive/60acf3c.tar.gz && \
+    pip3 install -U https://github.com/novnc/websockify/archive/refs/tags/v0.10.0.tar.gz && \
     mkdir /usr/local/noVNC && \
     curl -s -L https://github.com/x11vnc/noVNC/archive/master.tar.gz | \
-         bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \
+         tar zxf - -C /usr/local/noVNC --strip-components 1 && \
     rm -rf /tmp/* /var/tmp/*
 
 # Install x11vnc from source
@@ -108,21 +108,21 @@ RUN curl -O https://bootstrap.pypa.io/pip/2.7/get-pip.py && \
 # https://bugs.launchpad.net/ubuntu/+source/x11vnc/+bug/1686084
 # Also, fix issue with Shift-Tab not working
 # https://askubuntu.com/questions/839842/vnc-pressing-shift-tab-tab-only
-RUN apt-get update && \
-    apt-get install -y libxtst-dev libssl-dev libjpeg-dev && \
-    \
-    mkdir -p /tmp/x11vnc-0.9.14 && \
-    curl -s -L http://x11vnc.sourceforge.net/dev/x11vnc-0.9.14-dev.tar.gz | \
-        bsdtar zxf - -C /tmp/x11vnc-0.9.14 --strip-components 1 && \
-    cd /tmp/x11vnc-0.9.14 && \
-    ./configure --prefix=/usr/local CFLAGS='-O2 -fno-stack-protector -Wall' && \
-    make && \
-    make install && \
-    perl -e 's/,\s*ISO_Left_Tab//g' -p -i /usr/share/X11/xkb/symbols/pc && \
-    apt-get -y remove libxtst-dev libssl-dev libjpeg-dev && \
-    apt-get -y autoremove && \
-    ldconfig && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+#RUN apt-get update && \
+#    apt-get install -y libxtst-dev libssl-dev libjpeg-dev && \
+#    \
+#    mkdir -p /tmp/x11vnc-0.9.14 && \
+#    curl -s -L http://x11vnc.sourceforge.net/dev/x11vnc-0.9.14-dev.tar.gz | \
+#        tar zxf - -C /tmp/x11vnc-0.9.14 --strip-components 1 && \
+#    cd /tmp/x11vnc-0.9.14 && \
+#    ./configure --prefix=/usr/local CFLAGS='-O2 -fno-stack-protector -Wall' && \
+#    make && \
+#    make install && \
+#    perl -e 's/,\s*ISO_Left_Tab//g' -p -i /usr/share/X11/xkb/symbols/pc && \
+#    apt-get -y remove libxtst-dev libssl-dev libjpeg-dev && \
+#    apt-get -y autoremove && \
+#    ldconfig && \
+#    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ########################################################
 # Customization for user and location
