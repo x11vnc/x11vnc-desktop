@@ -129,8 +129,8 @@ RUN curl -O https://bootstrap.pypa.io/pip/3.5/get-pip.py && \
 ########################################################
 # Set up user so that we do not run as root in DOCKER
 ENV DOCKER_USER=ubuntu \
-    DOCKER_UID=9999 \
-    DOCKER_GID=9999 \
+    DOCKER_UID=1000 \
+    DOCKER_GID=100 \
     DOCKER_SHELL=/bin/zsh
 
 ENV DOCKER_GROUP=$DOCKER_USER \
@@ -166,5 +166,5 @@ WORKDIR $DOCKER_HOME
 ENV DOCKER_CMD=start_vnc
 
 USER root
-ENTRYPOINT ["/sbin/my_init", "--quiet", "--", "/sbin/setuser", "ubuntu"]
+ENTRYPOINT ["/sbin/my_init", "--", "/sbin/setuser", "ubuntu"]
 CMD ["$DOCKER_CMD"]
