@@ -130,7 +130,7 @@ RUN curl -O https://bootstrap.pypa.io/pip/3.5/get-pip.py && \
 # Set up user so that we do not run as root in DOCKER
 ENV DOCKER_USER=ubuntu \
     DOCKER_UID=1000 \
-    DOCKER_GID=100 \
+    DOCKER_GID=1000 \
     DOCKER_SHELL=/bin/zsh
 
 ENV DOCKER_GROUP=$DOCKER_USER \
