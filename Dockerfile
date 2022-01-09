@@ -7,7 +7,7 @@
 # Authors:
 # Xiangmin Jiao <xmjiao@gmail.com>
 
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
 ARG DOCKER_LANG=en_US
@@ -42,7 +42,7 @@ RUN apt-get update && \
         man \
         sudo \
         rsync \
-        bsdtar \
+        libarchive-tools \
         net-tools \
         gpg-agent \
         inetutils-ping \
@@ -56,7 +56,6 @@ RUN apt-get update && \
         dbus-x11 \
         \
         openssh-server \
-        python \
         python3 \
         python3-distutils \
         python3-tk \
@@ -76,8 +75,7 @@ RUN apt-get update && \
         xauth \
         x11vnc \
         \
-        firefox \
-        xpdf && \
+        firefox && \
     chmod 755 /usr/local/share/zsh/site-functions && \
     apt-get -y autoremove && \
     ssh-keygen -A && \
@@ -93,11 +91,11 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install websokify and noVNC
-RUN curl -O https://bootstrap.pypa.io/pip/2.7/get-pip.py && \
-    python2 get-pip.py && \
-    pip2 install --no-cache-dir \
+RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
+    python3 get-pip.py && \
+    pip3 install --no-cache-dir \
         setuptools && \
-    pip2 install -U https://github.com/novnc/websockify/archive/60acf3c.tar.gz && \
+    pip3 install -U https://github.com/novnc/websockify/archive/eca301c.tar.gz && \
     mkdir /usr/local/noVNC && \
     curl -s -L https://github.com/x11vnc/noVNC/archive/master.tar.gz | \
          bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \

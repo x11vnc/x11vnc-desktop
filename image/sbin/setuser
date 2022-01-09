@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 '''
 Copyright (c) 2013-2015 Phusion Holding B.V.
@@ -54,9 +54,9 @@ def main():
         os.environ['HOME'] = user.pw_dir
         os.environ['UID'] = str(user.pw_uid)
     elif os.getenv("SINGULARITY_NAME"):
-        # When running in Singularity, remove all the environment 
+        # When running in Singularity, remove all the environment
         # variables associated with python
-        for key in ['PYTHONPATH', 'PYTHONUSERBASE', 
+        for key in ['PYTHONPATH', 'PYTHONUSERBASE',
             'PYTHONUSERSITE', 'PYTHONNOUSERSITE']:
             if key in os.environ:
                 del os.environ[key]
