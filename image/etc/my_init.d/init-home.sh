@@ -14,11 +14,12 @@ fi
 if [ -e '/etc/container_environment.sh' ]; then
     source /etc/container_environment.sh
 fi
-find $DOCKER_HOME -maxdepth 1 -type d | sed "1d" | xargs chown $DOCKER_USER:$DOCKER_GROUP 2> /dev/null || true
+if [ ! -z "$UPDATE_HOME_WITH_UID" ]; then
+    find $DOCKER_HOME -maxdepth 1 -type d | sed "1d" | xargs chown $DOCKER_USER:$DOCKER_GROUP 2> /dev/null || true
 
-# It is important for $HOME/.ssh to have correct ownership
-chown -R $DOCKER_USER $DOCKER_HOME/.ssh
-
+    # It is important for $HOME/.ssh to have correct ownership
+    chown -R $DOCKER_USER $DOCKER_HOME/.ssh
+fi
 # Initialize config directory
 [ -d $DOCKER_HOME/.config/mozilla ] || cp -r /etc/X11/mozilla $DOCKER_HOME/.config/mozilla
 
