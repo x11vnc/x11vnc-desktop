@@ -9,13 +9,13 @@ if [ "$HOST_GID" -a "$DOCKER_GID" != "$HOST_GID" ]; then
     groupmod -g $HOST_GID $DOCKER_GROUP 2> /dev/null
 fi
 
-# This makes sure that all directories in HOME are accessible by the user.
-# This helps avoiding issues with mounted volumes.
 if [ -e '/etc/container_environment.sh' ]; then
     source /etc/container_environment.sh
 fi
 
-if [ "$DOCKER_UID" != "$HOST_UID" -o "$DOCKER_GID" != "$HOST_GID" ]; then
+# Make sure that all the directories in $HOME are accessible by the user.
+if [ -n "$HOST_UID" -a "$DOCKER_UID" != "$HOST_UID" -o \
+    -n "$HOST_GID" -a "$DOCKER_GID" != "$HOST_GID" ]; then
     find $DOCKER_HOME -maxdepth 1 -type d -not -path "./shared" -not -path "./project" | sed "1d" | \
         xargs chown $DOCKER_USER:$DOCKER_GROUP 2> /dev/null || true
 
