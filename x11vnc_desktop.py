@@ -17,11 +17,13 @@ import os
 
 owner = "x11vnc"
 proj = os.path.basename(sys.argv[0]).split('_')[0]
-image = owner + "/desktop"
+image = owner + "/docker-desktop"
 tag = "latest"
 projdir = "project"
 workdir = "project"
 volume = proj + "_project"
+
+
 def parse_args(description):
     "Parse command-line arguments"
 
@@ -43,7 +45,7 @@ def parse_args(description):
     parser.add_argument('-v', '--volume',
                         help='A data volume to be mounted at ~/" + projdir + ". ' +
                         'The default is ' + volume + '.',
-                       default=volume)
+                        default=volume)
 
     parser.add_argument('-w', '--workdir',
                         help='The starting work directory in container. ' +
@@ -194,7 +196,7 @@ def get_screen_resolution():
         width, height = root.winfo_screenwidth(), root.winfo_screenheight()
 
         return str(width) + 'x' + str(height)
-    except:
+    except BaseException:
         return ""
 
 
@@ -266,7 +268,7 @@ if __name__ == "__main__":
         if args.verbose:
             stdout_write("Check whether Docker is up and running.\n")
         img = subprocess.check_output(['docker', 'images', '-q', args.image])
-    except:
+    except BaseException:
         stderr_write("Docker failed. Please make sure docker was properly " +
                      "installed and has been started.\n")
         sys.exit(-1)

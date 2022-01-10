@@ -33,5 +33,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/docker-desktop:latest
+          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/docker-desktop:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/docker-desktop:buildcache,mode=max
 
 # Reference: https://docs.docker.com/ci-cd/github-actions/
