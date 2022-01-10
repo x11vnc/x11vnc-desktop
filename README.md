@@ -7,7 +7,7 @@ This is a Docker image for Ubuntu with X11 and VNC. It is similar to
  - Desktop runs in a standard user account instead of the root account
  - Supports dynamic resizing of the desktop and 24-bit true color
  - Supports Ubuntu LTS releases 20.04, 18.04, 16.04 and 14.04, with very fast launching
- - Support Simplified Chinese (add `-t zh_CN` to the command-line option for `ubuntu_desktop.py`)
+ - Support Simplified Chinese (add `-t zh_CN` to the command-line option for `x11vnc_desktop.py`)
  - Automatically shares the current work directory from host to Docker image
  - Is compatible with Singularity (tested with Singularity v2.6 and v3.2)
 
