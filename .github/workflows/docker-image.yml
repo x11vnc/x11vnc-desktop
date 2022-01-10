@@ -32,7 +32,11 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/docker-desktop:latest
+          tags: >
+            ${{ secrets.DOCKER_HUB_USERNAME }}/docker-desktop:master
+            ${{ secrets.DOCKER_HUB_USERNAME }}/docker-desktop:latest
+            ${{ secrets.DOCKER_HUB_USERNAME }}/desktop:master
+            ${{ secrets.DOCKER_HUB_USERNAME }}/desktop:latest
           cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/docker-desktop:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/docker-desktop:buildcache,mode=max
 
