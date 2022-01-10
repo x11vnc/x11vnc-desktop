@@ -12,6 +12,10 @@ import stat
 import sys
 import time
 
+START_ENV = {}
+for key in os.environ.keys():
+    START_ENV[key] = os.environ[key]
+
 ENV_INIT_DIRECTORY = os.environ.get('ENV_INIT_DIRECTORY', '/etc/my_init.d')
 
 KILL_PROCESS_TIMEOUT = int(os.environ.get('KILL_PROCESS_TIMEOUT', 5))
@@ -97,6 +101,8 @@ def import_envvars(clear_existing_environment=True, override_existing_environmen
         new_env[name] = value
     if clear_existing_environment:
         os.environ.clear()
+        for key in START_ENV.keys():
+            os.environ[key] = START_ENV[key]
     for name, value in new_env.items():
         if override_existing_environment or name not in os.environ:
             os.environ[name] = value

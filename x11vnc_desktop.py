@@ -62,7 +62,7 @@ def parse_args(description):
                         default=False)
 
     parser.add_argument('-c', '--clear',
-                        help='Clear the project data volume (please use with caution).',
+                        help='Clear the project data volume (please use with care).',
                         action='store_true',
                         default=False)
 
@@ -72,8 +72,8 @@ def parse_args(description):
                         default=False)
 
     parser.add_argument('-s', '--size',
-                        help='Size of the screen, such as 1440x900. The default ' +
-                        'is to use the current screen size.',
+                        help='The screen size, such as 1440x900, 1920x1080, 2560x1600, etc.' +
+                        'The default is to use the current screen size.',
                         default="")
 
     parser.add_argument('-n', '--no-browser',
@@ -255,12 +255,14 @@ if __name__ == "__main__":
             print('Then, log out and log back in before you can use Docker.')
             sys.exit(-1)
         uid = str(os.getuid())
+        gid = str(os.getgid())
         if uid == '0':
             print('You are running as root. This is not safe. ' +
                   'Please run as a regular user.')
             sys.exit(-1)
     else:
         uid = ""
+        gid = ""
 
     try:
         if args.verbose:
@@ -354,7 +356,8 @@ if __name__ == "__main__":
     envs = ["--hostname", container,
             "--env", "VNCPASS=" + args.password,
             "--env", "RESOLUT=" + size,
-            "--env", "HOST_UID=" + uid]
+            "--env", "HOST_UID=" + uid,
+            "--env", "HOST_GID=" + gid]
 
     # Find a free port for ssh tunning
     port_ssh = str(find_free_port(2222, 50))
