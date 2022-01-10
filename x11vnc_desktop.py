@@ -8,8 +8,6 @@ It also sets up port forwarding for ssh.
 
 # Author: Xiangmin Jiao <xmjiao@gmail.com>
 
-from __future__ import print_function  # Only Python 2.x
-
 import sys
 import subprocess
 import time
