@@ -95,7 +95,7 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
     python3 get-pip.py && \
     pip3 install --no-cache-dir \
         setuptools && \
-    pip3 install -U https://github.com/novnc/websockify/archive/eca301c.tar.gz && \
+    pip3 install -U https://github.com/novnc/websockify/archive/refs/tags/v0.10.0.tar.gz && \
     mkdir /usr/local/noVNC && \
     curl -s -L https://github.com/x11vnc/noVNC/archive/master.tar.gz | \
          bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \
@@ -127,8 +127,8 @@ RUN apt-get update && \
 ########################################################
 # Set up user so that we do not run as root in DOCKER
 ENV DOCKER_USER=ubuntu \
-    DOCKER_UID=9999 \
-    DOCKER_GID=9999 \
+    DOCKER_UID=1000 \
+    DOCKER_GID=1000 \
     DOCKER_SHELL=/bin/zsh
 
 ENV DOCKER_GROUP=$DOCKER_USER \
@@ -164,5 +164,5 @@ WORKDIR $DOCKER_HOME
 ENV DOCKER_CMD=start_vnc
 
 USER root
-ENTRYPOINT ["/sbin/my_init", "--quiet", "--", "/sbin/setuser", "ubuntu"]
+ENTRYPOINT ["/sbin/my_init", "--", "/sbin/setuser", "ubuntu"]
 CMD ["$DOCKER_CMD"]
