@@ -11,8 +11,7 @@ This is a Docker image for Ubuntu with X11 and VNC. It is similar to
  - Automatically shares the current work directory from host to Docker image
  - Is compatible with Singularity (tested with Singularity v2.6 and v3.2)
 
-[![Build Status](https://travis-ci.org/x11vnc/docker-desktop.svg?branch=master)](https://travis-ci.org/x11vnc/docker-desktop)
-[![Docker Image](https://images.microbadger.com/badges/image/x11vnc/desktop:master.svg)](https://microbadger.com/images/x11vnc/desktop)
+![Build Status](https://github.com/x11vnc/x11vnc-desktop/actions/workflows/docker-image.yml/badge.svg)
 
 ![screenshot](https://raw.github.com/x11vnc/x11vnc-desktop/master/screenshots/screenshot.png)
 
