@@ -1,0 +1,4 @@
+@lxpanel --profile LXDE
+@pcmanfm --desktop --profile LXDE
+@xscreensaver -no-splash
+@lxterminal -t LXTerminal -e /usr/local/bin/start_shell

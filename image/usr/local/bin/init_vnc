@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# This script is called before X11 starts.
+
+# If running with a different HOME directory, copy configuration files
+if [ "$DOCKER_HOME" != "$HOME" ]; then
+    rsync -aub $DOCKER_HOME/.config/ $HOME/.config/
+    exit 0
+fi
+
+# Config zsh by copying defaults into $HOME/.config
+if [ ! -e $DOCKER_HOME/.config/zsh ]; then
+    mkdir -p $DOCKER_HOME/.config/zsh
+    cp $DOCKER_HOME/.zshrc $DOCKER_HOME/.config/zsh/zshrc
+    cp $DOCKER_HOME/.zprofile $DOCKER_HOME/.config/zsh/zprofile
+fi
+
+ln -s -f .config/zsh/zshrc $DOCKER_HOME/.zshrc
+ln -s -f .config/zsh/zprofile $DOCKER_HOME/.zprofile
+
+touch $DOCKER_HOME/.config/zsh/zsh_history
+ln -s -f .config/zsh/zsh_history $DOCKER_HOME/.zsh_history
+
+# Config git
+mkdir -p $DOCKER_HOME/.config/git
+if [ -e $DOCKER_HOME/.gitconfig_host ]; then
+    rsync -ub $DOCKER_HOME/.gitconfig_host $DOCKER_HOME/.config/gitconfig
+elif [ ! -e $DOCKER_HOME/.config/gitconfig ]; then
+  touch $DOCKER_HOME/.config/gitconfig
+fi
+
+ln -s -f .config/gitconfig $DOCKER_HOME/.gitconfig
