@@ -12,7 +12,7 @@ LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
 ARG DOCKER_LANG=en_US
 ARG DOCKER_TIMEZONE=America/New_York
-ARG X11VNC_VERSION=0.9.16
+ARG X11VNC_VERSION=latest
 
 ENV LANG=$DOCKER_LANG.UTF-8 \
     LANGUAGE=$DOCKER_LANG:UTF-8 \
@@ -108,7 +108,7 @@ RUN apt-get update && \
     apt-get install -y libxtst-dev libssl-dev libvncserver-dev libjpeg-dev && \
     \
     mkdir -p /tmp/x11vnc-${X11VNC_VERSION} && \
-    curl -s -L https://github.com/LibVNC/x11vnc/archive/refs/tags/master.zip | \
+    curl -s -L https://github.com/LibVNC/x11vnc/archive/refs/heads/master.zip | \
         bsdtar zxf - -C /tmp/x11vnc-${X11VNC_VERSION} --strip-components 1 && \
     cd /tmp/x11vnc-${X11VNC_VERSION} && \
     bash autogen.sh --prefix=/usr/local CFLAGS='-O2 -fno-common -fno-stack-protector' && \
