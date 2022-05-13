@@ -50,7 +50,7 @@ RUN apt-get update && \
         csh \
         tcsh \
         zsh \
-        build-essential autoconf automake \
+        build-essential autoconf automake autotools-dev pkg-config gcc-9 g++-9 \
         libssl-dev \
         git \
         dos2unix \
@@ -113,11 +113,11 @@ RUN apt-get update && \
     curl -s -L https://github.com/LibVNC/x11vnc/archive/refs/tags/${X11VNC_VERSION}.zip | \
         bsdtar zxf - -C /tmp/x11vnc-${X11VNC_VERSION} --strip-components 1 && \
     cd /tmp/x11vnc-${X11VNC_VERSION} && \
-    bash autogen.sh --prefix=/usr/local CFLAGS='-O2 -fno-stack-protector -Wall' && \
+    bash autogen.sh --prefix=/usr/local CC=gcc-9 CFLAGS='-O2 -fno-stack-protector' && \
     make && \
     make install && \
     perl -e 's/,\s*ISO_Left_Tab//g' -p -i /usr/share/X11/xkb/symbols/pc && \
-    apt-get -y remove libxtst-dev libssl-dev libjpeg-dev && \
+    apt-get -y remove libxtst-dev libssl-dev libvncserver-dev libjpeg-dev && \
     apt-get -y autoremove && \
     ldconfig && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
