@@ -7,7 +7,7 @@
 # Authors:
 # Xiangmin Jiao <xmjiao@gmail.com>
 
-FROM ubuntu:22.04
+FROM ubuntu:20.04
 LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
 ARG DOCKER_LANG=en_US
@@ -69,6 +69,7 @@ RUN apt-get update && \
         gtk2-engines-pixbuf \
         gtk2-engines-murrine \
         libcanberra-gtk-module libcanberra-gtk3-module \
+        ttf-ubuntu-font-family \
         xfonts-base xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic \
         libopengl0 mesa-utils libglu1-mesa libgl1-mesa-dri libjpeg8 libjpeg62 \
         xauth \
