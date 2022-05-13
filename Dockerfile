@@ -50,7 +50,7 @@ RUN apt-get update && \
         csh \
         tcsh \
         zsh \
-        build-essential autoconf automake autotools-dev pkg-config gcc-9 g++-9 \
+        build-essential autoconf automake autotools-dev pkg-config \
         libssl-dev \
         git \
         dos2unix \
@@ -75,7 +75,7 @@ RUN apt-get update && \
         xauth \
         x11vnc && \
     chmod 755 /usr/local/share/zsh/site-functions && \
-    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    curl -O https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
     apt install -y --no-install-recommends ./google-chrome-stable_current_amd64.deb && \
     apt-get -y autoremove && \
     ssh-keygen -A && \
@@ -101,19 +101,17 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
          bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \
     rm -rf /tmp/* /var/tmp/*
 
-# Install x11vnc from source and compile with gcc-9
-# Install X-related to compile x11vnc from source code.
-# https://bugs.launchpad.net/ubuntu/+source/x11vnc/+bug/1686084
+# Install latest version of x11vnc from source
 # Also, fix issue with Shift-Tab not working
 # https://askubuntu.com/questions/839842/vnc-pressing-shift-tab-tab-only
 RUN apt-get update && \
     apt-get install -y libxtst-dev libssl-dev libvncserver-dev libjpeg-dev && \
     \
     mkdir -p /tmp/x11vnc-${X11VNC_VERSION} && \
-    curl -s -L https://github.com/LibVNC/x11vnc/archive/refs/tags/${X11VNC_VERSION}.zip | \
+    curl -s -L https://github.com/LibVNC/x11vnc/archive/refs/tags/master.zip | \
         bsdtar zxf - -C /tmp/x11vnc-${X11VNC_VERSION} --strip-components 1 && \
     cd /tmp/x11vnc-${X11VNC_VERSION} && \
-    bash autogen.sh --prefix=/usr/local CC=gcc-9 CFLAGS='-O2 -fno-stack-protector' && \
+    bash autogen.sh --prefix=/usr/local CFLAGS='-O2 -fno-common -fno-stack-protector' && \
     make && \
     make install && \
     perl -e 's/,\s*ISO_Left_Tab//g' -p -i /usr/share/X11/xkb/symbols/pc && \
