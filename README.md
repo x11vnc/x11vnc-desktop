@@ -6,7 +6,7 @@ This is a Docker image for Ubuntu with X11 and VNC. It is similar to
  - VNC is protected by a unique random password for each session
  - Desktop runs in a standard user account instead of the root account
  - Supports dynamic resizing of the desktop and 24-bit true color
- - Supports Ubuntu LTS releases 20.04, 18.04, 16.04 and 14.04, with very fast launching
+ - Supports Ubuntu LTS releases 22.04, 20.04, 18.04, 16.04 and 14.04, with very fast launching
  - Support Simplified Chinese (add `-t zh_CN` to the command-line option for `x11vnc_desktop.py`)
  - Automatically shares the current work directory from host to Docker image
  - Is compatible with Singularity (tested with Singularity v2.6 and v3.2)
@@ -118,7 +118,7 @@ You are welcome to fork the project and customize it for your own purpose.
 This repository uses Github Actions to build the Docker images automatically
 and then push the images onto Docker Hub. For Github Actions to work in your
 fork correctly, please do the following three steps:
- 1. If you do not yet a [Docker Hub](https://hub.docker.com/) account, please 
+ 1. If you do not yet have a [Docker Hub](https://hub.docker.com/) account, please 
     create an account. Set the Github repository secret `DOCKER_HUB_USERNAME`
     to your Docker username.
  2. Set the Github repository secret `DOCKER_HUB_ACCESS_TOKEN` to your Docker
@@ -137,6 +137,7 @@ the CI for the pull request.
 See the LICENSE file for details.
 
 ## Related Projects
- - [novnc/noVNC](https://github.com/novnc/noVNC): VNC client using HTML5 (Web Sockets, Canvas)
+ - [LibVNC/x11vnc](https://github.com/novnc/noVNC): A VNC server for real X displays originally developed by Karl Runge and now cmaintained by LibVNC and the GitHub community.
+ - [novnc/noVNC](https://github.com/novnc/noVNC): VNC client using HTML5 (Web Sockets, Canvas).
  - [fcwu/docker-ubuntu-vnc-desktop](https://github.com/fcwu/docker-ubuntu-vnc-desktop): An original but insecure implementation of Ubuntu desktop, without password protection.
- - [phusion/baseimage](https://github.com/phusion/baseimage-docker): A minimal Ubuntu base image modified for Docker-friendliness
+ - [phusion/baseimage](https://github.com/phusion/baseimage-docker): A minimal Ubuntu base image modified for Docker-friendliness.
