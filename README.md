@@ -112,6 +112,26 @@ Notes regarding singularity:
   LXQT for the desktop manager. This works best if you do not use LXQT on
   your host.
 
+## Forks and Pull Requests
+
+You are welcome to fork the project and customize it for your own purpose.
+This repository uses Github Actions to build the Docker images automatically
+and then push the images onto Docker Hub. For Github Actions to work in your
+fork correctly, please do the following three steps:
+ 1. If you do not yet a [Docker Hub](https://hub.docker.com/) account, please 
+    create an account. Set the Github repository secret `DOCKER_HUB_USERNAME`
+    to your Docker username.
+ 2. Set the Github repository secret `DOCKER_HUB_ACCESS_TOKEN` to your Docker
+    Hub password. You can also create an access token in your Docker Hub 
+    account and set `DOCKER_HUB_ACCESS_TOKEN` to your access token. You can find
+    some detailed instructions about `DOCKER_HUB_ACCESS_TOKEN` at
+    https://docs.docker.com/ci-cd/github-actions/.
+ 3. Create a repository `docker-desktop` in your [Docker Hub](https://hub.docker.com/)
+    account so that the built images can be pushed into your Docker Hub account.
+
+Pull requests are also welcome. Please make sure your changes have passed
+the CI for the pull request.
+
 ## License
 
 See the LICENSE file for details.
