@@ -73,10 +73,10 @@ RUN apt-get update && \
         xfonts-base xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic \
         libopengl0 mesa-utils libglu1-mesa libgl1-mesa-dri libjpeg8 libjpeg62 \
         xauth \
-        x11vnc \
-        \
-        firefox && \
+        x11vnc && \
     chmod 755 /usr/local/share/zsh/site-functions && \
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    apt install -y --no-install-recommends ./google-chrome-stable_current_amd64.deb && \
     apt-get -y autoremove && \
     ssh-keygen -A && \
     ln -s -f /lib64/ld-linux-x86-64.so.2 /lib64/ld-lsb-x86-64.so && \
@@ -101,7 +101,7 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
          bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \
     rm -rf /tmp/* /var/tmp/*
 
-# Install x11vnc from source
+# Install x11vnc from source and compile with gcc-9
 # Install X-related to compile x11vnc from source code.
 # https://bugs.launchpad.net/ubuntu/+source/x11vnc/+bug/1686084
 # Also, fix issue with Shift-Tab not working
