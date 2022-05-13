@@ -50,7 +50,7 @@ RUN apt-get update && \
         csh \
         tcsh \
         zsh \
-        build-essential autoconf \
+        build-essential autoconf automake \
         libssl-dev \
         git \
         dos2unix \
