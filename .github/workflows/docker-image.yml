@@ -2,7 +2,7 @@ name: Docker Image CI
 
 on:
   push:
-    branches: master
+    branches: '*'
 
 jobs:
 
@@ -30,7 +30,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/docker-desktop:master
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/docker-desktop:${GITHUB_REF##*/}
           cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/docker-desktop:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/docker-desktop:buildcache,mode=max
 
@@ -50,6 +50,6 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/docker-desktop:20.04
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/docker-desktop:${GITHUB_REF##*/}
 
 # Reference: https://docs.docker.com/ci-cd/github-actions/
