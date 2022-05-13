@@ -12,6 +12,7 @@ LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
 ARG DOCKER_LANG=en_US
 ARG DOCKER_TIMEZONE=America/New_York
+ARG X11VNC_VERSION=0.9.16
 
 ENV LANG=$DOCKER_LANG.UTF-8 \
     LANGUAGE=$DOCKER_LANG:UTF-8 \
@@ -106,13 +107,13 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
 # Also, fix issue with Shift-Tab not working
 # https://askubuntu.com/questions/839842/vnc-pressing-shift-tab-tab-only
 RUN apt-get update && \
-    apt-get install -y libxtst-dev libssl-dev libjpeg-dev && \
+    apt-get install -y libxtst-dev libssl-dev libvncserver-dev libjpeg-dev && \
     \
-    mkdir -p /tmp/x11vnc-0.9.14 && \
-    curl -s -L http://x11vnc.sourceforge.net/dev/x11vnc-0.9.14-dev.tar.gz | \
-        bsdtar zxf - -C /tmp/x11vnc-0.9.14 --strip-components 1 && \
-    cd /tmp/x11vnc-0.9.14 && \
-    ./configure --prefix=/usr/local CFLAGS='-O2 -fno-stack-protector -Wall' && \
+    mkdir -p /tmp/x11vnc-${X11VNC_VERSION} && \
+    curl -s -L https://github.com/LibVNC/x11vnc/archive/refs/tags/${X11VNC_VERSION}.zip | \
+        bsdtar zxf - -C /tmp/x11vnc-${X11VNC_VERSION} --strip-components 1 && \
+    cd /tmp/x11vnc-${X11VNC_VERSION} && \
+    bash autogen.sh --prefix=/usr/local CFLAGS='-O2 -fno-stack-protector -Wall' && \
     make && \
     make install && \
     perl -e 's/,\s*ISO_Left_Tab//g' -p -i /usr/share/X11/xkb/symbols/pc && \
