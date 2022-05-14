@@ -1,15 +1,15 @@
-# Docker Image for Ubuntu with X11 and VNC
+# Docker/Singularity Image for Ubuntu with X11 and VNC
 
-This project offers a Docker image for Ubuntu with X11 and VNC. It is similar to
+This project offers a Docker/Singularity image for Ubuntu with X11 and VNC. It is similar to
 [fcwu/docker-ubuntu-vnc-desktop](https://github.com/fcwu/docker-ubuntu-vnc-desktop), but with enhancements on security and features.
 
+ - Is compatible with [Singularity](https://sylabs.io/singularity/) (tested with Singularity v3.5) for high-performance computing platforms
  - VNC is protected by a unique random password for each session
  - Desktop runs in a standard user account instead of the root account
  - Supports dynamic resizing of the desktop and 24-bit true color
- - Supports Ubuntu LTS releases 22.04, 20.04, 18.04, 16.04, and 14.04, with very fast launching
- - Support Simplified Chinese (add `-t zh_CN` to the command-line option for `x11vnc_desktop.py`)
+ - Supports Ubuntu LTS releases 22.04, 20.04, and 18.04, with very fast launching
+ - Supports Simplified Chinese (add `-t zh_CN` to the command-line option for `x11vnc_desktop.py`)
  - Automatically shares the current work directory from the host to Docker image
- - Is compatible with Singularity (tested with Singularity v3.5)
 
 ![Build Status](https://github.com/x11vnc/x11vnc-desktop/actions/workflows/docker-image.yml/badge.svg)
 
@@ -79,13 +79,13 @@ and then use the `x11vnc_desktop.py` command.
 
 This Docker image is constructed to be compatible with Singularity. This 
 has been tested with Singularity v3.5. If your system does not yet have
-Singularity, you may need to install it by following [these instructions](https://www.sylabs.io/guides/3.5/user-guide/quick_start.html#quick-installation-steps).
+Singularity, you may need to install it by following [these instructions](https://www.sylabs.io/guides/3.9/user-guide/quick_start.html#quick-installation-steps).
 You must have root access to install Singularity, but you can use
 Singularity as a regular user after it has been installed. If you do not
 have root access, you may need to ask your system administrator to install it for you.
 It is recommended you use Singularity v2.6 or later.
 
-To use the Docker image with Singularity, please issue the command
+To use the Docker image with Singularity v3.x, please issue the command
 ```
 singularity run docker://x11vnc/docker-desktop:latest
 ```
