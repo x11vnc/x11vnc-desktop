@@ -37,7 +37,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ steps.extract_tag.outputs.repo }}/docker-desktop:${{ steps.extract_tag.outputs.tag }}
-          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_REPO }}/docker-desktop:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_REPO }}/docker-desktop:buildcache,mode=max
+          cache-from: type=registry,ref=${{ steps.extract_tag.outputs.repo }}/docker-desktop:buildcache
+          cache-to: type=registry,ref=${{ steps.extract_tag.outputs.repo }}/docker-desktop:buildcache,mode=max
 
 # Reference: https://docs.docker.com/ci-cd/github-actions/
