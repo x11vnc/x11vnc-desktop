@@ -36,7 +36,7 @@ trap cleanup EXIT
 
 # unset all environment variables related to desktop manager
 for var in $(env | cut -d= -f1 | grep -E \
-	"^XDG|SESSION|^GTK|XKEYS|WINDOWMANAGER"); do
+	"^XDG|SESSION|^GTK|XKEYS|WINDOWMANAGER|WAYLAND_DISPLAY"); do
     unset $var
 done
 
