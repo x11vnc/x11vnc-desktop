@@ -116,16 +116,22 @@ X11VNC_PID=$!
 sleep 3
 # Fix issues with Shift-Tab and dbus
 xmodmap -e 'keycode 23 = Tab'
+
 if [ -z "$SINGULARITY_NAME" ]; then
     killall dbus-launch 2> /dev/null || true
+
+    # Restart x11vnc if it dies, for example, after changing screen resolution
+    while true ; do
+        wait $X11VNC_PID
+    
+        x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -repeat -skip_dups -forever \
+            -shared -rfbauth ~/.vnc/passwd$DISP >> $HOME/.log/x11vnc.log 2>&1 &
+        X11VNC_PID=$!
+        echo "X11vnc was restarted probably due to screen-resolution change."
+        echo "Please refresh the web browser or reconnect your VNC viewer."
+    done
+else
+    # In singularity, do not restart x11vnc
+    wait $X11VNC_PID
 fi
 
-# Restart x11vnc if it dies, for example, after changing screen resolution
-while true ; do
-    wait $X11VNC_PID
-    x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -repeat -skip_dups -forever \
-        -shared -rfbauth ~/.vnc/passwd$DISP >> $HOME/.log/x11vnc.log 2>&1 &
-    X11VNC_PID=$!
-    echo "X11vnc was restarted probably due to screen-resolution change."
-    echo "Please refresh the web browser or reconnect your VNC viewer."
-done
