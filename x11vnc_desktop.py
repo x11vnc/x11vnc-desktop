@@ -72,7 +72,7 @@ def parse_args(description):
                         default=False)
 
     parser.add_argument('-s', '--size',
-                        help='The screen size, such as 1440x900, 1920x1080, 2560x1600, etc.' +
+                        help='The screen size, such as 1440x900, 1920x1080, 2560x1600, etc. ' +
                         'The default is to use the current screen size.',
                         default="")
 
