@@ -2,7 +2,7 @@
 #
 # The built image can be found at:
 #
-#   https://hub.docker.com/r/x11vnc/desktop
+#   https://hub.docker.com/r/x11vnc/docker-desktop
 #
 # Authors:
 # Xiangmin Jiao <xmjiao@gmail.com>
@@ -17,6 +17,7 @@ ARG DOCKER_OTHERPACKAGES="fcitx fcitx-config-gtk fcitx-frontend-all \
         fcitx-ui-classic im-config fcitx-module-dbus fcitx-module-kimpanel \
         fcitx-module-lua fcitx-module-x11 presage fonts-wqy-microhei \
         language-pack-zh-hans language-pack-gnome-zh-hans"
+ARG X11VNC_VERSION=latest
 
 ENV LANG=$DOCKER_LANG.UTF-8 \
     LANGUAGE=$DOCKER_LANG:UTF-8 \
@@ -27,8 +28,8 @@ WORKDIR /tmp
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Install some required system tools and packages for X Windows and ssh
-# Also remove the message regarding unminimize
+# Install some required system tools and packages for X Windows and ssh.
+# Also remove the message regarding unminimize.
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         apt-utils \
@@ -55,7 +56,7 @@ RUN apt-get update && \
         csh \
         tcsh \
         zsh \
-        build-essential \
+        build-essential autoconf automake autotools-dev pkg-config \
         libssl-dev \
         git \
         dos2unix \
@@ -81,9 +82,13 @@ RUN apt-get update && \
         xauth \
         x11vnc \
         \
-        firefox-locale-zh-hans \
         $DOCKER_OTHERPACKAGES && \
     chmod 755 /usr/local/share/zsh/site-functions && \
+    add-apt-repository -y ppa:mozillateam/ppa && \
+    echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox && \
+    echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox && \
+    echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox && \
+    apt install -y firefox-locale-zh-hans && \
     apt-get -y autoremove && \
     ssh-keygen -A && \
     ln -s -f /lib64/ld-linux-x86-64.so.2 /lib64/ld-lsb-x86-64.so && \
@@ -108,23 +113,21 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
          bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \
     rm -rf /tmp/* /var/tmp/*
 
-# Install x11vnc from source
-# Install X-related to compile x11vnc from source code.
-# https://bugs.launchpad.net/ubuntu/+source/x11vnc/+bug/1686084
+# Install latest version of x11vnc from source
 # Also, fix issue with Shift-Tab not working
 # https://askubuntu.com/questions/839842/vnc-pressing-shift-tab-tab-only
 RUN apt-get update && \
-    apt-get install -y libxtst-dev libssl-dev libjpeg-dev && \
+    apt-get install -y libxtst-dev libssl-dev libvncserver-dev libjpeg-dev && \
     \
-    mkdir -p /tmp/x11vnc-0.9.14 && \
-    curl -s -L http://x11vnc.sourceforge.net/dev/x11vnc-0.9.14-dev.tar.gz | \
-        bsdtar zxf - -C /tmp/x11vnc-0.9.14 --strip-components 1 && \
-    cd /tmp/x11vnc-0.9.14 && \
-    ./configure --prefix=/usr/local CFLAGS='-O2 -fno-stack-protector -Wall' && \
+    mkdir -p /tmp/x11vnc-${X11VNC_VERSION} && \
+    curl -s -L https://github.com/LibVNC/x11vnc/archive/refs/heads/master.zip | \
+        bsdtar zxf - -C /tmp/x11vnc-${X11VNC_VERSION} --strip-components 1 && \
+    cd /tmp/x11vnc-${X11VNC_VERSION} && \
+    bash autogen.sh --prefix=/usr/local CFLAGS='-O2 -fno-common -fno-stack-protector' && \
     make && \
     make install && \
     perl -e 's/,\s*ISO_Left_Tab//g' -p -i /usr/share/X11/xkb/symbols/pc && \
-    apt-get -y remove libxtst-dev libssl-dev libjpeg-dev && \
+    apt-get -y remove libxtst-dev libssl-dev libvncserver-dev libjpeg-dev && \
     apt-get -y autoremove && \
     ldconfig && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -134,8 +137,8 @@ RUN apt-get update && \
 ########################################################
 # Set up user so that we do not run as root in DOCKER
 ENV DOCKER_USER=ubuntu \
-    DOCKER_UID=1000 \
-    DOCKER_GID=1000 \
+    DOCKER_UID=9999 \
+    DOCKER_GID=9999 \
     DOCKER_SHELL=/bin/zsh
 
 ENV DOCKER_GROUP=$DOCKER_USER \
@@ -158,6 +161,7 @@ ADD image/usr /usr
 ADD image/sbin /sbin
 ADD image/home $DOCKER_HOME
 
+# Make home directory readable to work with Singularity
 RUN mkdir -p $DOCKER_HOME/.config/mozilla && \
     ln -s -f .config/mozilla $DOCKER_HOME/.mozilla && \
     touch $DOCKER_HOME/.sudo_as_admin_successful && \
@@ -166,7 +170,8 @@ RUN mkdir -p $DOCKER_HOME/.config/mozilla && \
     mkdir -p $DOCKER_HOME/.log && touch $DOCKER_HOME/.log/vnc.log && \
     im-config -n fcitx && \
     echo '@fcitx-autostart' >> $DOCKER_HOME/.config/lxsession/LXDE/autostart && \
-    chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME
+    chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME && \
+    chmod -R a+xr $DOCKER_HOME
 
 WORKDIR $DOCKER_HOME
 
