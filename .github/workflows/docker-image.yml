@@ -13,9 +13,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Obtain tag name from branch name
+      - name: Obtain repository and tag names
         shell: bash
-        run: echo "##[set-output name=tag;]$(echo ${GITHUB_REF#refs/heads/} | sed 's/^main$/latest/g')"
+        run: | 
+             if [ -z "${{ secrets.DOCKER_HUB_REPO }}" ]; then
+                 echo "##[set-output name=repo;]${{ secrets.DOCKER_HUB_USERNAME }}"
+             else
+                 echo "##[set-output name=repo;]${{ secrets.DOCKER_HUB_REPO }}"
+             fi
+             echo "##[set-output name=tag;]$(echo ${GITHUB_REF#refs/heads/} | sed 's/^main$/latest/g')"
         id: extract_tag
       - name: Login to Docker Hub
         uses: docker/login-action@v1
@@ -30,8 +36,8 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/docker-desktop:${{ steps.extract_tag.outputs.tag }}
-          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/docker-desktop:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/docker-desktop:buildcache,mode=max
+          tags: ${{ steps.extract_tag.outputs.repo }}/docker-desktop:${{ steps.extract_tag.outputs.tag }}
+          cache-from: type=registry,ref=${{ steps.extract_tag.outputs.repo }}/docker-desktop:buildcache
+          cache-to: type=registry,ref=${{ steps.extract_tag.outputs.repo }}/docker-desktop:buildcache,mode=max
 
 # Reference: https://docs.docker.com/ci-cd/github-actions/
