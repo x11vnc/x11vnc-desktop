@@ -75,8 +75,9 @@ RUN apt-get update && \
         xauth \
         x11vnc && \
     chmod 755 /usr/local/share/zsh/site-functions && \
-    curl -O https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-    apt install -y --no-install-recommends ./google-chrome-stable_current_amd64.deb && \
+    add-apt-repository ppa:mozillateam/ppa && \
+    apt update && \
+    apt install -y firefox && \
     apt-get -y autoremove && \
     ssh-keygen -A && \
     ln -s -f /lib64/ld-linux-x86-64.so.2 /lib64/ld-lsb-x86-64.so && \
@@ -150,7 +151,9 @@ ADD image/sbin /sbin
 ADD image/home $DOCKER_HOME
 
 # Make home directory readable to work with Singularity
-RUN touch $DOCKER_HOME/.sudo_as_admin_successful && \
+RUN mkdir -p $DOCKER_HOME/.config/mozilla && \
+    ln -s -f .config/mozilla $DOCKER_HOME/.mozilla && \
+    touch $DOCKER_HOME/.sudo_as_admin_successful && \
     mkdir -p $DOCKER_HOME/shared && \
     mkdir -p $DOCKER_HOME/.ssh && \
     mkdir -p $DOCKER_HOME/.log && touch $DOCKER_HOME/.log/vnc.log && \
