@@ -116,7 +116,9 @@ X11VNC_PID=$!
 sleep 3
 # Fix issues with Shift-Tab and dbus
 xmodmap -e 'keycode 23 = Tab'
-killall dbus-launch 2> /dev/null || true
+if [ -z "$SINGULARITY_NAME" ]; then
+    killall dbus-launch 2> /dev/null || true
+fi
 
 # Restart x11vnc if it dies, for example, after changing screen resolution
 while true ; do
