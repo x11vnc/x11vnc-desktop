@@ -1,6 +1,6 @@
 #!/bin/bash
 # User can pass e.g. --env HOST_UID=1003 so that UID in the container matches
-# with the UID on the host. This is useful for Linux users, Mac and Windows
+# with the UID on the host. This is useful for Linux users. Mac and Windows
 # already do transparent mapping of shared volumes.
 if [ "$HOST_UID" -a "$DOCKER_UID" != "$HOST_UID" ]; then
     usermod -u $HOST_UID $DOCKER_USER 2> /dev/null
@@ -22,4 +22,6 @@ if [ -n "$HOST_UID" -a "$DOCKER_UID" != "$HOST_UID" -o \
     # It is important for $HOME/.ssh to have correct ownership
     chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME/.ssh
     chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME/.config
+else
+    chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME/project
 fi
