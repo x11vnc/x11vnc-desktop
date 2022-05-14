@@ -165,7 +165,6 @@ ADD image/home $DOCKER_HOME
 RUN mkdir -p $DOCKER_HOME/.config/mozilla && \
     ln -s -f .config/mozilla $DOCKER_HOME/.mozilla && \
     im-config -n fcitx && \
-    echo '@fcitx-autostart' >> $DOCKER_HOME/.config/lxsession/LXDE/autostart && \
     touch $DOCKER_HOME/.sudo_as_admin_successful && \
     mkdir -p $DOCKER_HOME/shared && \
     mkdir -p $DOCKER_HOME/.ssh && \
