@@ -125,8 +125,8 @@ RUN apt-get update && \
 ########################################################
 # Set up user so that we do not run as root in DOCKER
 ENV DOCKER_USER=ubuntu \
-    DOCKER_UID=1000 \
-    DOCKER_GID=1000 \
+    DOCKER_UID=9999 \
+    DOCKER_GID=9999 \
     DOCKER_SHELL=/bin/zsh
 
 ENV DOCKER_GROUP=$DOCKER_USER \
