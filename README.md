@@ -121,16 +121,15 @@ fork correctly, please do the following three steps:
  1. If you do not yet have a [Docker Hub](https://hub.docker.com/) account, please 
     create an account. Set the Github repository secret `DOCKER_HUB_USERNAME`
     to your Docker username.
- 2. Set the Github repository secret `DOCKER_HUB_ACCESS_TOKEN` to your Docker
-    Hub password. You can also create an access token in your Docker Hub 
-    account and set `DOCKER_HUB_ACCESS_TOKEN` to your access token. You can find
-    some detailed instructions about `DOCKER_HUB_ACCESS_TOKEN` at
+ 2. Set the Github repository secrets `DOCKER_HUB_USERNAME` and `DOCKER_HUB_ACCESS_TOKEN`
+    to your Docker Hub username and password. You can find
+    some detailed instructions about getting Docker Hub access token at
     https://docs.docker.com/ci-cd/github-actions/.
  3. Create a repository `docker-desktop` in your [Docker Hub](https://hub.docker.com/)
     account so that the built images can be pushed into your Docker Hub account.
 
 Pull requests are also welcome. Please make sure your changes have passed
-the CI for the pull request.
+the GitHub Actions CI for the pull request.
 
 ## License
 
