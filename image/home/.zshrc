@@ -38,7 +38,8 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
+    export LS_COLORS=$LS_COLORS:'di=0;36'
+    alias ls='ls -hF --color=auto'
     alias dir='dir --color=auto'
     alias vdir='vdir --color=auto'
 

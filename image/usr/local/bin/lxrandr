@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Configure screen resolution and restart x11vnc
+
+OLD_RESOLUT=$(xrandr -q | grep connected | cut --delimiter " " -f 3)
+
+/usr/bin/lxrandr
+
+NEW_RESOLUT=$(xrandr -q | grep connected | cut --delimiter " " -f 3)
+
+if [ "$OLD_RESOLUT" != "$NEW_RESOLUT" ]; then
+    killall x11vnc
+fi
