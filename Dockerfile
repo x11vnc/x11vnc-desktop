@@ -88,7 +88,7 @@ RUN apt-get update && \
     echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox && \
     echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox && \
     echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox && \
-    apt install -y firefox-locale-zh-hans && \
+    apt install -y firefox firefox-locale-zh-hans && \
     apt-get -y autoremove && \
     ssh-keygen -A && \
     ln -s -f /lib64/ld-linux-x86-64.so.2 /lib64/ld-lsb-x86-64.so && \
