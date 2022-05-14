@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cat $DOCKER_HOME/WELCOME 2> /dev/null
+exec $SHELL -l
