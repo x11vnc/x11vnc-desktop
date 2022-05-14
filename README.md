@@ -9,7 +9,7 @@ This project offers a Docker image for Ubuntu with X11 and VNC. It is similar to
  - Supports Ubuntu LTS releases 22.04, 20.04, 18.04, 16.04, and 14.04, with very fast launching
  - Support Simplified Chinese (add `-t zh_CN` to the command-line option for `x11vnc_desktop.py`)
  - Automatically shares the current work directory from the host to Docker image
- - Is compatible with Singularity (tested with Singularity v2.6 and v3.2)
+ - Is compatible with Singularity (tested with Singularity v3.5)
 
 ![Build Status](https://github.com/x11vnc/x11vnc-desktop/actions/workflows/docker-image.yml/badge.svg)
 
@@ -78,8 +78,8 @@ and then use the `x11vnc_desktop.py` command.
 ## Use with Singularity
 
 This Docker image is constructed to be compatible with Singularity. This 
-has been tested with Singularity v2.6 and v3.2. If your system does not yet have
-Singularity, you may need to install it by following [these instructions](https://www.sylabs.io/guides/2.6/user-guide/quick_start.html#quick-installation-steps).
+has been tested with Singularity v3.5. If your system does not yet have
+Singularity, you may need to install it by following [these instructions](https://www.sylabs.io/guides/3.5/user-guide/quick_start.html#quick-installation-steps).
 You must have root access to install Singularity, but you can use
 Singularity as a regular user after it has been installed. If you do not
 have root access, you may need to ask your system administrator to install it for you.
@@ -92,8 +92,8 @@ singularity run docker://x11vnc/docker-desktop:latest
 
 Alternatively, you may use the commands
 ```
-singularity pull --name x11vnc-desktop:latest.simg docker://x11vnc/docker-desktop:latest
-./x11vnc-desktop:latest.simg
+singularity pull x11vnc-desktop:latest.sif docker://x11vnc/docker-desktop:latest
+./x11vnc-desktop:latest.sif
 ```
 
 Notes regarding Singularity:
