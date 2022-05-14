@@ -17,9 +17,9 @@ jobs:
         shell: bash
         run: | 
              if [ -z "${{ secrets.DOCKER_HUB_REPO }}" ]; then
-                 echo "##[set-output user=tag;]${{ secrets.DOCKER_HUB_USERNAME }}"
+                 echo "##[set-output name=repo;]${{ secrets.DOCKER_HUB_USERNAME }}"
              else
-                 echo "##[set-output user=tag;]${{ secrets.DOCKER_HUB_REPO }}"
+                 echo "##[set-output name=repo;]${{ secrets.DOCKER_HUB_REPO }}"
              fi
              echo "##[set-output name=tag;]$(echo ${GITHUB_REF#refs/heads/} | sed 's/^main$/latest/g')"
         id: extract_tag
