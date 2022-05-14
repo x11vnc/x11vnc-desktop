@@ -78,8 +78,9 @@ RUN apt-get update && \
         x11vnc && \
     chmod 755 /usr/local/share/zsh/site-functions && \
     add-apt-repository -y ppa:mozillateam/ppa && \
-    echo -e '\nPackage: *\nPin: release o=LP-PPA-mozillateam\nPin-Priority: 1001\n' > \
-        /etc/apt/preferences.d/mozilla-firefox && \
+    echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox && \
+    echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox && \
+    echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox && \
     apt install -y firefox && \
     apt-get -y autoremove && \
     ssh-keygen -A && \
