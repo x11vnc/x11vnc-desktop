@@ -7,22 +7,16 @@
 # Authors:
 # Xiangmin Jiao <xmjiao@gmail.com>
 
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
-ARG DOCKER_LANG=zh_CN
-ARG DOCKER_TIMEZONE=Asia/Shanghai
-ARG DOCKER_OTHERPACKAGES="fcitx fcitx-config-gtk fcitx-frontend-all \
-        fcitx-frontend-gtk3 fcitx-pinyin fcitx-googlepinyin \
-        fcitx-ui-classic im-config fcitx-module-dbus fcitx-module-kimpanel \
-        fcitx-module-lua fcitx-module-x11 presage fonts-wqy-microhei \
-        language-pack-zh-hans language-pack-gnome-zh-hans"
+ARG DOCKER_LANG=en_US
+ARG DOCKER_TIMEZONE=America/New_York
 ARG X11VNC_VERSION=latest
 
 ENV LANG=$DOCKER_LANG.UTF-8 \
     LANGUAGE=$DOCKER_LANG:UTF-8 \
-    LC_ALL=$DOCKER_LANG.UTF-8 \
-    XMODIFIERS=@im=fcitx
+    LC_ALL=$DOCKER_LANG.UTF-8
 
 WORKDIR /tmp
 
@@ -30,6 +24,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Install some required system tools and packages for X Windows and ssh.
 # Also remove the message regarding unminimize.
+# Note that Ubuntu 22.04 uses snapd for firefox, which does not work properly,
+# so we install it from ppa:mozillateam/ppa instead.
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         apt-utils \
@@ -76,19 +72,16 @@ RUN apt-get update && \
         gtk2-engines-pixbuf \
         gtk2-engines-murrine \
         libcanberra-gtk-module libcanberra-gtk3-module \
-        ttf-ubuntu-font-family \
         xfonts-base xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic \
         libopengl0 mesa-utils libglu1-mesa libgl1-mesa-dri libjpeg8 libjpeg62 \
         xauth \
-        x11vnc \
-        \
-        $DOCKER_OTHERPACKAGES && \
+        x11vnc && \
     chmod 755 /usr/local/share/zsh/site-functions && \
     add-apt-repository -y ppa:mozillateam/ppa && \
     echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox && \
     echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox && \
     echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox && \
-    apt install -y firefox firefox-locale-zh-hans && \
+    apt install -y firefox && \
     apt-get -y autoremove && \
     ssh-keygen -A && \
     ln -s -f /lib64/ld-linux-x86-64.so.2 /lib64/ld-lsb-x86-64.so && \
@@ -164,7 +157,6 @@ ADD image/home $DOCKER_HOME
 # Make home directory readable to work with Singularity
 RUN mkdir -p $DOCKER_HOME/.config/mozilla && \
     ln -s -f .config/mozilla $DOCKER_HOME/.mozilla && \
-    im-config -n fcitx && \
     touch $DOCKER_HOME/.sudo_as_admin_successful && \
     mkdir -p $DOCKER_HOME/shared && \
     mkdir -p $DOCKER_HOME/.ssh && \
