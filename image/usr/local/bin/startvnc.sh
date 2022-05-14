@@ -124,6 +124,8 @@ while true ; do
     x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -repeat -skip_dups -forever \
         -shared -rfbauth ~/.vnc/passwd$DISP >> $HOME/.log/x11vnc.log 2>&1 &
     X11VNC_PID=$!
-    echo "X11vnc was restarted due to screen-resolution change."
-    echo "Please refresh the web browser or reconnect your VNC viewer."
+    if [ -n "$SINGULARITY_NAME" ]; then
+        echo "X11vnc was restarted due to screen-resolution change."
+        echo "Please refresh the web browser or reconnect your VNC viewer."
+    fi
 done

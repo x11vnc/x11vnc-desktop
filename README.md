@@ -71,7 +71,7 @@ python x11vnc_desktop.py -h
 To build your own image, run the following commands:
 ```
 git clone https://github.com/x11vnc/x11vnc-desktop.git
-docker build --rm -t x11vnc/desktop x11vnc-desktop
+docker build --rm -t x11vnc/docker-desktop x11vnc-desktop
 ```
 and then use the `x11vnc_desktop.py` command.
 
@@ -87,13 +87,13 @@ It is recommended you use Singularity v2.6 or later.
 
 To use the Docker image with Singularity, please issue the command
 ```
-singularity run docker://x11vnc/desktop:master
+singularity run docker://x11vnc/docker-desktop:latest
 ```
 
 Alternatively, you may use the commands
 ```
-singularity pull --name x11vnc-desktop:master.simg docker://x11vnc/desktop:master
-./x11vnc-desktop:master.simg
+singularity pull --name x11vnc-desktop:latest.simg docker://x11vnc/docker-desktop:latest
+./x11vnc-desktop:latest.simg
 ```
 
 Notes regarding Singularity:
@@ -109,7 +109,7 @@ Notes regarding Singularity:
   sourced by /home/$USER/.zprofile. This works the best if you use another
   login shell (such as /bin/bash) on the host.
 - To avoid potential conflict with your X11 configuration, this image uses
-  LXQT for the desktop manager. This works best if you do not use LXQT on
+  LXDE for the desktop manager. This works best if you do not use LXDE on
   your host.
 
 ## Forks and Pull Requests
