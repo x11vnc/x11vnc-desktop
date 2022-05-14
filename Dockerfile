@@ -103,7 +103,7 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
         setuptools && \
     pip3 install -U https://github.com/novnc/websockify/archive/refs/tags/v0.10.0.tar.gz && \
     mkdir /usr/local/noVNC && \
-    curl -s -L https://github.com/x11vnc/noVNC/archive/master.tar.gz | \
+    curl -s -L https://github.com/x11vnc/noVNC/archive/novnc-master.tar.gz | \
          bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \
     rm -rf /tmp/* /var/tmp/*
 
