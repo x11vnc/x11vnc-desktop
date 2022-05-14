@@ -155,7 +155,7 @@ RUN touch $DOCKER_HOME/.sudo_as_admin_successful && \
     mkdir -p $DOCKER_HOME/.ssh && \
     mkdir -p $DOCKER_HOME/.log && touch $DOCKER_HOME/.log/vnc.log && \
     chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME && \
-    chmod -R a+r $DOCKER_HOME
+    chmod -R a+xr $DOCKER_HOME
 
 WORKDIR $DOCKER_HOME
 
