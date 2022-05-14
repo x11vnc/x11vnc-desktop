@@ -168,10 +168,10 @@ RUN mkdir -p $DOCKER_HOME/.config/mozilla && \
     mkdir -p $DOCKER_HOME/shared && \
     mkdir -p $DOCKER_HOME/.ssh && \
     mkdir -p $DOCKER_HOME/.log && touch $DOCKER_HOME/.log/vnc.log && \
-    im-config -n fcitx && \
-    echo '@fcitx-autostart' >> $DOCKER_HOME/.config/lxsession/LXDE/autostart && \
     chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME && \
     chmod -R a+xr $DOCKER_HOME
+    #im-config -n fcitx && \
+    #echo '@fcitx-autostart' >> $DOCKER_HOME/.config/lxsession/LXDE/autostart && \
 
 WORKDIR $DOCKER_HOME
 
