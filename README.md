@@ -1,17 +1,17 @@
 # Docker/Singularity Image for Ubuntu with X11 and VNC
 
-This project offers a Docker/Singularity image for Ubuntu with X11 and VNC. It is similar to
-[fcwu/docker-ubuntu-vnc-desktop](https://github.com/fcwu/docker-ubuntu-vnc-desktop), but with enhancements on security and features.
+This repository offers a Docker/Singularity image for Ubuntu with X11 and VNC. It can be useful in delivering a unified enviroment for teaching programming classes, demonstrating graphical user interface, developing and debugging software programs, and visualizing simultion results on high-performance computing (HPC) platforms. It shares some similarity to [fcwu/docker-ubuntu-vnc-desktop](https://github.com/fcwu/docker-ubuntu-vnc-desktop), but with several enhancements on security and features, especially for sofware developers and HPC users:
 
- - Is compatible with [Singularity](https://sylabs.io/singularity/) (tested with Singularity v3.5) for high-performance computing platforms
- - VNC is protected by a unique random password for each session
+ - VNC is protected by a unique random password for each session or a reused user-set password
  - Desktop runs in a standard user account instead of the root account
  - Supports dynamic resizing of the desktop and 24-bit true color
  - Supports Ubuntu LTS releases 22.04, 20.04, and 18.04, with very fast launching
  - Supports Simplified Chinese (add `-t zh_CN` to the command-line option for `x11vnc_desktop.py`)
  - Automatically shares the current work directory from the host to Docker image
+ - Is compatible with [Singularity](https://sylabs.io/singularity/) (tested with Singularity v3.5) for high-performance computing platforms
 
 ![Build Status](https://github.com/x11vnc/x11vnc-desktop/actions/workflows/docker-image.yml/badge.svg)
+[![Docker Pulls](https://img.shields.io/docker/pulls/x11vnc/docker-desktop.svg)](https://hub.docker.com/r/x11vnc/docker-desktop/)
 
 ![screenshot](https://raw.github.com/x11vnc/x11vnc-desktop/master/screenshots/screenshot.png)
 
@@ -131,12 +131,15 @@ fork correctly, please do the following three steps:
 Pull requests are also welcome. Please make sure your changes have passed
 the GitHub Actions CI for the pull request.
 
+## Developer
+The `x11vnc-desktop` project was developed by Xiangmin Jiao as a tool for teaching and research at Stony Brook University. Note that this project is independent of the [LibVNC/x11vnc](https://github.com/LibVNC/x11vnc) project.
+
 ## License
 
 See the LICENSE file for details.
 
 ## Related Projects
- - [LibVNC/x11vnc](https://github.com/novnc/noVNC): A VNC server for real X displays originally developed by Karl Runge and now maintained by LibVNC and the GitHub community.
+ - [LibVNC/x11vnc](https://github.com/LibVNC/x11vnc): A VNC server for real X displays originally developed by Karl Runge and now maintained by LibVNC and the GitHub community.
  - [novnc/noVNC](https://github.com/novnc/noVNC): VNC client using HTML5 (Web Sockets, Canvas).
  - [fcwu/docker-ubuntu-vnc-desktop](https://github.com/fcwu/docker-ubuntu-vnc-desktop): An original but insecure implementation of Ubuntu desktop, without password protection.
  - [phusion/baseimage](https://github.com/phusion/baseimage-docker): A minimal Ubuntu base image modified for Docker-friendliness.
