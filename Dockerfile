@@ -102,8 +102,10 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
         setuptools && \
     pip3 install -U https://github.com/novnc/websockify/archive/refs/tags/v0.10.0.tar.gz && \
     mkdir /usr/local/noVNC && \
-    curl -s -L https://github.com/x11vnc/noVNC/archive/master.tar.gz | \
-         bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \
+    curl -s -L https://github.com/x11vnc/noVNC/archive/refs/heads/x11vnc.zip | \
+          bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \
+    ([ -e /usr/local/noVNC/utils/launch.sh ] || \
+        ln -s -f /usr/local/noVNC/utils/novnc_proxy /usr/local/noVNC/utils/launch.sh) && \
     rm -rf /tmp/* /var/tmp/*
 
 # Install latest version of x11vnc from source
