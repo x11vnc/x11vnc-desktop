@@ -105,6 +105,8 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
     mkdir /usr/local/noVNC && \
     curl -s -L https://github.com/x11vnc/noVNC/archive/novnc-master.tar.gz | \
          bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \
+    ([ -e /usr/local/noVNC/utils/launch.sh ] || \
+        ln -s -f /usr/local/noVNC/utils/novnc_proxy /usr/local/noVNC/utils/launch.sh) && \
     rm -rf /tmp/* /var/tmp/*
 
 # Install latest version of x11vnc from source
