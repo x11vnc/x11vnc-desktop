@@ -114,12 +114,10 @@ x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -repeat -skip_dups -forever \
 X11VNC_PID=$!
 
 sleep 3
-# Fix issues with Shift-Tab and dbus
+# Fix issues with Shift-Tab
 xmodmap -e 'keycode 23 = Tab'
 
 if [ -z "$SINGULARITY_NAME" ]; then
-    killall dbus-launch 2> /dev/null || true
-
     # Restart x11vnc if it dies, for example, after changing screen resolution
     while true ; do
         wait $X11VNC_PID
