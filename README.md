@@ -79,35 +79,37 @@ and then use the `x11vnc_desktop.py` command.
 
 This Docker image is constructed to be compatible with Singularity. This 
 has been tested with Singularity v3.5. If your system does not yet have
-Singularity, you may need to install it by following [these instructions](https://www.sylabs.io/guides/3.9/user-guide/quick_start.html#quick-installation-steps).
+Singularity, you may need to install it by following 
+[these instructions](https://www.sylabs.io/guides/3.9/user-guide/quick_start.html#quick-installation-steps).
 You must have root access to install Singularity, but you can use
 Singularity as a regular user after it has been installed. If you do not
-have root access, you may need to ask your system administrator to install it for you.
-It is recommended you use Singularity v2.6 or later.
+have root access, such as on an HPC platform, ask your system administrator
+to install Singularity for you. It is recommended you use Singularity v2.6 or later.
 
-To use the Docker image with Singularity v3.x, please issue the command
+To use the Docker image with Singularity, please issue the command
 ```
-singularity run docker://x11vnc/docker-desktop:latest
+singularity run -c -B $HOME docker://x11vnc/docker-desktop:latest
 ```
+It will automatically mount some mininal /dev directories and $HOME in Singularity
+but does not mount most others (such as /run, /tmp, etc.). If you do not want to
+mount your home directory, then remove the `-B $HOME` option.
 
-Alternatively, you may use the commands
+Alternatively, if you use Singularity v3.x, you may use the commands
 ```
 singularity pull x11vnc-desktop:latest.sif docker://x11vnc/docker-desktop:latest
-./x11vnc-desktop:latest.sif
+singularity run -c -B $HOME ./x11vnc-desktop:latest.sif
 ```
 
 Notes regarding Singularity:
 - When using Singularity, the user name in the container will be the same
-  as that on the host, and the home directory on the host will be mounted
-  at /home/$USER by default. You will still have read access to
-  /home/$DOCKER_USER.
+  as that on the host. You will still have read access to /home/$DOCKER_USER.
 - To avoid conflict with the user configuration on the host when using
   Singularity, this image uses /bin/zsh as the login shell in the container.
   By default, /home/$DOCKER_USER/.zprofile and /home/$DOCKER_USER/.zshrc
-  will be copied to your home directory if they are older than those in
-  /home/$DOCKER_USER. In particular, /home/$DOCKER_USER/.profile will be
-  sourced by /home/$USER/.zprofile. This works the best if you use another
-  login shell (such as /bin/bash) on the host.
+  will be copied to your home directory if they do not yet exist. This works
+  the best if you use another login shell (such as /bin/bash) on the host.
+  If you are a `zsh` user, you may need to edit your `.zshrc` and `.zprofile`
+  to work both on the host and in the Singularity image.
 - To avoid potential conflict with your X11 configuration, this image uses
   LXDE for the desktop manager. This works best if you do not use LXDE on
   your host.
