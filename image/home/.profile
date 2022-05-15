@@ -22,10 +22,15 @@ if [ -d "$DOCKER_HOME/.local/bin" -a -z "$(echo $PATH | grep $DOCKER_HOME/.local
     PATH="$DOCKER_HOME/.local/bin:$PATH"
 fi
 
-# initialize the configuration of zsh
+# initialize the configuration of zsh and vim
 if [ -n "$SINGULARITY_NAME" ]; then
-    # copy from $DOCKER_HOME to $HOME for Singularity
-    rsync -aub $DOCKER_HOME/.zshrc $HOME/.zshrc
-    rsync -aub $DOCKER_HOME/.zprofile $HOME/.zprofile
+    # copy from $DOCKER_HOME to $HOME for Singularity if not exist
+    if [ ! -e $HOME/.zshrc ]; then
+        cp $DOCKER_HOME/.zshrc $HOME/.zshrc
+    fi
+    if [ ! -e $HOME/.zprofile ]; then
+        cp $DOCKER_HOME/.zprofile $HOME/.zprofile
+    if [ ! -e $HOME/.vimrc ]; then
+        cp $DOCKER_HOME/.vimrc $HOME/.vimrc
+    fi
 fi
-
