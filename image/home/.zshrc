@@ -57,3 +57,8 @@ alias la='ls -A'
 alias l='ls -CF'
 alias rm='rm -i'
 alias h='history'
+
+# Enable zsh-autosuggestions
+if [ -f /usr/local/share/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+    source /usr/local/share/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
