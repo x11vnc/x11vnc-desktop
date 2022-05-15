@@ -30,6 +30,7 @@ if [ -n "$SINGULARITY_NAME" ]; then
     fi
     if [ ! -e $HOME/.zprofile ]; then
         cp $DOCKER_HOME/.zprofile $HOME/.zprofile
+    fi
     if [ ! -e $HOME/.vimrc ]; then
         cp $DOCKER_HOME/.vimrc $HOME/.vimrc
     fi
