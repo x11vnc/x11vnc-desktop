@@ -168,7 +168,8 @@ RUN mkdir -p $DOCKER_HOME/.config/mozilla && \
     mkdir -p $DOCKER_HOME/.ssh && \
     mkdir -p $DOCKER_HOME/.log && touch $DOCKER_HOME/.log/vnc.log && \
     chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME && \
-    chmod -R a+xr $DOCKER_HOME
+    chmod -R a+r $DOCKER_HOME && \
+    find $DOCKER_HOME -type d -exec chmod a+x {} \;
 
 WORKDIR $DOCKER_HOME
 
