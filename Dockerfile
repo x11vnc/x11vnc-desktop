@@ -7,7 +7,7 @@
 # Authors:
 # Xiangmin Jiao <xmjiao@gmail.com>
 
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 LABEL maintainer Xiangmin Jiao <xmjiao@gmail.com>
 
 ARG DOCKER_LANG=zh_CN
@@ -76,7 +76,6 @@ RUN apt-get update && \
         gtk2-engines-pixbuf \
         gtk2-engines-murrine \
         libcanberra-gtk-module libcanberra-gtk3-module \
-        ttf-ubuntu-font-family \
         xfonts-base xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic \
         libopengl0 mesa-utils libglu1-mesa libgl1-mesa-dri libjpeg8 libjpeg62 \
         xauth \
@@ -84,6 +83,9 @@ RUN apt-get update && \
         \
         $DOCKER_OTHERPACKAGES && \
     chmod 755 /usr/local/share/zsh/site-functions && \
+    mkdir /usr/local/share/zsh/zsh-autosuggestions && \
+    curl -s -L https://github.com/zsh-users/zsh-autosuggestions/archive/refs/heads/master.zip | \
+          bsdtar zxf - -C /usr/local/share/zsh/zsh-autosuggestions --strip-components 1 && \
     add-apt-repository -y ppa:mozillateam/ppa && \
     echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox && \
     echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox && \
@@ -109,8 +111,11 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
         setuptools && \
     pip3 install -U https://github.com/novnc/websockify/archive/refs/tags/v0.10.0.tar.gz && \
     mkdir /usr/local/noVNC && \
-    curl -s -L https://github.com/x11vnc/noVNC/archive/master.tar.gz | \
-         bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \
+    curl -s -L https://github.com/x11vnc/noVNC/archive/refs/heads/x11vnc.zip | \
+          bsdtar zxf - -C /usr/local/noVNC --strip-components 1 && \
+    (chmod a+x /usr/local/noVNC/utils/launch.sh || \
+        (chmod a+x /usr/local/noVNC/utils/novnc_proxy && \
+         ln -s -f /usr/local/noVNC/utils/novnc_proxy /usr/local/noVNC/utils/launch.sh)) && \
     rm -rf /tmp/* /var/tmp/*
 
 # Install latest version of x11vnc from source
@@ -165,12 +170,14 @@ ADD image/home $DOCKER_HOME
 RUN mkdir -p $DOCKER_HOME/.config/mozilla && \
     ln -s -f .config/mozilla $DOCKER_HOME/.mozilla && \
     im-config -n fcitx && \
+    echo '@fcitx-autostart' >> $DOCKER_HOME/.config/lxsession/LXDE/autostart && \
     touch $DOCKER_HOME/.sudo_as_admin_successful && \
     mkdir -p $DOCKER_HOME/shared && \
     mkdir -p $DOCKER_HOME/.ssh && \
     mkdir -p $DOCKER_HOME/.log && touch $DOCKER_HOME/.log/vnc.log && \
     chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME && \
-    chmod -R a+xr $DOCKER_HOME
+    chmod -R a+r $DOCKER_HOME && \
+    find $DOCKER_HOME -type d -exec chmod a+x {} \;
 
 WORKDIR $DOCKER_HOME
 

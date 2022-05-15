@@ -5,7 +5,7 @@
 # started using port 5900+DISPLAY and the NoVNC will use port 6080+DISPLAY.
 
 # Author: Xiangmin Jiao <xmjiao@gmail.com>
-# Copyright Xiangmin Jiao 2017--2021. All rights reserved.
+# Copyright Xiangmin Jiao 2017--2022. All rights reserved.
 
 cleanup()
 {
@@ -36,7 +36,7 @@ trap cleanup EXIT
 
 # unset all environment variables related to desktop manager
 for var in $(env | cut -d= -f1 | grep -E \
-	"^XDG|SESSION|^GTK|XKEYS|WINDOWMANAGER|WAYLAND_DISPLAY"); do
+	"^XDG|SESSION|^GTK|XKEYS|^WLS|WINDOWMANAGER|WAYLAND_DISPLAY"); do
     unset $var
 done
 
@@ -85,7 +85,7 @@ if [ -z "$SSH_AUTH_SOCK" ]; then
     eval `ssh-agent -s` > /dev/null
 fi
 
-# startup x11vnc with a stable or a new random password
+# start x11vnc with a stable or a new random password
 export VNCPASS=${VNCPASS:-$(openssl rand -base64 6 | sed 's/\//-/')}
 mkdir -p $HOME/.vnc && \
 x11vnc -storepasswd $VNCPASS ~/.vnc/passwd$DISP > $HOME/.log/x11vnc.log 2>&1
@@ -118,8 +118,6 @@ sleep 3
 xmodmap -e 'keycode 23 = Tab'
 
 if [ -z "$SINGULARITY_NAME" ]; then
-    killall dbus-launch 2> /dev/null || true
-
     # Restart x11vnc if it dies, for example, after changing screen resolution
     while true ; do
         wait $X11VNC_PID
