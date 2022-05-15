@@ -8,7 +8,7 @@ if [ "$DOCKER_HOME" != "$HOME" ]; then
     exit 0
 fi
 
-# Config zsh by copying defaults into $HOME/.config
+# Config zsh configuratoins by copying defaults into $HOME/.config
 if [ ! -e $DOCKER_HOME/.config/zsh ]; then
     mkdir -p $DOCKER_HOME/.config/zsh
     cp $DOCKER_HOME/.zshrc $DOCKER_HOME/.config/zsh/zshrc
@@ -20,6 +20,12 @@ ln -s -f .config/zsh/zprofile $DOCKER_HOME/.zprofile
 
 touch $DOCKER_HOME/.config/zsh/zsh_history
 ln -s -f .config/zsh/zsh_history $DOCKER_HOME/.zsh_history
+
+# Config vim
+if [ ! -e $DOCKER_HOME/.config/vimrc ]; then
+    cp $DOCKER_HOME/.vimrc $DOCKER_HOME/.config/vimrc
+fi
+ln -s -f .config/vimrc $DOCKER_HOME/.vimrc
 
 # Config git
 mkdir -p $DOCKER_HOME/.config/git
