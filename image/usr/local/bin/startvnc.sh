@@ -118,8 +118,6 @@ sleep 3
 xmodmap -e 'keycode 23 = Tab'
 
 if [ -z "$SINGULARITY_NAME" ]; then
-    killall dbus-launch 2> /dev/null || true
-
     # Restart x11vnc if it dies, for example, after changing screen resolution
     while true ; do
         wait $X11VNC_PID
