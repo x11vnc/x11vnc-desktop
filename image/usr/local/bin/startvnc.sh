@@ -84,7 +84,7 @@ mkdir -p $HOME/.log
 Xorg -noreset +extension GLX +extension RANDR +extension RENDER \
     -logfile $HOME/.log/Xorg_$DISP.log -config $HOME/.config/xorg_X$DISP.conf \
     :$DISP 2> $HOME/.log/Xorg_X${DISP}_err.log &
-XORG_PID=$!
+export XORG_PID=$!
 
 # start ssh-agent if not set by caller and stop if automatically
 if [ -z "$SSH_AUTH_SOCK" ]; then
@@ -128,10 +128,8 @@ i=0;
 until [ $i -gt 10 ]; do
     echo $X11VNC_PID > $HOME/.log/x11vnc_X${DISP}_pid
     wait $X11VNC_PID
-    sleep 1
 
-    if [ -f $HOME/.log/restart_x11vnc_X$DISP ]; then
-        rm -f $HOME/.log/restart_x11vnc_X$DISP
+    if [ $(ps $XORG_PID > /dev/null) ]; then
         echo "X11vnc was restarted probably due to screen-resolution change."
         echo "Please refresh the web browser or reconnect your VNC viewer."
     else
