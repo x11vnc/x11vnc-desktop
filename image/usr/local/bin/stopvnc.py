@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 """
-Stop VNC server and exit Docker desktop
+Stop VNC server and exit desktop in Docker/Singularity
 """
 
 try:
@@ -10,13 +10,11 @@ except:
     import Tkinter as tk
 import os
 
+
 def clickLogout():
     import subprocess
     if os.getenv('SESSION_PID'):
         subprocess.call(['pkill', '-P', os.getenv('SESSION_PID')])
-        # subprocess.call(['killall', 'startvnc.sh'])
-    # else:
-        # subprocess.call(['sudo', 'kill', 'my_init'])
 
 
 bgc = "steelblue3"
