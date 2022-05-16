@@ -7,11 +7,11 @@
 OLD_RESOLUT=$(xrandr -q 2> /dev/null | grep connected | cut --delimiter " " -f 3)
 OLD_X11VNC_PID=$(cat $HOME/.log/x11vnc_pid_X${DISPLAY})
 
-/usr/bin/lxrandr 2 > /dev/null
+/usr/bin/lxrandr 2> /dev/null
 
 NEW_RESOLUT=$(xrandr -q 2> /dev/null | grep connected | cut --delimiter " " -f 3)
 NEW_X11VNC_PID=$(cat $HOME/.log/x11vnc_pid_X${DISPLAY})
 
 if [ "$OLD_RESOLUT" != "$NEW_RESOLUT" -o "$OLD_X11VNC_PID" != "$NEW_X11VNC_PID" ]; then
-    kill $X11VNC_PID 2> /dev/null
+    kill $NEW_X11VNC_PID 2> /dev/null
 fi

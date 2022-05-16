@@ -128,6 +128,11 @@ ps $LXSESSION_PID > /dev/null || { cat $HOME/.log/lxsession_X$DISP.log && exit -
 
 rm -f $HOME/.log/stopvnc$DISPLAY
 
+sleep 1
+start_x11vnc
+if [ -n "$SINGULARITY_NAME" ]; then
+     sleep 1  # Need to wait a little longer for Singularity
+fi
 echo "Open your web browser with URL:"
 echo "    http://localhost:$WEB_PORT/vnc.html?resize=downscale&autoconnect=1&password=$VNCPASS"
 echo "or connect your VNC viewer to localhost:$VNC_PORT with password $VNCPASS"
@@ -135,8 +140,6 @@ echo "or connect your VNC viewer to localhost:$VNC_PORT with password $VNCPASS"
 # Fix issues with Shift-Tab
 xmodmap -e 'keycode 23 = Tab'
 
-sleep 3
-start_x11vnc
 # Restart x11vnc if it dies, typically after changing screen resolution
 # See /usr/local/bin/lxrandr
 # Allow change resolution up to 100 times
