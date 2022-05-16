@@ -13,7 +13,31 @@ cleanup()
         ssh-agent -k > /dev/null
     fi
     rm -f /tmp/.X${DISP}-lock
-    pkill -P $$
+    pkill -P $$ 2> /dev/null
+}
+
+start_xorg()
+{
+    Xorg -noreset +extension GLX +extension RANDR +extension RENDER \
+        -logfile $HOME/.log/Xorg_X$DISP.log -config $HOME/.config/xorg_X$DISP.conf \
+        :$DISP 2> $HOME/.log/Xorg_X${DISP}_err.log &
+    XORG_PID=$!
+    ps $XORG_PID > /dev/null || { cat $HOME/.log/Xorg_X${DISP}_err.log && exit -1; }
+}
+
+start_novnc()
+{
+    /usr/local/noVNC/utils/launch.sh --web /usr/local/noVNC \
+        --vnc localhost:$VNC_PORT --listen $WEB_PORT > $HOME/.log/novnc_X$DISP.log 2>&1 &
+    NOVNC_PID=$1
+    ps $NOVNC_PID > /dev/null || { cat $HOME/.log/novnc_X$DISP.log && exit -1; }
+}
+
+start_x11vnc()
+{
+    x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -repeat -skip_dups -forever \
+        -shared -rfbauth ~/.vnc/passwd$DISP >> $HOME/.log/x11vnc_X$DISP.log 2>&1 &
+    X11VNC_PID=$!
 }
 
 if [ "$1" = "-h" -o "$1" = "--help" ]; then
@@ -79,12 +103,10 @@ export LOGFILE=$HOME/.log/Xorg_X$DISP.log
 export NO_AT_BRIDGE=1
 export SESSION_PID=$$
 
-# Start Xorg
 mkdir -p $HOME/.log
-Xorg -noreset +extension GLX +extension RANDR +extension RENDER \
-    -logfile $HOME/.log/Xorg_X$DISP.log -config $HOME/.config/xorg_X$DISP.conf \
-    :$DISP 2> $HOME/.log/Xorg_X${DISP}_err.log &
-XORG_PID=$!
+
+# Start Xorg
+start_xorg
 
 # start ssh-agent if not set by caller and stop if automatically
 if [ -z "$SSH_AUTH_SOCK" ]; then
@@ -97,23 +119,15 @@ mkdir -p $HOME/.vnc && \
 x11vnc -storepasswd $VNCPASS ~/.vnc/passwd$DISP > $HOME/.log/x11vnc_X$DISP.log 2>&1
 
 # startup novnc
-/usr/local/noVNC/utils/launch.sh --web /usr/local/noVNC \
-    --vnc localhost:$VNC_PORT --listen $WEB_PORT > $HOME/.log/novnc_X$DISP.log 2>&1 &
-NOVNC_PID=$1
-
-# Error checking
-ps $XORG_PID > /dev/null || { cat $HOME/.log/Xorg_X${DISP}_err.log && exit -1; }
-ps $NOVNC_PID > /dev/null || { cat $HOME/.log/novnc_X$DISP.log && exit -1; }
-
-rm -f $HOME/.log/stopvnc$DISPLAY
+start_novnc
 
 # Start LXDE and set screen size
 lxsession -s LXDE -e LXDE > $HOME/.log/lxsession_X$DISP.log 2>&1 &
 LXSESSION_PID=$!
 ps $LXSESSION_PID > /dev/null || { cat $HOME/.log/lxsession_X$DISP.log && exit -1; }
-x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -repeat -skip_dups -forever \
-    -shared -rfbauth ~/.vnc/passwd$DISP >> $HOME/.log/x11vnc_X$DISP.log 2>&1 &
-X11VNC_PID=$!
+
+rm -f $HOME/.log/stopvnc$DISPLAY
+start_x11vnc
 
 echo "Open your web browser with URL:"
 echo "    http://localhost:$WEB_PORT/vnc.html?resize=downscale&autoconnect=1&password=$VNCPASS"
@@ -129,18 +143,18 @@ xmodmap -e 'keycode 23 = Tab'
 i=0;
 until [ $i -gt 5 ]; do
     echo $X11VNC_PID > $HOME/.log/x11vnc_X${DISP}_pid
-    wait $X11VNC_PID; sleep 1
+    wait $X11VNC_PID
 
     if [ -e $HOME/.log/stopvnc$DISPLAY ]; then
          rm -f $HOME/.log/stopvnc$DISPLAY
          break
-    else
-        echo "X11vnc was restarted probably due to screen-resolution change."
-        echo "Please refresh the web browser or reconnect your VNC viewer."
     fi
 
-    x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -repeat -skip_dups -forever \
-        -shared -rfbauth ~/.vnc/passwd$DISP >> $HOME/.log/x11vnc_X$DISP.log 2>&1 &
-    X11VNC_PID=$!
+    kill $NOVNC_PID 2> /dev/null
+    start_novnc
+    start_x11vnc
+
+    echo "X11vnc was restarted probably due to screen-resolution change."
+    echo "Please refresh the web browser or reconnect your VNC viewer."
     i=$((i+1))
 done
