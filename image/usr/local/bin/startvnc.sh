@@ -127,7 +127,7 @@ xmodmap -e 'keycode 23 = Tab'
 i=0;
 until [ $i -gt 5 ]; do
     echo $X11VNC_PID > $HOME/.log/x11vnc_X${DISP}_pid
-    wait $X11VNC_PID
+    wait $X11VNC_PID; sleep 1
 
     if ps $XORG_PID > /dev/null; then
         echo "X11vnc was restarted probably due to screen-resolution change."

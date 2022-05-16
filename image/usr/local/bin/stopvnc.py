@@ -14,7 +14,7 @@ import os
 def clickLogout():
     import subprocess
     if os.getenv('XORG_PID'):
-        subprocess.call(['kill', os.getenv('XORG_PID')])
+        subprocess.call(['kill', '-9', os.getenv('XORG_PID')])
     if os.getenv('SESSION_PID'):
         subprocess.call(['pkill', '-P', os.getenv('SESSION_PID')])
 
