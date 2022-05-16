@@ -37,7 +37,7 @@ start_x11vnc()
 {
     x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -repeat -skip_dups -forever \
         -shared -rfbauth ~/.vnc/passwd$DISP >> $HOME/.log/x11vnc_X$DISP.log 2>&1 &
-    X11VNC_PID=$!
+    export X11VNC_PID=$!
 }
 
 if [ "$1" = "-h" -o "$1" = "--help" ]; then
@@ -142,7 +142,6 @@ xmodmap -e 'keycode 23 = Tab'
 # Allow change resolution up to 100 times
 i=0;
 until [ $i -gt 100 ]; do
-    echo $X11VNC_PID > $HOME/.log/x11vnc_X${DISPLAY}_pid
     wait $X11VNC_PID
 
     if [ -e $HOME/.log/stopvnc$DISPLAY ]; then

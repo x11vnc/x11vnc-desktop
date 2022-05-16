@@ -6,8 +6,7 @@
 
 OLD_RESOLUT=$(xrandr -q 2> /dev/null | grep connected | cut --delimiter " " -f 3)
 
-X11VNC_PID=$(cat $HOME/.log/x11vnc_X${DISPLAY}_pid)
-/usr/bin/lxrandr
+/usr/bin/lxrandr || true
 
 NEW_RESOLUT=$(xrandr -q 2> /dev/null | grep connected | cut --delimiter " " -f 3)
 

@@ -9,14 +9,15 @@ try:
 except:
     import Tkinter as tk
 import os
+import signal
 
 
 def clickLogout():
     import subprocess
     with open(os.getenv('HOME') + '/.log/stopvnc' + os.getenv('DISPLAY'), 'w') as fp:
         pass
-    if os.getenv('SESSION_PID'):
-        subprocess.call(['pkill', '-P', os.getenv('SESSION_PID')])
+    if os.getenv('X11VNC_PID'):
+        os.kill(int(os.getenv('X11VNC_PID')), signal.SIGSTOP)
 
 
 bgc = "steelblue3"
