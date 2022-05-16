@@ -142,6 +142,7 @@ start_x11vnc
 # Allow change resolution up to 100 times
 i=0;
 until [ $i -gt 100 ]; do
+    echo $X11VNC_PID > $HOME/.log/x11vnc_pid_X${DISPLAY}
     wait $X11VNC_PID
 
     if [ -e $HOME/.log/stopvnc$DISPLAY ]; then
