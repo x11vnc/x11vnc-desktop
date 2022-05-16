@@ -1,6 +1,6 @@
 # Docker/Singularity Image for Ubuntu with X11 and VNC
 
-This repository offers a Docker/Singularity image for Ubuntu with X11 and VNC. It can be useful in delivering a unified enviroment for teaching programming classes, demonstrating graphical user interface, developing and debugging software programs, and visualizing simultion results on high-performance computing (HPC) platforms. It shares some similarity to [fcwu/docker-ubuntu-vnc-desktop](https://github.com/fcwu/docker-ubuntu-vnc-desktop), but with several enhancements on security and features, especially for sofware developers and HPC users:
+This repository offers a Docker/Singularity image for Ubuntu with X11 and VNC. It can be useful in delivering a unified enviroment for teaching programming classes, demonstrating graphical user interface, developing and debugging software programs (such as using `Visual Studio Code`), and visualizing simultion results on high-performance computing (HPC) platforms (such as using `ParaView`). It shares some similarity to [fcwu/docker-ubuntu-vnc-desktop](https://github.com/fcwu/docker-ubuntu-vnc-desktop), but with several enhancements on security and features, especially for sofware developers and HPC users:
 
  - VNC is protected by a unique random password for each session or a reused user-set password
  - Desktop runs in a standard user account instead of the root account
@@ -13,7 +13,7 @@ This repository offers a Docker/Singularity image for Ubuntu with X11 and VNC. I
 ![Build Status](https://github.com/x11vnc/x11vnc-desktop/actions/workflows/docker-image.yml/badge.svg)
 [![Docker Pulls](https://img.shields.io/docker/pulls/x11vnc/docker-desktop.svg)](https://hub.docker.com/r/x11vnc/docker-desktop/)
 
-![screenshot](https://raw.github.com/x11vnc/x11vnc-desktop/master/screenshots/screenshot.png)
+![screenshot](https://raw.github.com/x11vnc/x11vnc-desktop/main/screenshots/screenshot.png)
 
 ## Preparation for Using with Docker
 Before you start, you need to first install Python and Docker on
@@ -40,14 +40,14 @@ sudo adduser $USER docker
 Then, log out and log back in before you can use Docker.
 
 ## Running the Docker Image
-To run the Docker image, first download the script [`x11vnc_desktop.py`](https://raw.githubusercontent.com/x11vnc/x11vnc-desktop/master/x11vnc_desktop.py)
+To run the Docker image, first download the script [`x11vnc_desktop.py`](https://raw.githubusercontent.com/x11vnc/x11vnc-desktop/main/x11vnc_desktop.py)
 and save it to the working directory where you will store your codes and data. You can download the script using the command line: On Windows, start `Windows PowerShell`, use the `cd` command to change to the working directory where you will store your codes and data, and then run the following command:
 ```
-curl https://raw.githubusercontent.com/x11vnc/x11vnc-desktop/master/x11vnc_desktop.py -outfile x11vnc_desktop.py
+curl https://raw.githubusercontent.com/x11vnc/x11vnc-desktop/main/x11vnc_desktop.py -outfile x11vnc_desktop.py
 ```
 On Linux or Mac, start a terminal, use the `cd` command to change to the working directory, and then run the following command:
 ```
-curl -s -O https://raw.githubusercontent.com/x11vnc/x11vnc-desktop/master/x11vnc_desktop.py
+curl -s -O https://raw.githubusercontent.com/x11vnc/x11vnc-desktop/main/x11vnc_desktop.py
 ```
 
 After downloading the script, you can start the Docker image using the command
