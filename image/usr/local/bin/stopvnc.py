@@ -13,8 +13,8 @@ import os
 
 def clickLogout():
     import subprocess
-    if os.getenv('XORG_PID'):
-        subprocess.call(['kill', '-9', os.getenv('XORG_PID')])
+    with open(os.getenv('HOME') + '/.log/stopvnc' + os.getenv('DISPLAY'), 'w') as fp:
+        pass
     if os.getenv('SESSION_PID'):
         subprocess.call(['pkill', '-P', os.getenv('SESSION_PID')])
 

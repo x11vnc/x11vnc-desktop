@@ -84,7 +84,7 @@ mkdir -p $HOME/.log
 Xorg -noreset +extension GLX +extension RANDR +extension RENDER \
     -logfile $HOME/.log/Xorg_X$DISP.log -config $HOME/.config/xorg_X$DISP.conf \
     :$DISP 2> $HOME/.log/Xorg_X${DISP}_err.log &
-export XORG_PID=$!
+XORG_PID=$!
 
 # start ssh-agent if not set by caller and stop if automatically
 if [ -z "$SSH_AUTH_SOCK" ]; then
@@ -105,9 +105,7 @@ NOVNC_PID=$1
 ps $XORG_PID > /dev/null || { cat $HOME/.log/Xorg_X${DISP}_err.log && exit -1; }
 ps $NOVNC_PID > /dev/null || { cat $HOME/.log/novnc_X$DISP.log && exit -1; }
 
-echo "Open your web browser with URL:"
-echo "    http://localhost:$WEB_PORT/vnc.html?resize=downscale&autoconnect=1&password=$VNCPASS"
-echo "or connect your VNC viewer to localhost:$VNC_PORT with password $VNCPASS"
+rm -f $HOME/.log/stopvnc$DISPLAY
 
 # Start LXDE and set screen size
 lxsession -s LXDE -e LXDE > $HOME/.log/lxsession_X$DISP.log 2>&1 &
@@ -116,6 +114,10 @@ ps $LXSESSION_PID > /dev/null || { cat $HOME/.log/lxsession_X$DISP.log && exit -
 x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -repeat -skip_dups -forever \
     -shared -rfbauth ~/.vnc/passwd$DISP >> $HOME/.log/x11vnc_X$DISP.log 2>&1 &
 X11VNC_PID=$!
+
+echo "Open your web browser with URL:"
+echo "    http://localhost:$WEB_PORT/vnc.html?resize=downscale&autoconnect=1&password=$VNCPASS"
+echo "or connect your VNC viewer to localhost:$VNC_PORT with password $VNCPASS"
 
 sleep 3
 # Fix issues with Shift-Tab
@@ -129,11 +131,12 @@ until [ $i -gt 5 ]; do
     echo $X11VNC_PID > $HOME/.log/x11vnc_X${DISP}_pid
     wait $X11VNC_PID; sleep 1
 
-    if ps $XORG_PID > /dev/null; then
+    if [ -e $HOME/.log/stopvnc$DISPLAY ]; then
+         rm -f $HOME/.log/stopvnc$DISPLAY
+         break
+    else
         echo "X11vnc was restarted probably due to screen-resolution change."
         echo "Please refresh the web browser or reconnect your VNC viewer."
-    else
-        break
     fi
 
     x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -repeat -skip_dups -forever \
