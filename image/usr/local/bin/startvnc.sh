@@ -127,16 +127,16 @@ LXSESSION_PID=$!
 ps $LXSESSION_PID > /dev/null || { cat $HOME/.log/lxsession_X$DISP.log && exit -1; }
 
 rm -f $HOME/.log/stopvnc$DISPLAY
-start_x11vnc
 
 echo "Open your web browser with URL:"
 echo "    http://localhost:$WEB_PORT/vnc.html?resize=downscale&autoconnect=1&password=$VNCPASS"
 echo "or connect your VNC viewer to localhost:$VNC_PORT with password $VNCPASS"
 
-sleep 3
 # Fix issues with Shift-Tab
 xmodmap -e 'keycode 23 = Tab'
 
+sleep 3
+start_x11vnc
 # Restart x11vnc if it dies, typically after changing screen resolution
 # See /usr/local/bin/lxrandr
 # Allow change resolution up to 100 times
