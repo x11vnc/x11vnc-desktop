@@ -9,11 +9,35 @@
 
 cleanup()
 {
-    if [ -n "$SSH_AGENT_PID" ]; then
+    if [ -n "$SSH_AGENT_PID" -a -n "$LOCAL_SSH_AGENT" ]; then
         ssh-agent -k > /dev/null
     fi
     rm -f /tmp/.X${DISP}-lock
-    pkill -P $$
+    pkill -P $$ 2> /dev/null
+}
+
+start_xorg()
+{
+    Xorg -noreset +extension GLX +extension RANDR +extension RENDER \
+        -logfile $HOME/.log/Xorg_X$DISP.log -config $HOME/.config/xorg_X$DISP.conf \
+        :$DISP 2> $HOME/.log/Xorg_X${DISP}_err.log &
+    XORG_PID=$!
+    ps $XORG_PID > /dev/null || { cat $HOME/.log/Xorg_X${DISP}_err.log && exit -1; }
+}
+
+start_novnc()
+{
+    /usr/local/noVNC/utils/launch.sh --web /usr/local/noVNC \
+        --vnc localhost:$VNC_PORT --listen $WEB_PORT > $HOME/.log/novnc_X$DISP.log 2>&1 &
+    NOVNC_PID=$1
+    ps $NOVNC_PID > /dev/null || { cat $HOME/.log/novnc_X$DISP.log && exit -1; }
+}
+
+start_x11vnc()
+{
+    x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -repeat -skip_dups -forever \
+        -shared -rfbauth ~/.vnc/passwd$DISP >> $HOME/.log/x11vnc_X$DISP.log 2>&1 &
+    export X11VNC_PID=$!
 }
 
 if [ "$1" = "-h" -o "$1" = "--help" ]; then
@@ -27,29 +51,20 @@ if [ "$1" = "-h" -o "$1" = "--help" ]; then
     echo "    $CMD [-s resolution]"
     echo
     echo "where resolution has the format <width>x<height>. The default resolution"
-    echo "is 1440x900."
+    echo "is 1920x1080."
     exit
 fi
 
 trap exit TERM
 trap cleanup EXIT
 
+/usr/local/bin/init_vnc && sync
+
 # unset all environment variables related to desktop manager
 for var in $(env | cut -d= -f1 | grep -E \
 	"^XDG|SESSION|^GTK|XKEYS|^WLS|WINDOWMANAGER|WAYLAND_DISPLAY"); do
     unset $var
 done
-
-# Start up xdummy with the given size
-if [ "$1" = "-s" -a -n "$2" ]; then
-    RESOLUT=$2
-else
-    RESOLUT="${RESOLUT:-1440x900}"
-fi
-grep -s -q $RESOLUT /etc/X11/xorg.conf || \
-    echo "Warning: Resolution $RESOLUT is not recognized. Valid resolutions are: " \
-    $(grep Modeline /etc/X11/xorg.conf | cut -d '"' -f  2| tr '\n' ' ')
-SCREEN_SIZE=`echo $RESOLUT | sed -e "s/x/ /"`
 
 # Find an available display and set ports for VNC and NoVNC
 for i in $(seq 0 9); do
@@ -63,73 +78,89 @@ if [ -z "$DISP" ]; then
     exit
 fi
 
+# Start up xdummy with the given screen size
+if [ "$1" = "-s" -a -n "$2" ]; then
+    RESOLUT=$2
+else
+    RESOLUT="${RESOLUT:-1920x1080}"
+fi
+
+cp /etc/X11/xorg.conf $HOME/.config/xorg_X$DISP.conf
+if [ -n "$(grep -s $RESOLUT /etc/X11/xorg.conf)" ]; then
+    SCREEN_SIZE=`echo $RESOLUT | sed -e "s/x/ /"`
+    sed -i -e "s/Virtual 1920 1080/Virtual $SCREEN_SIZE/" $HOME/.config/xorg_X$DISP.conf
+else
+    echo "Warning: Resolution $RESOLUT is not recognized. Valid resolutions are: " \
+        $(grep Modeline /etc/X11/xorg.conf | cut -d '"' -f  2| tr '\n' ' ')
+fi
+
 VNC_PORT=$((5900 + DISP))
 WEB_PORT=$((6080 + DISP))
 
 export XDG_RUNTIME_DIR=$(mktemp -d -t runtime-$USER-XXXXX)
 export DISPLAY=:$DISP.0
-export LOGFILE=$HOME/.log/Xorg.log
+export LOGFILE=$HOME/.log/Xorg_X$DISP.log
 export NO_AT_BRIDGE=1
 export SESSION_PID=$$
 
-/usr/local/bin/init_vnc && sync
+mkdir -p $HOME/.log
 
 # Start Xorg
-mkdir -p $HOME/.log
-Xorg -noreset +extension GLX +extension RANDR +extension RENDER \
-    -logfile $HOME/.log/Xorg.log :$DISP 2> $HOME/.log/Xorg_err.log &
-XORG_PID=$!
+start_xorg
 
 # start ssh-agent if not set by caller and stop if automatically
 if [ -z "$SSH_AUTH_SOCK" ]; then
+    LOCAL_SSH_AGENT=1
     eval `ssh-agent -s` > /dev/null
 fi
 
 # start x11vnc with a stable or a new random password
 export VNCPASS=${VNCPASS:-$(openssl rand -base64 6 | sed 's/\//-/')}
 mkdir -p $HOME/.vnc && \
-x11vnc -storepasswd $VNCPASS ~/.vnc/passwd$DISP > $HOME/.log/x11vnc.log 2>&1
+x11vnc -storepasswd $VNCPASS ~/.vnc/passwd$DISP > $HOME/.log/x11vnc_X$DISP.log 2>&1
 
 # startup novnc
-/usr/local/noVNC/utils/launch.sh --web /usr/local/noVNC \
-    --vnc localhost:$VNC_PORT --listen $WEB_PORT > $HOME/.log/novnc.log 2>&1 &
-NOVNC_PID=$1
+start_novnc
 
-# Error checking
-ps $XORG_PID > /dev/null || { cat $HOME/.log/Xorg_err.log && exit -1; }
-ps $NOVNC_PID > /dev/null || { cat $HOME/.log/novnc.log && exit -1; }
+# Start LXDE and set screen size
+lxsession -s LXDE -e LXDE > $HOME/.log/lxsession_X$DISP.log 2>&1 &
+LXSESSION_PID=$!
+ps $LXSESSION_PID > /dev/null || { cat $HOME/.log/lxsession_X$DISP.log && exit -1; }
 
+rm -f $HOME/.log/stopvnc$DISPLAY
+
+sleep 1
+start_x11vnc
+if [ -n "$SINGULARITY_NAME" ]; then
+     sleep 1  # Need to wait a little longer for Singularity
+fi
 echo "Open your web browser with URL:"
 echo "    http://localhost:$WEB_PORT/vnc.html?resize=downscale&autoconnect=1&password=$VNCPASS"
 echo "or connect your VNC viewer to localhost:$VNC_PORT with password $VNCPASS"
 
-# Start LXDE and set screen size
-lxsession -s LXDE -e LXDE > $HOME/.log/lxsession.log 2>&1 &
-LXSESSION_PID=$!
-ps $LXSESSION_PID > /dev/null || { cat $HOME/.log/lxsession.log && exit -1; }
-grep -s -q $RESOLUT /etc/X11/xorg.conf && \
-    sleep 1 && xrandr --output default --mode $RESOLUT -s $RESOLUT > /dev/null 2>&1
-x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -repeat -skip_dups -forever \
-    -shared -rfbauth ~/.vnc/passwd$DISP >> $HOME/.log/x11vnc.log 2>&1 &
-X11VNC_PID=$!
-
-sleep 3
 # Fix issues with Shift-Tab
 xmodmap -e 'keycode 23 = Tab'
 
-if [ -z "$SINGULARITY_NAME" ]; then
-    # Restart x11vnc if it dies, for example, after changing screen resolution
-    while true ; do
-        wait $X11VNC_PID
-    
-        x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -repeat -skip_dups -forever \
-            -shared -rfbauth ~/.vnc/passwd$DISP >> $HOME/.log/x11vnc.log 2>&1 &
-        X11VNC_PID=$!
+# Restart x11vnc if it dies, typically after changing screen resolution
+# See /usr/local/bin/lxrandr
+# Allow change resolution up to 100 times
+i=0;
+until [ $i -gt 100 ]; do
+    echo $X11VNC_PID > $HOME/.log/x11vnc_pid_X${DISPLAY}
+    wait $X11VNC_PID
+
+    if [ -e $HOME/.log/stopvnc$DISPLAY ]; then
+         rm -f $HOME/.log/stopvnc$DISPLAY
+         exit
+    fi
+
+    kill $NOVNC_PID 2> /dev/null
+    start_novnc
+    start_x11vnc
+
+    if [ "$i" == "0" ]; then
         echo "X11vnc was restarted probably due to screen-resolution change."
         echo "Please refresh the web browser or reconnect your VNC viewer."
-    done
-else
-    # In singularity, do not restart x11vnc
-    wait $X11VNC_PID
-fi
-
+    fi
+    i=$((i+1))
+done
