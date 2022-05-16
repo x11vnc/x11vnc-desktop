@@ -4,14 +4,7 @@
 # Author: Xiangmin Jiao <xmjiao@gmail.com>
 # Copyright Xiangmin Jiao 2017--2022. All rights reserved.
 
-# OLD_RESOLUT=$(xrandr -q | grep connected | cut --delimiter " " -f 3)
-
-X11VNC_PID=$(cat $HOME/.log/x11vnc_pid_X${DISPLAY})
 /usr/bin/lxrandr
 
-# NEW_RESOLUT=$(xrandr -q | grep connected | cut --delimiter " " -f 3)
-
-# If resolution changes, kill x11vnc so that it can be restarted in startvnc.sh
-# if [ "$OLD_RESOLUT" != "$NEW_RESOLUT" ]; then
-    kill $X11VNC_PID 2> /dev/null
-# fi
+X11VNC_PID=$(cat $HOME/.log/x11vnc_pid_X${DISPLAY})
+kill $X11VNC_PID 2> /dev/null
