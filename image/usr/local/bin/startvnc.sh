@@ -9,7 +9,7 @@
 
 cleanup()
 {
-    if [ -n "$SSH_AGENT_PID" ]; then
+    if [ -n "$SSH_AGENT_PID" -a -n "$LOCAL_SSH_AGENT" ]; then
         ssh-agent -k > /dev/null
     fi
     rm -f /tmp/.X${DISP}-lock
@@ -110,6 +110,7 @@ start_xorg
 
 # start ssh-agent if not set by caller and stop if automatically
 if [ -z "$SSH_AUTH_SOCK" ]; then
+    LOCAL_SSH_AGENT=1
     eval `ssh-agent -s` > /dev/null
 fi
 
@@ -150,7 +151,7 @@ until [ $i -gt 100 ]; do
 
     if [ -e $HOME/.log/stopvnc$DISPLAY ]; then
          rm -f $HOME/.log/stopvnc$DISPLAY
-         break
+         exit
     fi
 
     kill $NOVNC_PID 2> /dev/null
