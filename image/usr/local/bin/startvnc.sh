@@ -51,7 +51,7 @@ if [ "$1" = "-h" -o "$1" = "--help" ]; then
     echo "    $CMD [-s resolution]"
     echo
     echo "where resolution has the format <width>x<height>. The default resolution"
-    echo "is 1440x900."
+    echo "is 1920x1080."
     exit
 fi
 
@@ -82,13 +82,13 @@ fi
 if [ "$1" = "-s" -a -n "$2" ]; then
     RESOLUT=$2
 else
-    RESOLUT="${RESOLUT:-1440x900}"
+    RESOLUT="${RESOLUT:-1920x1080}"
 fi
 
 cp /etc/X11/xorg.conf $HOME/.config/xorg_X$DISP.conf
 if [ -n "$(grep -s $RESOLUT /etc/X11/xorg.conf)" ]; then
     SCREEN_SIZE=`echo $RESOLUT | sed -e "s/x/ /"`
-    sed -i -e "s/Virtual 1440 900/Virtual $SCREEN_SIZE/" $HOME/.config/xorg_X$DISP.conf
+    sed -i -e "s/Virtual 1920 1080/Virtual $SCREEN_SIZE/" $HOME/.config/xorg_X$DISP.conf
 else
     echo "Warning: Resolution $RESOLUT is not recognized. Valid resolutions are: " \
         $(grep Modeline /etc/X11/xorg.conf | cut -d '"' -f  2| tr '\n' ' ')

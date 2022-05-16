@@ -73,7 +73,7 @@ def parse_args(description):
 
     parser.add_argument('-s', '--size',
                         help='The screen size, such as 1440x900, 1920x1080, 2560x1600, etc. ' +
-                        'The default is to use the current screen size.',
+                        'The default is to use the current screen size or 1920x1080.',
                         default="")
 
     parser.add_argument('-n', '--no-browser',
@@ -345,7 +345,7 @@ if __name__ == "__main__":
         size = get_screen_resolution()
         if not size:
             # Set default size and disable webbrowser
-            size = "1440x900"
+            size = "1920x1080"
             args.no_browser = True
     else:
         size = args.size
