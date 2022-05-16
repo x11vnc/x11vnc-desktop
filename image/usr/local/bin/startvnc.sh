@@ -139,10 +139,10 @@ xmodmap -e 'keycode 23 = Tab'
 
 # Restart x11vnc if it dies, typically after changing screen resolution
 # See /usr/local/bin/lxrandr
-# Allow change resolution up to 5 times
+# Allow change resolution up to 100 times
 i=0;
-until [ $i -gt 5 ]; do
-    echo $X11VNC_PID > $HOME/.log/x11vnc_X${DISP}_pid
+until [ $i -gt 100 ]; do
+    echo $X11VNC_PID > $HOME/.log/x11vnc_X${DISPLAY}_pid
     wait $X11VNC_PID
 
     if [ -e $HOME/.log/stopvnc$DISPLAY ]; then
@@ -154,7 +154,9 @@ until [ $i -gt 5 ]; do
     start_novnc
     start_x11vnc
 
-    echo "X11vnc was restarted probably due to screen-resolution change."
-    echo "Please refresh the web browser or reconnect your VNC viewer."
+    if [ "$i" == "0" ]; then
+        echo "X11vnc was restarted probably due to screen-resolution change."
+        echo "Please refresh the web browser or reconnect your VNC viewer."
+    fi
     i=$((i+1))
 done
