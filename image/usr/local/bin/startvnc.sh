@@ -34,11 +34,25 @@ fi
 trap exit TERM
 trap cleanup EXIT
 
+/usr/local/bin/init_vnc && sync
+
 # unset all environment variables related to desktop manager
 for var in $(env | cut -d= -f1 | grep -E \
 	"^XDG|SESSION|^GTK|XKEYS|^WLS|WINDOWMANAGER|WAYLAND_DISPLAY"); do
     unset $var
 done
+
+# Find an available display and set ports for VNC and NoVNC
+for i in $(seq 0 9); do
+    if [ ! -e /tmp/.X${i}-lock -a ! -e /tmp/.X11-unix/X${i} ]; then
+        DISP=$i
+        break
+    fi
+done
+if [ -z "$DISP" ]; then
+    echo "Cannot find a free DISPLAY port"
+    exit
+fi
 
 # Start up xdummy with the given screen size
 if [ "$1" = "-s" -a -n "$2" ]; then
@@ -56,18 +70,6 @@ else
         $(grep Modeline /etc/X11/xorg.conf | cut -d '"' -f  2| tr '\n' ' ')
 fi
 
-# Find an available display and set ports for VNC and NoVNC
-for i in $(seq 0 9); do
-    if [ ! -e /tmp/.X${i}-lock -a ! -e /tmp/.X11-unix/X${i} ]; then
-        DISP=$i
-        break
-    fi
-done
-if [ -z "$DISP" ]; then
-    echo "Cannot find a free DISPLAY port"
-    exit
-fi
-
 VNC_PORT=$((5900 + DISP))
 WEB_PORT=$((6080 + DISP))
 
@@ -76,8 +78,6 @@ export DISPLAY=:$DISP.0
 export LOGFILE=$HOME/.log/Xorg_$DISP.log
 export NO_AT_BRIDGE=1
 export SESSION_PID=$$
-
-/usr/local/bin/init_vnc && sync
 
 # Start Xorg
 mkdir -p $HOME/.log
@@ -124,7 +124,7 @@ xmodmap -e 'keycode 23 = Tab'
 # Restart x11vnc if it dies, typically after changing screen resolution
 # See /usr/local/bin/lxrandr
 while true ; do
-    echo $X11VNC_PID > $HOME/.config/x11vnc_X${DISP}_pid
+    echo $X11VNC_PID > $HOME/.log/x11vnc_X${DISP}_pid
     wait $X11VNC_PID
 
     x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -repeat -skip_dups -forever \

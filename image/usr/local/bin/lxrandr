@@ -15,5 +15,5 @@ NEW_RESOLUT=$(xrandr -q | grep connected | cut --delimiter " " -f 3)
 
 # If resolution changes, kill x11vnc so that it can be restarted in startvnc.sh
 if [ "$OLD_RESOLUT" != "$NEW_RESOLUT" ]; then
-    kill $(cat $HOME/.config/x11vnc_X${DISPLAY//:0/}_pid)
+    kill $(cat $HOME/.log/x11vnc_X${DISPLAY//:0/}_pid)
 fi
