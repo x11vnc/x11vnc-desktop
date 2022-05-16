@@ -1,10 +1,17 @@
 #!/bin/bash
-# Configure screen resolution and restart x11vnc
+# Configure screen resolution and restart x11vnc if resolution has changed
 
 # Author: Xiangmin Jiao <xmjiao@gmail.com>
 # Copyright Xiangmin Jiao 2017--2022. All rights reserved.
 
-/usr/bin/lxrandr
+OLD_RESOLUT=$(xrandr -q 2> /dev/null | grep connected | cut --delimiter " " -f 3)
+OLD_X11VNC_PID=$(cat $HOME/.log/x11vnc_pid_X${DISPLAY})
 
-X11VNC_PID=$(cat $HOME/.log/x11vnc_pid_X${DISPLAY})
-kill $X11VNC_PID 2> /dev/null
+/usr/bin/lxrandr 2 > /dev/null
+
+NEW_RESOLUT=$(xrandr -q 2> /dev/null | grep connected | cut --delimiter " " -f 3)
+NEW_X11VNC_PID=$(cat $HOME/.log/x11vnc_pid_X${DISPLAY})
+
+if [ "$OLD_RESOLUT" != "$NEW_RESOLUT" -o "$OLD_X11VNC_PID" != "$NEW_X11VNC_PID" ]; then
+    kill $X11VNC_PID 2> /dev/null
+fi
