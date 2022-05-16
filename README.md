@@ -90,7 +90,7 @@ To use the Docker image with Singularity, please issue the command
 ```
 singularity run -c -B $HOME docker://x11vnc/docker-desktop:latest
 ```
-It will automatically mount some mininal /dev directories and $HOME in Singularity
+It will automatically mount some minimal /dev directories and $HOME in Singularity
 but does not mount most others (such as /run, /tmp, etc.). If you do not want to
 mount your home directory, then remove the `-B $HOME` option.
 
