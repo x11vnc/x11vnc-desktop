@@ -75,14 +75,14 @@ WEB_PORT=$((6080 + DISP))
 
 export XDG_RUNTIME_DIR=$(mktemp -d -t runtime-$USER-XXXXX)
 export DISPLAY=:$DISP.0
-export LOGFILE=$HOME/.log/Xorg_$DISP.log
+export LOGFILE=$HOME/.log/Xorg_X$DISP.log
 export NO_AT_BRIDGE=1
 export SESSION_PID=$$
 
 # Start Xorg
 mkdir -p $HOME/.log
 Xorg -noreset +extension GLX +extension RANDR +extension RENDER \
-    -logfile $HOME/.log/Xorg_$DISP.log -config $HOME/.config/xorg_X$DISP.conf \
+    -logfile $HOME/.log/Xorg_X$DISP.log -config $HOME/.config/xorg_X$DISP.conf \
     :$DISP 2> $HOME/.log/Xorg_X${DISP}_err.log &
 export XORG_PID=$!
 
@@ -129,7 +129,7 @@ until [ $i -gt 10 ]; do
     echo $X11VNC_PID > $HOME/.log/x11vnc_X${DISP}_pid
     wait $X11VNC_PID
 
-    if [ $(ps $XORG_PID > /dev/null) ]; then
+    if ps $XORG_PID > /dev/null; then
         echo "X11vnc was restarted probably due to screen-resolution change."
         echo "Please refresh the web browser or reconnect your VNC viewer."
     else
