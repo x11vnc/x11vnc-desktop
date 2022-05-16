@@ -83,7 +83,7 @@ export SESSION_PID=$$
 mkdir -p $HOME/.log
 Xorg -noreset +extension GLX +extension RANDR +extension RENDER \
     -logfile $HOME/.log/Xorg_$DISP.log -config $HOME/.config/xorg_X$DISP.conf \
-    :$DISP 2> $HOME/.log/Xorg_X$DISP_err.log &
+    :$DISP 2> $HOME/.log/Xorg_X${DISP}_err.log &
 XORG_PID=$!
 
 # start ssh-agent if not set by caller and stop if automatically
@@ -98,21 +98,21 @@ x11vnc -storepasswd $VNCPASS ~/.vnc/passwd$DISP > $HOME/.log/x11vnc_X$DISP.log 2
 
 # startup novnc
 /usr/local/noVNC/utils/launch.sh --web /usr/local/noVNC \
-    --vnc localhost:$VNC_PORT --listen $WEB_PORT > $HOME/.log/novnc.log 2>&1 &
+    --vnc localhost:$VNC_PORT --listen $WEB_PORT > $HOME/.log/novnc_X$DISP.log 2>&1 &
 NOVNC_PID=$1
 
 # Error checking
-ps $XORG_PID > /dev/null || { cat $HOME/.log/Xorg_X$DISP_err.log && exit -1; }
-ps $NOVNC_PID > /dev/null || { cat $HOME/.log/novnc.log && exit -1; }
+ps $XORG_PID > /dev/null || { cat $HOME/.log/Xorg_X${DISP}_err.log && exit -1; }
+ps $NOVNC_PID > /dev/null || { cat $HOME/.log/novnc_X$DISP.log && exit -1; }
 
 echo "Open your web browser with URL:"
 echo "    http://localhost:$WEB_PORT/vnc.html?resize=downscale&autoconnect=1&password=$VNCPASS"
 echo "or connect your VNC viewer to localhost:$VNC_PORT with password $VNCPASS"
 
 # Start LXDE and set screen size
-lxsession -s LXDE -e LXDE > $HOME/.log/lxsession.log 2>&1 &
+lxsession -s LXDE -e LXDE > $HOME/.log/lxsession_X$DISP.log 2>&1 &
 LXSESSION_PID=$!
-ps $LXSESSION_PID > /dev/null || { cat $HOME/.log/lxsession.log && exit -1; }
+ps $LXSESSION_PID > /dev/null || { cat $HOME/.log/lxsession_X$DISP.log && exit -1; }
 x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -repeat -skip_dups -forever \
     -shared -rfbauth ~/.vnc/passwd$DISP >> $HOME/.log/x11vnc_X$DISP.log 2>&1 &
 X11VNC_PID=$!
@@ -124,7 +124,7 @@ xmodmap -e 'keycode 23 = Tab'
 # Restart x11vnc if it dies, typically after changing screen resolution
 # See /usr/local/bin/lxrandr
 while true ; do
-    echo $X11VNC_PID > $HOME/.config/x11vnc_X$DISP_pid
+    echo $X11VNC_PID > $HOME/.config/x11vnc_X${DISP}_pid
     wait $X11VNC_PID
 
     x11vnc -display :$DISP -rfbport $VNC_PORT -xkb -repeat -skip_dups -forever \
