@@ -59,6 +59,8 @@ alias rm='rm -i'
 alias h='history'
 
 # Enable zsh-autosuggestions
-if [ -f /usr/local/share/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+if [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+    source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+elif [ -f /usr/local/share/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
     source /usr/local/share/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 fi
