@@ -30,6 +30,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Install some required system tools and packages for X Windows and ssh.
 # Also remove the message regarding unminimize.
+# Note that Ubuntu 22.04 uses snapd for firefox, which does not work properly,
+# so we install it from ppa:mozillateam/ppa instead.
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         apt-utils \
