@@ -49,7 +49,7 @@ RUN apt-get update && \
         inetutils-ping \
         csh \
         tcsh \
-        zsh \
+        zsh zsh-autosuggestions \
         build-essential autoconf automake autotools-dev pkg-config \
         libssl-dev \
         git \
@@ -76,9 +76,6 @@ RUN apt-get update && \
         xauth \
         x11vnc && \
     chmod 755 /usr/local/share/zsh/site-functions && \
-    mkdir /usr/local/share/zsh/zsh-autosuggestions && \
-    curl -s -L https://github.com/zsh-users/zsh-autosuggestions/archive/refs/heads/master.zip | \
-          bsdtar zxf - -C /usr/local/share/zsh/zsh-autosuggestions --strip-components 1 && \
     add-apt-repository -y ppa:mozillateam/ppa && \
     echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox && \
     echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox && \
