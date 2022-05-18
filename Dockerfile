@@ -72,9 +72,10 @@ RUN apt-get update && \
         gtk2-engines-pixbuf \
         gtk2-engines-murrine \
         libcanberra-gtk-module libcanberra-gtk3-module \
+        fonts-liberation \
         xfonts-base xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic \
         libopengl0 mesa-utils libglu1-mesa libgl1-mesa-dri libjpeg8 libjpeg62 \
-        xauth \
+        xauth xdg-utils \
         x11vnc && \
     chmod 755 /usr/local/share/zsh/site-functions && \
     add-apt-repository -y ppa:mozillateam/ppa && \
