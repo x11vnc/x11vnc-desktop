@@ -35,4 +35,11 @@ elif [ ! -e $DOCKER_HOME/.config/gitconfig ]; then
   touch $DOCKER_HOME/.config/gitconfig
 fi
 
+if [ -e $DOCKER_HOME/.git-credentials_host ]; then
+    rsync -ub $DOCKER_HOME/.git-credentials_host $DOCKER_HOME/.config/git-credentials
+elif [ ! -e $DOCKER_HOME/.config/gitconfig ]; then
+    touch $DOCKER_HOME/.config/git-credentials
+fi
+
 ln -s -f .config/gitconfig $DOCKER_HOME/.gitconfig
+ln -s -f .config/git-credentials $DOCKER_HOME/.git-credentials
