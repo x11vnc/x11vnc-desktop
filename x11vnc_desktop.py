@@ -310,10 +310,13 @@ if __name__ == "__main__":
         volumes += ["-v", homedir + "/.gnupg" +
                     ":" + docker_home + "/.gnupg"]
 
-    # Mount .gitconfig to Docker image
+    # Mount .gitconfig and .git-credentials to Docker image
     if os.path.isfile(homedir + "/.gitconfig"):
         volumes += ["-v", homedir + "/.gitconfig" +
                     ":" + docker_home + "/.gitconfig_host"]
+    if os.path.isfile(homedir + "/.git-credentials"):
+        volumes += ["-v", homedir + "/.git-credentials" +
+                    ":" + docker_home + "/.git-credentials_host"]
 
     if args.volume:
         if args.clear:
