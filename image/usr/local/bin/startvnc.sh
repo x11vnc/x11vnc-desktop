@@ -13,6 +13,7 @@ cleanup()
         ssh-agent -k > /dev/null
     fi
     rm -f /tmp/.X${DISP}-lock
+    rm -f /tmp/.X11-unix/X${DISP}
     pkill -P $$ 2> /dev/null
 }
 
