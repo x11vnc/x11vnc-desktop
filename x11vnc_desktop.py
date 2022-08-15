@@ -35,6 +35,11 @@ def parse_args(description):
                         'The default is ' + image + '.',
                         default=image)
 
+    parser.add_argument('-H', '--hostname',
+                        help='The hostname to use in the container. ' +
+                        'The default is to generate a random ID.',
+                        default='')
+
     parser.add_argument('-t', '--tag',
                         help='Tag of the image. The default is latest. ' +
                         'If the image already has a tag, its tag prevails.',
@@ -354,9 +359,12 @@ if __name__ == "__main__":
         size = args.size
 
     # Generate a container ID
-    container = id_generator()
+    if args.hostname:
+        hostname = args.hostname
+    else:
+        hostname = id_generator()
 
-    envs = ["--hostname", container,
+    envs = ["--hostname", hostname,
             "--env", "VNCPASS=" + args.password,
             "--env", "RESOLUT=" + size,
             "--env", "HOST_UID=" + uid,
@@ -392,10 +400,16 @@ if __name__ == "__main__":
         stderr_write("Error: Could not find a free port.\n")
         sys.exit(-1)
 
-    cmd = ["docker", "run", "-d", rmflag, "--name", container,
+    # Add additional arguments for Darwin on arm64
+    if platform.system() == 'Darwin' and platform.machine() == 'arm64':
+        platform_args = ["--platform", "linux/amd64"]
+    else:
+        platform_args = []
+
+    cmd = ["docker", "run", "-d", rmflag, "--name", hostname,
                      "--shm-size", "2g", "-p", port_http + ":6080",
                      "-p", port_vnc + ":5900"] + \
-        envs + volumes + devices + args.args.split() + \
+        platform_args + envs + volumes + devices + args.args.split() + \
         ['--security-opt', 'seccomp=unconfined', '--cap-add=SYS_PTRACE',
          args.image, "startvnc.sh >> " +
          docker_home + "/.log/vnc.log"]
@@ -412,12 +426,12 @@ if __name__ == "__main__":
         try:
             if wait_for_url:
                 # Wait until the file is not empty
-                while not subprocess.check_output(["docker", "exec", container,
+                while not subprocess.check_output(["docker", "exec", hostname,
                                                    "cat", docker_home +
                                                    "/.log/vnc.log"]):
                     time.sleep(1)
 
-                p = subprocess.Popen(["docker", "exec", container,
+                p = subprocess.Popen(["docker", "exec", hostname,
                                       "tail", "-F",
                                       docker_home + "/.log/vnc.log"],
                                      stdout=subprocess.PIPE,
@@ -442,7 +456,7 @@ if __name__ == "__main__":
 
                         if platform.system() == 'Windows':
                             # Copy ssh config files
-                            subprocess.check_output(["docker", "exec", container,
+                            subprocess.check_output(["docker", "exec", hostname,
                                     "rsync", "-rog", "--chown=ubuntu:ubuntu", "--chmod=600",
                                     "/home/ubuntu/.ssh-host/", "/home/ubuntu/.ssh/"])
 
@@ -463,13 +477,13 @@ if __name__ == "__main__":
                         stdout_write(stdout_line)
 
             if args.detach:
-                print('Started container ' + container + ' in background.')
-                print('To terminate it, use "docker stop ' + container + '".')
+                print('Started container ' + hostname + ' in background.')
+                print('To terminate it, use "docker stop ' + hostname + '".')
                 sys.exit(0)
 
             print("Press Ctrl-C to terminate the container.")
             # Wait until the container exits or Ctlr-C is pressed
-            subprocess.run(["docker", "exec", container,
+            subprocess.run(["docker", "exec", hostname,
                             "tail", "-f", "-n", "0", docker_home + "/.log/vnc.log"])
             sys.exit(0)
 
@@ -481,22 +495,22 @@ if __name__ == "__main__":
                         "Check whether the docker container is running.\n")
                 if not subprocess.check_output(['docker', 'ps',
                                                 '-q', '-f',
-                                                'name=' + container]):
+                                                'name=' + hostname]):
                     stdout_write('Docker container ' +
-                                 container + ' is no longer running\n')
+                                 hostname + ' is no longer running\n')
                     sys.exit(-1)
                 else:
                     time.sleep(1)
                     continue
             except subprocess.CalledProcessError:
                 stderr_write('Docker container ' +
-                             container + ' is no longer running\n')
+                             hostname + ' is no longer running\n')
                 sys.exit(-1)
             except KeyboardInterrupt:
-                handle_interrupt(container)
+                handle_interrupt(hostname)
 
             continue
         except KeyboardInterrupt:
-            handle_interrupt(container)
+            handle_interrupt(hostname)
         except OSError:
             sys.exit(-1)
