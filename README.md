@@ -16,7 +16,7 @@ This repository offers a Docker/Singularity image for Ubuntu with X11 and VNC. I
 ![screenshot](https://raw.github.com/x11vnc/x11vnc-desktop/main/screenshots/screenshot.png)
 
 ## Preparation for Using with Docker
-Before you start, you need to first install Python and Docker on
+Before you start, you need to first install Python 3.x and Docker on
 your computer by following the steps below.
 
 ### Installing Python
