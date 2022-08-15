@@ -35,6 +35,7 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.extract_tag.outputs.repo }}/docker-desktop:${{ steps.extract_tag.outputs.tag }}
           cache-from: type=registry,ref=${{ steps.extract_tag.outputs.repo }}/docker-desktop:buildcache

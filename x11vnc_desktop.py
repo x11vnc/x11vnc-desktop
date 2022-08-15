@@ -400,16 +400,10 @@ if __name__ == "__main__":
         stderr_write("Error: Could not find a free port.\n")
         sys.exit(-1)
 
-    # Add additional arguments for Darwin on arm64
-    if platform.system() == 'Darwin' and platform.machine() == 'arm64':
-        platform_args = ["--platform", "linux/amd64"]
-    else:
-        platform_args = []
-
     cmd = ["docker", "run", "-d", rmflag, "--name", hostname,
                      "--shm-size", "2g", "-p", port_http + ":6080",
                      "-p", port_vnc + ":5900"] + \
-        platform_args + envs + volumes + devices + args.args.split() + \
+        envs + volumes + devices + args.args.split() + \
         ['--security-opt', 'seccomp=unconfined', '--cap-add=SYS_PTRACE',
          args.image, "startvnc.sh >> " +
          docker_home + "/.log/vnc.log"]
