@@ -66,7 +66,7 @@ RUN apt-get update && \
         \
         xserver-xorg-video-dummy \
         lxde \
-        x11-xserver-utils \
+        x11-xserver-utils xdotool \
         xterm \
         gnome-themes-standard \
         gtk2-engines-pixbuf \
