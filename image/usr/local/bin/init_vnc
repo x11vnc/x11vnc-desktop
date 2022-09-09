@@ -4,52 +4,52 @@
 
 # If running with a different HOME directory, copy configuration files
 if [ "$DOCKER_HOME" != "$HOME" ]; then
-    rsync -aub $DOCKER_HOME/.config/ $HOME/.config/
+    rsync -aub "$DOCKER_HOME"/.config/ "$HOME"/.config/
 else
     # Config zsh configurations by copying defaults into $HOME/.config
-    if [ ! -e $DOCKER_HOME/.config/zsh ]; then
-        mkdir -p $DOCKER_HOME/.config/zsh
-        cp $DOCKER_HOME/.zshrc $DOCKER_HOME/.config/zsh/zshrc
-        cp $DOCKER_HOME/.zprofile $DOCKER_HOME/.config/zsh/zprofile
+    if [ ! -e "$DOCKER_HOME"/.config/zsh ]; then
+        mkdir -p "$DOCKER_HOME"/.config/zsh
+        cp "$DOCKER_HOME"/.zshrc "$DOCKER_HOME"/.config/zsh/zshrc
+        cp "$DOCKER_HOME"/.zprofile "$DOCKER_HOME"/.config/zsh/zprofile
     fi
 
-    ln -s -f .config/zsh/zshrc $DOCKER_HOME/.zshrc
-    ln -s -f .config/zsh/zprofile $DOCKER_HOME/.zprofile
+    ln -s -f .config/zsh/zshrc "$DOCKER_HOME"/.zshrc
+    ln -s -f .config/zsh/zprofile "$DOCKER_HOME"/.zprofile
 
-    touch $DOCKER_HOME/.config/zsh/zsh_history
-    ln -s -f .config/zsh/zsh_history $DOCKER_HOME/.zsh_history
+    touch "$DOCKER_HOME"/.config/zsh/zsh_history
+    ln -s -f .config/zsh/zsh_history "$DOCKER_HOME"/.zsh_history
 
     # Config vim
-    if [ ! -e $DOCKER_HOME/.config/vimrc ]; then
-        cp $DOCKER_HOME/.vimrc $DOCKER_HOME/.config/vimrc
+    if [ ! -e "$DOCKER_HOME"/.config/vimrc ]; then
+        cp "$DOCKER_HOME"/.vimrc "$DOCKER_HOME"/.config/vimrc
     fi
-    ln -s -f .config/vimrc $DOCKER_HOME/.vimrc
+    ln -s -f .config/vimrc "$DOCKER_HOME"/.vimrc
 
     # Config git
-    if [ -e $DOCKER_HOME/.gitconfig_host ]; then
-        rsync -ub $DOCKER_HOME/.gitconfig_host $DOCKER_HOME/.config/gitconfig
-    elif [ ! -e $DOCKER_HOME/.config/gitconfig ]; then
-    touch $DOCKER_HOME/.config/gitconfig
+    if [ -e "$DOCKER_HOME"/.gitconfig_host ]; then
+        rsync -ub "$DOCKER_HOME"/.gitconfig_host "$DOCKER_HOME"/.config/gitconfig
+    elif [ ! -e "$DOCKER_HOME"/.config/gitconfig ]; then
+    touch "$DOCKER_HOME"/.config/gitconfig
     fi
 
-    if [ -e $DOCKER_HOME/.git-credentials_host ]; then
-        rsync -ub $DOCKER_HOME/.git-credentials_host $DOCKER_HOME/.config/git-credentials
-    elif [ ! -e $DOCKER_HOME/.config/gitconfig ]; then
-        touch $DOCKER_HOME/.config/git-credentials
+    if [ -e "$DOCKER_HOME"/.git-credentials_host ]; then
+        rsync -ub "$DOCKER_HOME"/.git-credentials_host "$DOCKER_HOME"/.config/git-credentials
+    elif [ ! -e "$DOCKER_HOME"/.config/gitconfig ]; then
+        touch "$DOCKER_HOME"/.config/git-credentials
     fi
 
-    ln -s -f .config/gitconfig $DOCKER_HOME/.gitconfig
-    ln -s -f .config/git-credentials $DOCKER_HOME/.git-credentials
+    ln -s -f .config/gitconfig "$DOCKER_HOME"/.gitconfig
+    ln -s -f .config/git-credentials "$DOCKER_HOME"/.git-credentials
 
     # Config ssh
-    if [ -z "$(ls -A $DOCKER_HOME/.ssh 2> /dev/null)" ]; then
-    mkdir -p $DOCKER_HOME/.config/ssh
-    if [ -e $DOCKER_HOME/.ssh-host ]; then
-        rsync -aub $DOCKER_HOME/.ssh-host/ $DOCKER_HOME/.config/ssh
-    elif if [ -e $DOCKER_HOME/.ssh_host ]; then
-        rsync -aub $DOCKER_HOME/.ssh_host/ $DOCKER_HOME/.config/ssh
+    if [ -z "$(ls -A "$DOCKER_HOME"/.ssh 2> /dev/null)" ]; then
+        mkdir -p "$DOCKER_HOME"/.config/ssh
+        if [ -e "$DOCKER_HOME"/.ssh-host ]; then
+            rsync -aub "$DOCKER_HOME"/.ssh-host/ "$DOCKER_HOME"/.config/ssh
+        elif [ -e "$DOCKER_HOME"/.ssh_host ]; then
+            rsync -aub "$DOCKER_HOME"/.ssh_host/ "$DOCKER_HOME"/.config/ssh
+        fi
     fi
-    rmdir $DOCKER_HOME/.ssh
-    ln -s -f $DOCKER_HOME/.config/ssh $DOCKER_HOME/.ssh
-    fi
+    rmdir "$DOCKER_HOME"/.ssh
+    ln -s -f "$DOCKER_HOME"/.config/ssh "$DOCKER_HOME"/.ssh
 fi
