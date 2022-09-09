@@ -49,7 +49,7 @@ else
         elif [ -e "$DOCKER_HOME"/.ssh_host ]; then
             rsync -aub "$DOCKER_HOME"/.ssh_host/ "$DOCKER_HOME"/.config/ssh
         fi
+        rmdir "$DOCKER_HOME"/.ssh
+        ln -s -f "$DOCKER_HOME"/.config/ssh "$DOCKER_HOME"/.ssh
     fi
-    rmdir "$DOCKER_HOME"/.ssh
-    ln -s -f "$DOCKER_HOME"/.config/ssh "$DOCKER_HOME"/.ssh
 fi
