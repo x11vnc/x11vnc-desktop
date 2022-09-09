@@ -28,7 +28,6 @@ fi
 ln -s -f .config/vimrc $DOCKER_HOME/.vimrc
 
 # Config git
-mkdir -p $DOCKER_HOME/.config/git
 if [ -e $DOCKER_HOME/.gitconfig_host ]; then
     rsync -ub $DOCKER_HOME/.gitconfig_host $DOCKER_HOME/.config/gitconfig
 elif [ ! -e $DOCKER_HOME/.config/gitconfig ]; then
@@ -43,3 +42,12 @@ fi
 
 ln -s -f .config/gitconfig $DOCKER_HOME/.gitconfig
 ln -s -f .config/git-credentials $DOCKER_HOME/.git-credentials
+
+# Config ssh
+if [ ! -e $DOCKER_HOME/.ssh ]; then
+   mkdir -p $DOCKER_HOME/.config/ssh
+   if [ -e $DOCKER_HOME/.ssh_host ]; then
+      rsync -ub $DOCKER_HOME/.ssh_host $DOCKER_HOME/.config/ssh
+   fi
+   ln -s -f $DOCKER_HOME/.config/ssh $DOCKER_HOME/.ssh
+fi
