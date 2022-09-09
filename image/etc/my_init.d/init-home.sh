@@ -22,6 +22,6 @@ if [ -n "$HOST_UID" -a "$DOCKER_UID" != "$HOST_UID" -o \
     # It is important for $HOME/.ssh to have correct ownership
     chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME/.ssh
     chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME/.config
-else
+elif [ -d $DOCKER_HOME/project ]; then
     chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME/project
 fi

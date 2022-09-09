@@ -44,10 +44,11 @@ ln -s -f .config/gitconfig $DOCKER_HOME/.gitconfig
 ln -s -f .config/git-credentials $DOCKER_HOME/.git-credentials
 
 # Config ssh
-if [ ! -e $DOCKER_HOME/.ssh ]; then
+if [ -z "(ls -A $DOCKER_HOME/.ssh 2> /dev/null)" ]; then
    mkdir -p $DOCKER_HOME/.config/ssh
    if [ -e $DOCKER_HOME/.ssh_host ]; then
       rsync -ub $DOCKER_HOME/.ssh_host $DOCKER_HOME/.config/ssh
    fi
+   rmdir $DOCKER_HOME/.ssh
    ln -s -f $DOCKER_HOME/.config/ssh $DOCKER_HOME/.ssh
 fi
