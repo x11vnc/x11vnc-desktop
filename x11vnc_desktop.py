@@ -87,7 +87,7 @@ def parse_args(description):
                         action='store_true',
                         default=False)
 
-    parser.add_argument('--password',                        
+    parser.add_argument('--password',
                         help='Specify a password for VNC instead of generating a random one. ' +
                         'You can also set a password using the VNCPASS environment variable.',
                         default="")
