@@ -117,7 +117,7 @@ fi
 
 # start x11vnc with a stable or a new random password
 export VNCPASS=${VNCPASS:-$(openssl rand -base64 6 | sed 's/\//-/')}
-mkdir -p $HOME/.vnc && \
+rm -f $HOME/.vnc/passwd$DISP && mkdir -p $HOME/.vnc && \
 x11vnc -storepasswd $VNCPASS ~/.vnc/passwd$DISP > $HOME/.log/x11vnc_X$DISP.log 2>&1
 
 # startup novnc
