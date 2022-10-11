@@ -154,8 +154,11 @@ def find_free_port(port, retries):
     import socket
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    result = subprocess.check_output(["docker", "ps"])
 
     for prt in random_ports(port, retries + 1):
+        if result.find(b':' + bytes(str(prt), 'utf-8') + b'->') > 0:
+            continue
         try:
             sock.bind(("127.0.0.1", prt))
             sock.close()
@@ -163,7 +166,8 @@ def find_free_port(port, retries):
         except socket.error:
             continue
 
-    return ''
+    return ""
+
 
 
 def wait_net_service(port, timeout=30):

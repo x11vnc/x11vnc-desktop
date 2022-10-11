@@ -171,7 +171,7 @@ RUN mkdir -p $DOCKER_HOME/.config/mozilla && \
 
 WORKDIR $DOCKER_HOME
 
-ENV DOCKER_CMD=start_vnc
+ENV DOCKER_CMD=start_vnc.sh
 
 USER root
 ENTRYPOINT ["/sbin/my_init", "--", "/sbin/setuser", "ubuntu"]
