@@ -17,7 +17,7 @@ jobs:
         shell: bash
         run: |
              if [ -z "${{ secrets.DOCKER_HUB_REPO }}" ]; then
-                 echo repo=${{ secrets.DOCKER_HUB_USERNAME }}" >> $GITHUB_OUTPUT
+                 echo "repo=${{ secrets.DOCKER_HUB_USERNAME }}" >> $GITHUB_OUTPUT
              else
                  echo "repo=${{ secrets.DOCKER_HUB_REPO }}" >> $GITHUB_OUTPUT
              fi
